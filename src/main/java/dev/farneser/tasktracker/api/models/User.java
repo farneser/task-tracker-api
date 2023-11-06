@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,7 +24,6 @@ public class User implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
