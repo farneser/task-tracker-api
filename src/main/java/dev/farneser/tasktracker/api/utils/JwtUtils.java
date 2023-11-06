@@ -12,9 +12,9 @@ import java.util.Date;
 
 public class JwtUtils {
 
+    private static final long JWT_EXPIRATION_MS = 60 * 60 * 1000;
     @Value("${jwt.secret-key}")
     private static String SECRET_KEY;
-    private static final long JWT_EXPIRATION_MS = 60 * 60 * 1000;
 
     public String generateToken(User userDetails) {
         Date now = new Date();
