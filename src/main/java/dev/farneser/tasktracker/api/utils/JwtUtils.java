@@ -14,7 +14,7 @@ public class JwtUtils {
 
     private static final long JWT_EXPIRATION_MS = 60 * 60 * 1000;
     @Value("${jwt.secret-key}")
-    private static String SECRET_KEY;
+    private String secretKey;
 
     public String generateToken(User userDetails) {
         Date now = new Date();
@@ -51,7 +51,7 @@ public class JwtUtils {
     }
 
     private Key getSignInKey() {
-        var keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        var keyBytes = Decoders.BASE64.decode(secretKey);
 
         return Keys.hmacShaKeyFor(keyBytes);
     }
