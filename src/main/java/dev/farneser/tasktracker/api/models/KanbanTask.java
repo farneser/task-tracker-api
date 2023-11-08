@@ -10,7 +10,7 @@ public class KanbanTask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "task_id")
+    @Column(name = "id")
     private Long taskId;
 
     @Column(name = "task_name")

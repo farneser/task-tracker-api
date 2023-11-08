@@ -1,7 +1,10 @@
-CREATE TABLE columns
+CREATE TABLE tasks
 (
     id          SERIAL PRIMARY KEY,
-    column_name VARCHAR(255),
+    task_name   VARCHAR(255),
+    description VARCHAR(255),
     user_id     BIGINT,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    column_id   BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (column_id) REFERENCES columns (id)
 );
