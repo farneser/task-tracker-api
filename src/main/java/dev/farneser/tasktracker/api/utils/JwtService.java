@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class JwtService {
 
     // 1000 * 60 * 48 equals two days of token lifetime
-    private static final long JWT_EXPIRATION_MS = 1000 * 60 * 48;
+    private static final long JWT_EXPIRATION_MS = 1000 * 3600 * 48;
     @Value("${jwt.secret}")
     private String secretKey;
 
