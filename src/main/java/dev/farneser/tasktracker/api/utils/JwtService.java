@@ -1,48 +1,88 @@
 package dev.farneser.tasktracker.api.utils;
 
-import dev.farneser.tasktracker.api.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Service
 public class JwtService {
 
-    private static final long JWT_EXPIRATION_MS = 60L * 60L * 60L * 48L * 1000L;
+    // 1000 * 60 * 48 equals two days of token lifetime
+    private static final long JWT_EXPIRATION_MS = 1000 * 60 * 48;
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generateToken(User userDetails) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
+    /**
+     * Generates a JWT token for the provided UserDetails.
+     *
+     * @param userDetails The UserDetails object containing user information.
+     * @return A JWT token as a String.
+     */
+    public String generateToken(UserDetails userDetails) {
+        return this.generateToken(new HashMap<>(), userDetails);
+    }
 
-        return Jwts.builder()
+    /**
+     * Generates a JWT token with additional custom claims for the provided UserDetails.
+     *
+     * @param extraClaims Additional custom claims to include in the JWT.
+     * @param userDetails The UserDetails object containing user information.
+     * @return A JWT token as a String with specified custom claims.
+     */
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .claim("authorities", userDetails.getAuthorities())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_MS))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSignInKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    /**
+     * Checks if a JWT token is valid for the given UserDetails.
+     *
+     * @param token       The JWT token to be validated.
+     * @param userDetails The UserDetails object for the user.
+     * @return True if the token is valid for the provided user, false otherwise.
+     */
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        var username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    /**
+     * Checks if a JWT token has expired.
+     *
+     * @param token The JWT token to be checked for expiration.
+     * @return True if the token has expired, false otherwise.
+     */
+    private boolean isTokenExpired(String token) {
+        return extraExpiration(token).before(new Date());
+    }
+
+    /**
+     * Extracts the expiration date from a JWT token.
+     *
+     * @param token The JWT token from which to extract the expiration date.
+     * @return The expiration date of the token.
+     */
+    private Date extraExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
     /**
