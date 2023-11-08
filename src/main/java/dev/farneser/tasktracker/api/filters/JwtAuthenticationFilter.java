@@ -1,63 +1,62 @@
 package dev.farneser.tasktracker.api.filters;
 
 import dev.farneser.tasktracker.api.service.UserService;
-import dev.farneser.tasktracker.api.utils.JwtUtils;
-import io.jsonwebtoken.ExpiredJwtException;
+import dev.farneser.tasktracker.api.utils.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
     private final UserService userService;
-
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserService userService) {
-        this.jwtUtils = jwtUtils;
-        this.userService = userService;
-    }
+    private static final String AUTH_PREFIX = "Bearer ";
 
     @Override
-    public void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
+    public void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws IOException, ServletException {
 
-        var authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        String username = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-
-            try {
-                username = jwtUtils.getUsernameFromToken(jwt);
-
-                log.info("Token valid for user: {}", username);
-            } catch (ExpiredJwtException e) {
-                log.info("Token expired for user: {}", e.getClaims().getSubject());
-            }
+        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userService.loadUserByUsername(username);
+        var jwt = authHeader.substring(AUTH_PREFIX.length());
+        var email = jwtService.extractUsername(jwt);
 
-            if (jwtUtils.validateToken(jwt)) {
-                var authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            var user = this.userService.loadUserByUsername(email);
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            if (jwtService.isTokenValid(jwt, user)) {
+                var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
-                log.info("User {} authenticated", username);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
-        }
 
-        filterChain.doFilter(request, response);
+            // FIXME: 11/9/23 this will probably need to move to a line below if some error will not be processed at all
+            filterChain.doFilter(request, response);
+        }
     }
 }
