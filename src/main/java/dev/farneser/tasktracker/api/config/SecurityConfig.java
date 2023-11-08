@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,31 +29,40 @@ public class SecurityConfig {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
+
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth/authenticate",};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/api/v1/auth/**").permitAll();
-                    req.anyRequest().authenticated();
+                            req.requestMatchers(WHITE_LIST_URL)
+                                    .permitAll();
+                            req.requestMatchers("/error").permitAll();
+                            req.anyRequest().authenticated();
+                        }
+                )
+                .formLogin(login -> {
+                    login.successHandler(this.successAuth());
+                    login.failureHandler(this.failureAuth());
+                    login.loginProcessingUrl("/api/v1/auth/authenticate");
+                    login.usernameParameter("username");
+                    login.passwordParameter("password");
                 })
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .formLogin(login -> {
-//                    login.successHandler(this.successAuth());
-//                    login.failureHandler(this.failureAuth());
-//                    login.loginProcessingUrl("/auth/user");
-//                    login.usernameParameter("username");
-//                    login.passwordParameter("password");
-//                })
-//                .logout(LogoutConfigurer::permitAll)
-//                .exceptionHandling(exceptions -> {
-//                    exceptions.authenticationEntryPoint(this.authEntryPoint());
-//                });
-        ;
+                .logout(logout ->
+                                logout.logoutUrl("/api/v1/auth/logout")
+//                                .addLogoutHandler(logoutHandler)
+                                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                )
+                .exceptionHandling(exceptions -> {
+                    exceptions.authenticationEntryPoint(authEntryPoint());
+                });
+
+
         return http.build();
     }
 
