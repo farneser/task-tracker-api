@@ -12,8 +12,8 @@ public class RegisterDto {
     private String email;
     @NonNull
     @Length(min = 8, max = 64)
-    private String confirmPassword;
+    private String password;
     @NonNull
     @Length(min = 8, max = 64)
-    private String password;
+    private String confirmPassword;
 }
