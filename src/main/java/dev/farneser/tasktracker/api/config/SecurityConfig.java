@@ -3,11 +3,9 @@ package dev.farneser.tasktracker.api.config;
 import dev.farneser.tasktracker.api.filters.JwtAuthenticationFilter;
 import dev.farneser.tasktracker.api.models.Message;
 import dev.farneser.tasktracker.api.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,7 +35,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.POST, "/auth/user").permitAll();
+                    req.requestMatchers("/api/v1/auth/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
