@@ -6,7 +6,7 @@ import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class RegisterDto {
+public class RegisterRequest {
     @NonNull
     @Email(message = "You should enter email like 'example@email.com'")
     private String email;

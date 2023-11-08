@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.filters.JwtAuthenticationFilter;
 import dev.farneser.tasktracker.api.models.Message;
 import dev.farneser.tasktracker.api.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;

@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.repository.UserRepository;
-import dev.farneser.tasktracker.api.web.dto.RegisterDto;
+import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
 import dev.farneser.tasktracker.api.web.dto.UserDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +28,12 @@ public class UserService implements UserDetailsService {
         this.modelMapper = modelMapper;
     }
 
-    public UserDto registerNewUser(@Valid RegisterDto registerDto) {
+    public UserDto registerNewUser(@Valid RegisterRequest registerRequest) {
         try {
             var user = new User();
 
-            user.setEmail(registerDto.getEmail());
-            user.setPassword(passwordEncoder.encode(registerDto.getEmail()));
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(registerRequest.getEmail()));
 
             user = userRepository.save(user);
 
