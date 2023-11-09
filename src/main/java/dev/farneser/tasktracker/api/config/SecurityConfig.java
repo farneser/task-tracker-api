@@ -26,11 +26,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth"};
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;
-
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth",};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,22 +45,15 @@ public class SecurityConfig {
                 .formLogin(login -> {
                     login.successHandler(this.successAuth());
                     login.failureHandler(this.failureAuth());
-//                    login.loginProcessingUrl("/api/v1/auth");
-//                    login.usernameParameter("username");
-//                    login.passwordParameter("password");
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                                logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl("/api/v1/auth/logout")
 //                                .addLogoutHandler(logoutHandler)
-                                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                )
-                .exceptionHandling(exceptions -> {
-                    exceptions.authenticationEntryPoint(authEntryPoint());
-                });
-
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()))
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(authEntryPoint()));
 
         return http.build();
     }

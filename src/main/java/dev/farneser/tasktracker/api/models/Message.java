@@ -9,12 +9,12 @@ import lombok.Data;
 public class Message {
     private String message;
 
+    public static Message body(String message) {
+        return new Message(message);
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
-    }
-
-    public static Message body(String message) {
-        return new Message(message);
     }
 }

@@ -22,9 +22,9 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final String AUTH_PREFIX = "Bearer ";
     private final JwtService jwtService;
     private final UserService userService;
-    private static final String AUTH_PREFIX = "Bearer ";
 
     @Override
     public void doFilterInternal(
