@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth/authenticate",};
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth",};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,9 +46,9 @@ public class SecurityConfig {
                 .formLogin(login -> {
                     login.successHandler(this.successAuth());
                     login.failureHandler(this.failureAuth());
-                    login.loginProcessingUrl("/api/v1/auth/authenticate");
-                    login.usernameParameter("username");
-                    login.passwordParameter("password");
+//                    login.loginProcessingUrl("/api/v1/auth");
+//                    login.usernameParameter("username");
+//                    login.passwordParameter("password");
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
