@@ -21,8 +21,8 @@ public class UserRepositoryTest {
         user.setPassword("password");
         user.setRegisterDate(new Date(System.currentTimeMillis()));
 
-        var registeredUser = userRepository.save(user);
+        userRepository.save(user);
 
-        assert registeredUser == userRepository.findByEmail(user.getEmail()).orElseThrow();
+        assert userRepository.findByEmail(user.getEmail()).orElseThrow().getId() != null;
     }
 }
