@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.filters;
 
-import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.JwtService;
+import dev.farneser.tasktracker.api.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
