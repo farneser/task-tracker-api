@@ -9,5 +9,7 @@ import org.springframework.context.annotation.Profile;
 class TaskTrackerApiApplicationTests {
     @Test
     void contextLoads() {
+        // hapi hapi hapi
+        assert true;
     }
 }

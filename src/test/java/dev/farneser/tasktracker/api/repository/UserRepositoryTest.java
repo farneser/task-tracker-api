@@ -1,0 +1,28 @@
+package dev.farneser.tasktracker.api.repository;
+
+import dev.farneser.tasktracker.api.models.User;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Date;
+
+@SpringBootTest
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    void userSaveTest() {
+        var user = new User();
+
+        user.setEmail("test@email.com");
+        user.setPassword("password");
+        user.setRegisterDate(new Date(System.currentTimeMillis()));
+
+        var registeredUser = userRepository.save(user);
+
+        assert registeredUser == userRepository.findByEmail(user.getEmail()).orElseThrow();
+    }
+}
