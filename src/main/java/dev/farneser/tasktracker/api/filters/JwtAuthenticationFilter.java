@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.filters;
 
 import dev.farneser.tasktracker.api.service.UserService;
-import dev.farneser.tasktracker.api.utils.JwtService;
+import dev.farneser.tasktracker.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             }
 
-            // FIXME: 11/9/23 this will probably need to move to a line below if some error will not be processed at all
             filterChain.doFilter(request, response);
         }
     }

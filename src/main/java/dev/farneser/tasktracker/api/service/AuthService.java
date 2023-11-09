@@ -2,7 +2,6 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.repository.UserRepository;
-import dev.farneser.tasktracker.api.utils.JwtService;
 import dev.farneser.tasktracker.api.web.dto.AuthResponse;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.RegisterRequest;

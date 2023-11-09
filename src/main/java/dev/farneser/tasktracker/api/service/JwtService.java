@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.utils;
+package dev.farneser.tasktracker.api.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // 1000 * 60 * 48 equals two days of token lifetime
+    // 1000 * 3600 * 48 equals two days of token lifetime
     private static final long JWT_EXPIRATION_MS = 1000 * 3600 * 48;
     @Value("${jwt.secret}")
     private String secretKey;
