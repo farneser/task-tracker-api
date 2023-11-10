@@ -23,10 +23,6 @@ public class RefreshToken {
     @Column(nullable = false, unique = true)
     private String token;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, name = "expiration_date")
-    private Date expirationDate;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
