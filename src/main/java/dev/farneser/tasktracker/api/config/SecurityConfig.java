@@ -26,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth", "/error"};
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth/refresh", "/api/v1/auth", "/error"};
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;
