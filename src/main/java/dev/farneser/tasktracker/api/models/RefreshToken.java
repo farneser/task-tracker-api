@@ -28,6 +28,6 @@ public class RefreshToken {
     private Date expirationDate;
 
     @ManyToOne
-    @JoinColumn(table = "users", name = "id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 }
