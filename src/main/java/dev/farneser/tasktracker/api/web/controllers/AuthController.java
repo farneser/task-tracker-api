@@ -1,7 +1,9 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
+import dev.farneser.tasktracker.api.exceptions.InternalServerException;
+import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.service.AuthService;
-import dev.farneser.tasktracker.api.web.dto.AuthResponse;
+import dev.farneser.tasktracker.api.web.dto.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
@@ -21,12 +23,17 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<AuthResponse> authenticate(@RequestBody @Valid LoginRequest loginDto) {
+    public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) {
         return ResponseEntity.ok(authService.authenticate(loginDto));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest registerRequest) {
+    public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterRequest registerRequest) throws InternalServerException {
         return ResponseEntity.ok(authService.register(registerRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtDto> refresh(@RequestBody @Valid JwtDto jwtDto) throws TokenExpiredException {
+        return ResponseEntity.ok(authService.refresh(jwtDto));
     }
 }
