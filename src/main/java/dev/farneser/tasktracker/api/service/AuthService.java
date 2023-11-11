@@ -33,7 +33,7 @@ public class AuthService {
             var user = User
                     .builder()
                     .email(registerRequest.getEmail())
-                    .password(passwordEncoder.encode(registerRequest.getEmail()))
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .registerDate(new Date(System.currentTimeMillis()))
                     .build();
 
@@ -48,9 +48,9 @@ public class AuthService {
     }
 
     public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User with email: " + loginRequest.getEmail() + " not found"));
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
     }

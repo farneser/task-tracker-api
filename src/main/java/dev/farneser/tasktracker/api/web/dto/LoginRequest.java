@@ -11,6 +11,5 @@ public class LoginRequest {
     @Email(message = "You should enter email like 'example@email.com'")
     private String email;
     @NonNull
-    @Length(min = 8, max = 64)
     private String password;
 }
