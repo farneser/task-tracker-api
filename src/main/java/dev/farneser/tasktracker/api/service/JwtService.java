@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.websocket.OnError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class JwtService {
 
     // 1000 * 3600 * 24 * 14 equals two weeks of token lifetime
     private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 3600 * 24 * 14;
+    private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -36,7 +38,7 @@ public class JwtService {
      * @return A JWT as a String.
      */
     public String generateAccessToken(UserDetails userDetails) {
-        return this.generateToken(new HashMap<>(), userDetails, JWT_EXPIRATION_MS);
+        return this.generateToken(new HashMap<>(), new HashMap<>(), userDetails, JWT_EXPIRATION_MS);
     }
 
     /**
@@ -46,21 +48,26 @@ public class JwtService {
      * @return A Refresh token as a String.
      */
     public String generateRefreshToken(UserDetails userDetails) {
-        return this.generateToken(new HashMap<>(), userDetails, REFRESH_TOKEN_EXPIRATION_MS);
+        var headers = new HashMap<String, Object>();
+
+        headers.put(REFRESH_TOKEN_HEADER, true);
+
+        return this.generateToken(new HashMap<>(), headers, userDetails, REFRESH_TOKEN_EXPIRATION_MS);
     }
 
     /**
      * Generates a JWT with additional custom claims for the provided UserDetails.
      *
-     * @param extraClaims Additional custom claims to include in the JWT.
+     * @param claims      Additional custom claims to include in the JWT.
      * @param userDetails The UserDetails object containing user information.
      * @return A JWT as a String with specified custom claims.
      */
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    public String generateToken(Map<String, Object> claims, Map<String, Object> headers, UserDetails userDetails, long expiration) {
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
+                .setHeader(headers)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -76,8 +83,21 @@ public class JwtService {
      */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         var username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !isTokenRefresh(token);
     }
+
+    /**
+     * Checks if a JWT is a refresh token.
+     *
+     * @param token The JWT to be checked.
+     * @return True if the token is a refresh token, false otherwise.
+     */
+    public boolean isTokenRefresh(String token) {
+        var header = getHeader(token, REFRESH_TOKEN_HEADER, Boolean.class);
+
+        return header != null && header;
+    }
+
 
     /**
      * Checks if a JWT has expired.
@@ -97,6 +117,30 @@ public class JwtService {
      */
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    /**
+     * Retrieves a specific header value from the JWT.
+     *
+     * @param token           The JWT from which to extract the header value.
+     * @param headerKey       The key of the header whose value is to be retrieved.
+     * @param headerValueType The Class representing the type of the expected header value.
+     * @param <T>             The generic type of the expected header value.
+     * @return The value of the specified header if present and of the expected type, otherwise null.
+     */
+    public <T> T getHeader(String token, String headerKey, Class<T> headerValueType) {
+        var claimsJws = Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token);
+
+        var header = claimsJws.getHeader().get(headerKey);
+
+        if (headerValueType.isInstance(header)) {
+            return headerValueType.cast(header);
+        }
+
+        return null;
     }
 
     /**
