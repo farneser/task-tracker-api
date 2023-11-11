@@ -36,6 +36,6 @@ import org.springframework.context.annotation.Configuration;
         in = SecuritySchemeIn.HEADER
 )
 @Configuration
-@ConditionalOnExpression(value = "${springdoc.swagger-ui.enabled}")
+@ConditionalOnExpression(value = "${springdoc.swagger-ui.enabled:true}")
 public class SwaggerConfig {
 }
