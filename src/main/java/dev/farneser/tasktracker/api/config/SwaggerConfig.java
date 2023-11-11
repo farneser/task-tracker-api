@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
@@ -35,5 +36,6 @@ import org.springframework.context.annotation.Configuration;
         in = SecuritySchemeIn.HEADER
 )
 @Configuration
+@ConditionalOnExpression(value = "${springdoc.swagger-ui.enabled}")
 public class SwaggerConfig {
 }
