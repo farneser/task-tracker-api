@@ -40,8 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX)) {
-            handleError(response, "Access token not found", HttpServletResponse.SC_UNAUTHORIZED);
-
+            filterChain.doFilter(request, response);
             return;
         }
 
