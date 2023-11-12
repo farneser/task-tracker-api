@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.InternalServerException;
+import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.service.AuthService;
 import dev.farneser.tasktracker.api.web.dto.JwtDto;
@@ -33,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtDto> refresh(@RequestBody @Valid JwtDto jwtDto) throws TokenExpiredException {
+    public ResponseEntity<JwtDto> refresh(@RequestBody @Valid JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException {
         return ResponseEntity.ok(authService.refresh(jwtDto));
     }
 }

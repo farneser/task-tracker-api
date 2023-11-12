@@ -3,6 +3,8 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.dto.UserDto;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+    })
     public ResponseEntity<UserDto> get(Authentication authentication) {
         return ResponseEntity.ok(userService.getUser(authentication));
     }

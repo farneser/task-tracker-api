@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.config;
 
-import dev.farneser.tasktracker.api.filters.JwtAuthenticationFilter;
+import dev.farneser.tasktracker.api.web.filters.JwtAuthenticationFilter;
 import dev.farneser.tasktracker.api.models.Message;
 import dev.farneser.tasktracker.api.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/register", "/api/v1/auth/refresh", "/api/v1/auth", "/error"};
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/api/v1/auth", "/error"};
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;

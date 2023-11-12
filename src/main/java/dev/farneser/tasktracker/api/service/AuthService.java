@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.InternalServerException;
+import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.models.User;
@@ -55,13 +56,13 @@ public class AuthService {
         return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
     }
 
-    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException {
-        var userName = jwtService.extractUsername(jwtDto.getAccessToken());
+    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException {
+        var userName = jwtService.extractUsername(jwtDto.getRefreshToken());
 
         var user = userRepository.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("User with email: " + userName + " not found"));
 
-        if (!jwtService.isTokenValid(jwtDto.getRefreshToken(), user)) {
-            throw new TokenExpiredException("Token expired");
+        if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user)) {
+            throw new TokenExpiredException("Invalid token");
         }
 
         return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
