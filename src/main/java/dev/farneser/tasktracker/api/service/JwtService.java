@@ -1,6 +1,9 @@
 package dev.farneser.tasktracker.api.service;
 
+import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
+import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -21,8 +24,8 @@ import java.util.function.Function;
 public class JwtService {
 
     // FIXME: 11/10/23 get time via env
-    // 1000 * 3600 * 48 equals two days of token lifetime
-    private static final long JWT_EXPIRATION_MS = 1000 * 3600 * 48;
+    // 1000 * 60 * 2 equals two minutes of token lifetime
+    private static final long JWT_EXPIRATION_MS = 1000 * 60 * 2;
 
     // 1000 * 3600 * 24 * 14 equals two weeks of token lifetime
     private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 3600 * 24 * 14;
@@ -80,9 +83,22 @@ public class JwtService {
      * @param userDetails The UserDetails object for the user.
      * @return True if the token is valid for the provided user, false otherwise.
      */
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) throws TokenExpiredException, InvalidTokenException {
+        // this works because the refresh token is made in the form of a regular jwt token,
+        // but with an additional header, and here you can check for the presence of this header
+        return isRefreshTokenValid(token, userDetails) && !isTokenRefresh(token);
+    }
+
+    /**
+     * Checks if a refresh token is valid for the given UserDetails.
+     *
+     * @param token       The refresh token to be validated.
+     * @param userDetails The UserDetails object for the user.
+     * @return True if the token is valid for the provided user, false otherwise.
+     */
+    public boolean isRefreshTokenValid(String token, UserDetails userDetails) throws TokenExpiredException, InvalidTokenException {
         var username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !isTokenRefresh(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     /**
@@ -103,7 +119,7 @@ public class JwtService {
      * @param token The JWT to be checked for expiration.
      * @return True if the token has expired, false otherwise.
      */
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) throws TokenExpiredException, InvalidTokenException {
         return extractExpiration(token).before(new Date());
     }
 
@@ -113,7 +129,7 @@ public class JwtService {
      * @param token The JWT from which to extract the expiration date.
      * @return The expiration date of the token.
      */
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(String token) throws TokenExpiredException, InvalidTokenException {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -147,7 +163,7 @@ public class JwtService {
      * @param token The JWT from which the username is to be extracted
      * @return The extracted username
      */
-    public String extractUsername(String token) {
+    public String extractUsername(String token) throws TokenExpiredException, InvalidTokenException {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -162,7 +178,7 @@ public class JwtService {
      *                       different types of claims from the JWT
      * @return All claims present in the JWT
      */
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws TokenExpiredException, InvalidTokenException {
         var claims = extractClaims(token);
 
         return claimsResolver.apply(claims);
@@ -174,13 +190,21 @@ public class JwtService {
      * @param token Defile jwt as String
      * @return All claims in a jwt
      */
-    private Claims extractClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims extractClaims(String token) throws TokenExpiredException, InvalidTokenException {
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            log.info(e.getMessage());
+
+            throw new TokenExpiredException("Token expired");
+        } catch (Exception e) {
+            throw new InvalidTokenException("Token is invalid");
+        }
     }
 
     /**
