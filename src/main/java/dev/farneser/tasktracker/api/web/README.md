@@ -22,6 +22,10 @@ access.
 Highlights an unauthorized request resulting from an expired refresh token. Users should refresh their authentication
 tokens to regain access.
 
+### 404 NOT_FOUND
+
+The requested resource does not exist. The server could not find the resource matching the provided path.
+
 ### 500 SERVER_ERROR
 
 Signals an internal server error. Something went wrong on the server side, and the request could not be completed.
