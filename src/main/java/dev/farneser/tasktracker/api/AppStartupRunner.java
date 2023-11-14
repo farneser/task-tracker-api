@@ -42,10 +42,10 @@ public class AppStartupRunner implements ApplicationRunner {
 
         var maxLength = Math.max(localMessage.length(), remoteMessage.length());
 
-        log.info("-".repeat(maxLength / 2) + "STATUS" + "-".repeat(maxLength / 2));
+        log.info("=".repeat(maxLength / 2 - 1) + " STATUS " + "=".repeat(maxLength / 2 - 1));
         log.info("Available: " + servers + " urls");
         log.info(localMessage);
         log.info(remoteMessage.toString());
-        log.info("-".repeat(maxLength + 6));
+        log.info("=".repeat(maxLength + 6));
     }
 }

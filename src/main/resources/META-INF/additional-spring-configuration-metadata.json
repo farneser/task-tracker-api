@@ -4,6 +4,11 @@
       "name": "jwt.secret",
       "type": "java.lang.String",
       "description": "The secret used to sign the JWT."
+    },
+    {
+      "name": "application.allowed.origins",
+      "type": "java.lang.String",
+      "description": "The list of allowed client origins."
     }
   ]
 }

@@ -19,14 +19,15 @@ Use Cases:
 
 ## Environment
 
-| Parameter         | Default value  | Description                            |
-|-------------------|----------------|----------------------------------------|
-| POSTGRES_HOST     | `localhost`    | IP address of the PostgreSQL DB server |
-| POSTGRES_PORT     | `5432`         | Port of the PostgreSQL DB server       |
-| POSTGRES_DB       | `task-tracker` | PostgreSQL database name               |
-| POSTGRES_USERNAME | `postgres`     | PostgreSQL username                    |
-| POSTGRES_PASSWORD | `postgres`     | PostgreSQL password                    |
-| JWT_SECRET        |                | JSON Web Token secret encoder          | 
-| USE_SWAGGER       | `true`         | Use Swagger UI                         | 
-| SERVER_PORT       | `8080`         | Tomcat server port                     | 
-| LOGGING_LEVEL     | `INFO`         | Console logging level                  | 
+| Parameter         | Default value                               | Description                            |
+|-------------------|---------------------------------------------|----------------------------------------|
+| POSTGRES_HOST     | `localhost`                                 | IP address of the PostgreSQL DB server |
+| POSTGRES_PORT     | `5432`                                      | Port of the PostgreSQL DB server       |
+| POSTGRES_DB       | `task-tracker`                              | PostgreSQL database name               |
+| POSTGRES_USERNAME | `postgres`                                  | PostgreSQL username                    |
+| POSTGRES_PASSWORD | `postgres`                                  | PostgreSQL password                    |
+| JWT_SECRET        |                                             | JSON Web Token secret encoder          | 
+| USE_SWAGGER       | `true`                                      | Use Swagger UI                         | 
+| SERVER_PORT       | `8080`                                      | Tomcat server port                     | 
+| LOGGING_LEVEL     | `INFO`                                      | Console logging level                  | 
+| ALLOWED_ORIGINS   | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)         | 
