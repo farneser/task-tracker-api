@@ -11,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
 @Slf4j
 @Configuration
 public class CorsConfig {
-    @Value("${application.allowed.origins}")
+    @Value("${application.allowed.origins:http://localhost:3000, http://client:3000}")
     private String[] allowedOrigins;
 
     @Bean
