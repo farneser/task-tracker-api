@@ -39,6 +39,15 @@ Example authorization header:
 Authorization: Bearer ${access_token}
 ```
 
+## Endpoints
+
+For detailed information about the available API endpoints, request structures, and response formats, please refer to
+the [README.md](src/main/java/dev/farneser/tasktracker/api/web/controllers/README.md). This comprehensive documentation
+provides insights into each endpoint's purpose, expected parameters, and the corresponding data returned.
+
+By adhering to JSON for data transmission, our API enhances interoperability and simplifies integration with a variety
+of platforms and programming languages.
+
 ## Database
 
 In this project, we have Postgres as the database management system to efficiently store and manage our data.
