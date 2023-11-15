@@ -13,21 +13,56 @@ Use Cases:
 * Daily Task Management: Enhance daily productivity by visualizing and prioritizing tasks for personal and professional
   growth.
 
+## Authentication
+
+Authentication is performed using JWT with refresh tokens and 256-bit encryption.
+
+During the process of authentication, registration, or token refresh, a valid response will contain a token response
+like the following:
+
+```json
+{
+  "access_token": "",
+  "refresh_token": ""
+}
+```
+
+The output is a JSON object with two fields: `access_token` and `refresh_token`. Authentication occurs only with the
+first
+token because the `refresh_token` includes the `is_refresh_token` header, preventing its use for authentication. The
+refresh
+token is exclusively used for updating the main token.
+
+Example authorization header:
+
+```http request
+Authorization: Bearer ${access_token}
+```
+
+## Database
+
+In this project, we have Postgres as the database management system to efficiently store and manage our data.
+The relational database design is illustrated in the diagram below:
+
+![Database relations](assets/database-relations.svg)
+
 ## Build
 
-## Run
+```bash
+./mvnw clean install
+```
 
 ## Environment
 
-| Parameter         | Default value                               | Description                            |
-|-------------------|---------------------------------------------|----------------------------------------|
-| POSTGRES_HOST     | `localhost`                                 | IP address of the PostgreSQL DB server |
-| POSTGRES_PORT     | `5432`                                      | Port of the PostgreSQL DB server       |
-| POSTGRES_DB       | `task-tracker`                              | PostgreSQL database name               |
-| POSTGRES_USERNAME | `postgres`                                  | PostgreSQL username                    |
-| POSTGRES_PASSWORD | `postgres`                                  | PostgreSQL password                    |
-| JWT_SECRET        |                                             | JSON Web Token secret encoder          | 
-| USE_SWAGGER       | `true`                                      | Use Swagger UI                         | 
-| SERVER_PORT       | `8080`                                      | Tomcat server port                     | 
-| LOGGING_LEVEL     | `INFO`                                      | Console logging level                  | 
-| ALLOWED_ORIGINS   | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)         | 
+| Parameter         | Default value                               | Description                          |
+|-------------------|---------------------------------------------|--------------------------------------|
+| POSTGRES_HOST     | `localhost`                                 | IP address of the Postgres DB server |
+| POSTGRES_PORT     | `5432`                                      | Port of the Postgres DB server       |
+| POSTGRES_DB       | `task-tracker`                              | Postgres database name               |
+| POSTGRES_USERNAME | `postgres`                                  | Postgres username                    |
+| POSTGRES_PASSWORD | `postgres`                                  | Postgres password                    |
+| JWT_SECRET        |                                             | JSON Web Token secret encoder        | 
+| USE_SWAGGER       | `true`                                      | Use Swagger UI                       | 
+| SERVER_PORT       | `8080`                                      | Tomcat server port                   | 
+| LOGGING_LEVEL     | `INFO`                                      | Console logging level                | 
+| ALLOWED_ORIGINS   | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)       | 

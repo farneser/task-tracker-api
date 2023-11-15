@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NonNull;
@@ -15,5 +16,6 @@ public class RegisterRequest {
     private String password;
     @NonNull
     @Length(min = 8, max = 64)
+    @JsonProperty("confirm_password")
     private String confirmPassword;
 }
