@@ -2,9 +2,9 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.operations.dto.UserDto;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
-import dev.farneser.tasktracker.api.web.dto.UserDto;
+import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,18 +20,15 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
     private final Mediator mediator;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
-    private User getByEmail(String email) throws NotFoundException {
+    private UserDto getByEmail(String email) throws NotFoundException {
         return mediator.send(new GetUserByEmailQuery(email));
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        try {
-            return getByEmail(email);
-        } catch (NotFoundException e) {
-            throw new UsernameNotFoundException(e.getMessage());
-        }
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
     public UserDto getUser(Authentication authentication) throws NotFoundException {

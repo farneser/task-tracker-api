@@ -37,7 +37,7 @@ public class AuthService {
 
             var user = mediator.send(new GetUserByIdQuery(userId));
 
-            return new JwtDto(jwtService.generateAccessToken(user), this.updateRefreshToken(user));
+            return new JwtDto(jwtService.generateAccessToken(user.getEmail()), this.updateRefreshToken(user.getEmail()));
 
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
@@ -51,7 +51,7 @@ public class AuthService {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
+        return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
     }
 
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
@@ -59,20 +59,22 @@ public class AuthService {
 
         var user = mediator.send(new GetUserByEmailQuery(userName));
 
-        if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user)) {
+        if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user.getEmail())) {
             throw new TokenExpiredException("Invalid token");
         }
 
-        return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
+        return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
     }
 
-    private String updateRefreshToken(User user) throws NotFoundException {
+    private String updateRefreshToken(String email) throws NotFoundException {
+
+        var user = mediator.send(new GetUserByEmailQuery(email));
 
         mediator.send(new DeleteRefreshTokenByUserIdCommand(user.getId()));
 
-        var tokenString = jwtService.generateRefreshToken(user);
+        var tokenString = jwtService.generateRefreshToken(user.getEmail());
 
-        var tokenId = mediator.send(new CreateRefreshTokenCommand(tokenString, user));
+        var tokenId = mediator.send(new CreateRefreshTokenCommand(tokenString, user.getId()));
 
         var newToken = mediator.send(new GetRefreshTokenByIdQuery(tokenId));
 

@@ -10,7 +10,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -36,39 +35,39 @@ public class JwtService {
     /**
      * Generates a JWT for the provided UserDetails.
      *
-     * @param userDetails The UserDetails object containing user information.
+     * @param email The user email address.
      * @return A JWT as a String.
      */
-    public String generateAccessToken(UserDetails userDetails) {
-        return this.generateToken(new HashMap<>(), new HashMap<>(), userDetails, JWT_EXPIRATION_MS);
+    public String generateAccessToken(String email) {
+        return this.generateToken(new HashMap<>(), new HashMap<>(), email, JWT_EXPIRATION_MS);
     }
 
     /**
      * Generates a Refresh token for the provided UserDetails.
      *
-     * @param userDetails The UserDetails object containing user information.
+     * @param email The user email address.
      * @return A Refresh token as a String.
      */
-    public String generateRefreshToken(UserDetails userDetails) {
+    public String generateRefreshToken(String email) {
         var headers = new HashMap<String, Object>();
 
         headers.put(REFRESH_TOKEN_HEADER, true);
 
-        return this.generateToken(new HashMap<>(), headers, userDetails, REFRESH_TOKEN_EXPIRATION_MS);
+        return this.generateToken(new HashMap<>(), headers, email, REFRESH_TOKEN_EXPIRATION_MS);
     }
 
     /**
      * Generates a JWT with additional custom claims for the provided UserDetails.
      *
-     * @param claims      Additional custom claims to include in the JWT.
-     * @param userDetails The UserDetails object containing user information.
+     * @param claims Additional custom claims to include in the JWT.
+     * @param email  The user email address.
      * @return A JWT as a String with specified custom claims.
      */
-    public String generateToken(Map<String, Object> claims, Map<String, Object> headers, UserDetails userDetails, long expiration) {
+    public String generateToken(Map<String, Object> claims, Map<String, Object> headers, String email, long expiration) {
         return Jwts
                 .builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(email)
                 .setHeader(headers)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -79,26 +78,26 @@ public class JwtService {
     /**
      * Checks if a JWT is valid for the given UserDetails.
      *
-     * @param token       The JWT to be validated.
-     * @param userDetails The UserDetails object for the user.
+     * @param token The JWT to be validated.
+     * @param email The user email address.
      * @return True if the token is valid for the provided user, false otherwise.
      */
-    public boolean isTokenValid(String token, UserDetails userDetails) throws TokenExpiredException, InvalidTokenException {
+    public boolean isTokenValid(String token, String email) throws TokenExpiredException, InvalidTokenException {
         // this works because the refresh token is made in the form of a regular jwt token,
         // but with an additional header, and here you can check for the presence of this header
-        return isRefreshTokenValid(token, userDetails) && !isTokenRefresh(token);
+        return isRefreshTokenValid(token, email) && !isTokenRefresh(token);
     }
 
     /**
      * Checks if a refresh token is valid for the given UserDetails.
      *
-     * @param token       The refresh token to be validated.
-     * @param userDetails The UserDetails object for the user.
+     * @param token The refresh token to be validated.
+     * @param email The user email address.
      * @return True if the token is valid for the provided user, false otherwise.
      */
-    public boolean isRefreshTokenValid(String token, UserDetails userDetails) throws TokenExpiredException, InvalidTokenException {
+    public boolean isRefreshTokenValid(String token, String email) throws TokenExpiredException, InvalidTokenException {
         var username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        return username.equals(email) && !isTokenExpired(token);
     }
 
     /**

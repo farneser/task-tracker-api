@@ -1,19 +1,24 @@
 package dev.farneser.tasktracker.api.operations.queries.user.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.operations.dto.UserDto;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GetUserByIdQueryHandler implements QueryHandler<GetUserByIdQuery, User> {
+public class GetUserByIdQueryHandler implements QueryHandler<GetUserByIdQuery, UserDto> {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public User handle(GetUserByIdQuery query) throws NotFoundException {
-        return userRepository.findById(query.getId()).orElseThrow(() -> new NotFoundException("User with id: " + query.getId() + " not found"));
+    public UserDto handle(GetUserByIdQuery query) throws NotFoundException {
+        var user = userRepository.findById(query.getId()).orElseThrow(() -> new UserNotFoundException(query.getId()));
+
+        return modelMapper.map(user, UserDto.class);
     }
 }

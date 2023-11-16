@@ -10,8 +10,4 @@ import lombok.Data;
 public class CreateRefreshTokenCommand implements Command<Long> {
     private String token;
     private Long userId;
-
-    public CreateRefreshTokenCommand(String token, User user) {
-        this(token, user.getId());
-    }
 }

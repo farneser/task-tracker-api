@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto;
+package dev.farneser.tasktracker.api.operations.dto;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.User;
