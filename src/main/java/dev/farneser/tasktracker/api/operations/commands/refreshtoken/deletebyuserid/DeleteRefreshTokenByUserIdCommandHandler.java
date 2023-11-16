@@ -6,8 +6,10 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyuserid.GetRefreshTokenByUserIdQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeleteRefreshTokenByUserIdCommandHandler implements CommandHandler<DeleteRefreshTokenByUserIdCommand, Void> {
@@ -15,10 +17,15 @@ public class DeleteRefreshTokenByUserIdCommandHandler implements CommandHandler<
     private final Mediator mediator;
 
     @Override
-    public Void handle(DeleteRefreshTokenByUserIdCommand command) throws NotFoundException {
-        var token = mediator.send(new GetRefreshTokenByUserIdQuery(command.getUserId()));
+    public Void handle(DeleteRefreshTokenByUserIdCommand command) {
+        try {
+            var token = mediator.send(new GetRefreshTokenByUserIdQuery(command.getUserId()));
 
-        refreshTokenRepository.delete(token);
+            refreshTokenRepository.delete(token);
+
+        } catch (NotFoundException e) {
+            log.warn("Refresh token not found for user with id: {}", command.getUserId());
+        }
 
         return null;
     }
