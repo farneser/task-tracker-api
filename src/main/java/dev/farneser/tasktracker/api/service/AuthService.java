@@ -1,13 +1,12 @@
 package dev.farneser.tasktracker.api.service;
 
-import dev.farneser.tasktracker.api.exceptions.InternalServerException;
-import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
-import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
-import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
+import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
+import dev.farneser.tasktracker.api.operations.commands.refreshtoken.deletebyuserid.DeleteRefreshTokenByUserIdCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
+import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final RefreshTokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final ModelMapper modelMapper;
@@ -49,7 +47,7 @@ public class AuthService {
         }
     }
 
-    public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException {
+    public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException, NotFoundException {
         var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -57,7 +55,7 @@ public class AuthService {
         return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
     }
 
-    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException {
+    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
         var userName = jwtService.extractUsername(jwtDto.getRefreshToken());
 
         var user = mediator.send(new GetUserByEmailQuery(userName));
@@ -69,16 +67,15 @@ public class AuthService {
         return new JwtDto(jwtService.generateAccessToken(user), updateRefreshToken(user));
     }
 
-    private String updateRefreshToken(User user) {
+    private String updateRefreshToken(User user) throws NotFoundException {
 
-        var token = tokenRepository.findByUser(user);
+        mediator.send(new DeleteRefreshTokenByUserIdCommand(user.getId()));
 
-        // deletion if available
-        token.ifPresent(tokenRepository::delete);
+        var tokenString = jwtService.generateRefreshToken(user);
 
-        var newToken = RefreshToken.builder().token(jwtService.generateRefreshToken(user)).user(user).build();
+        var tokenId = mediator.send(new CreateRefreshTokenCommand(tokenString, user));
 
-        tokenRepository.save(newToken);
+        var newToken = mediator.send(new GetRefreshTokenByIdQuery(tokenId));
 
         return newToken.getToken();
     }
