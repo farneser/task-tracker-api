@@ -78,6 +78,8 @@ public class AuthService {
 
         var newToken = RefreshToken.builder().token(jwtService.generateRefreshToken(user)).user(user).build();
 
+        tokenRepository.save(newToken);
+
         return newToken.getToken();
     }
 }
