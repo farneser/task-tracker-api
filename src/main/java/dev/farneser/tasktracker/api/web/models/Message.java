@@ -1,18 +1,17 @@
-package dev.farneser.tasktracker.api.models;
+package dev.farneser.tasktracker.api.web.models;
 
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class ErrorResponse {
-    private int status;
+public class Message {
     private String message;
+
+    public static Message body(String message) {
+        return new Message(message);
+    }
 
     @Override
     public String toString() {
