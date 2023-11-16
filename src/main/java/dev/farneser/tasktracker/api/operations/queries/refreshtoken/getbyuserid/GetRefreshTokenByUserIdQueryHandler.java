@@ -15,6 +15,12 @@ public class GetRefreshTokenByUserIdQueryHandler implements QueryHandler<GetRefr
 
     @Override
     public RefreshToken handle(GetRefreshTokenByUserIdQuery query) throws NotFoundException {
-        return refreshTokenRepository.findByUserId(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId()));
+        var tokens = refreshTokenRepository.findByUserId(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId()));
+
+        if (tokens.isEmpty()) {
+            throw new RefreshTokenNotFoundException(query.getId());
+        }
+
+        return tokens.get(tokens.size() - 1);
     }
 }

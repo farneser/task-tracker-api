@@ -11,7 +11,7 @@ public class DefaultMediator implements Mediator {
     private final ApplicationContext applicationContext;
 
     @Override
-    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) {
+    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException {
         if (request != null) {
             var handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", CommandHandler.class);
 
@@ -22,10 +22,10 @@ public class DefaultMediator implements Mediator {
     }
 
     @Override
-    public <T extends Query<R>, R> R send(T request) throws NotFoundException {
+    public <REQUEST extends Query<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException {
         if (request != null) {
             var handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", QueryHandler.class);
-            return (R) handler.handle(request);
+            return (RESPONSE) handler.handle(request);
         } else {
             throw new UnsupportedOperationException("Unsupported request type");
         }
