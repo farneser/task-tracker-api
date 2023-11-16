@@ -16,6 +16,9 @@ public class KanbanColumn {
     @Column(name = "column_name")
     private String columnName;
 
+    @Column(name = "is_completed")
+    private Boolean is_completed;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

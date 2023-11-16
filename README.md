@@ -1,5 +1,8 @@
 # Task Tracker API Module: Simple Kanban for Individual Productivity
 
+[![Maven build](https://github.com/farneser/task-tracker-api/actions/workflows/maven.yml/badge.svg)](https://github.com/farneser/task-tracker-api/actions/workflows/maven.yml)
+[![Docker Image build](https://github.com/farneser/task-tracker-api/actions/workflows/docker.yml/badge.svg)](https://github.com/farneser/task-tracker-api/actions/workflows/docker.yml)
+
 The Task Tracker API module, inspired by the simplicity of a Kanban system, is specifically crafted for individual users
 seeking an efficient solution for task management and productivity. This module provides a user-friendly interface
 designed to streamline personal workflows and enhance organization.
