@@ -7,7 +7,7 @@ import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
 import dev.farneser.tasktracker.api.service.AuthService;
 import dev.farneser.tasktracker.api.web.dto.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
+import dev.farneser.tasktracker.api.web.dto.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterRequest registerRequest) throws InternalServerException, UniqueDataException {
-        return ResponseEntity.ok(authService.register(registerRequest));
+    public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
+        return ResponseEntity.ok(authService.register(registerDto));
     }
 
     @PostMapping("/refresh")

@@ -4,56 +4,53 @@ import dev.farneser.tasktracker.api.exceptions.InternalServerException;
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
+import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
+import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
+import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
-import dev.farneser.tasktracker.api.repository.UserRepository;
 import dev.farneser.tasktracker.api.web.dto.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
+import dev.farneser.tasktracker.api.web.dto.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
     private final RefreshTokenRepository tokenRepository;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final ModelMapper modelMapper;
+    private final Mediator mediator;
 
-    public JwtDto register(@Valid RegisterRequest registerRequest) throws InternalServerException, UniqueDataException {
+    public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
         try {
-            var user = User
-                    .builder()
-                    .email(registerRequest.getEmail())
-                    .password(passwordEncoder.encode(registerRequest.getPassword()))
-                    .registerDate(new Date(System.currentTimeMillis()))
-                    .build();
+            var command = modelMapper.map(registerDto, RegisterUserCommand.class);
 
-            user = userRepository.save(user);
+            var userId = mediator.send(command);
+
+            var user = mediator.send(new GetUserByIdQuery(userId));
 
             return new JwtDto(jwtService.generateAccessToken(user), this.updateRefreshToken(user));
 
         } catch (DataIntegrityViolationException e) {
-            throw new UniqueDataException(registerRequest.getEmail() + " already taken");
+            throw new UniqueDataException(registerDto.getEmail() + " already taken");
         } catch (Exception e) {
-
             throw new InternalServerException(e.getMessage());
         }
     }
 
     public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException {
-        var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User with email: " + loginRequest.getEmail() + " not found"));
+        var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -63,7 +60,7 @@ public class AuthService {
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException {
         var userName = jwtService.extractUsername(jwtDto.getRefreshToken());
 
-        var user = userRepository.findByEmail(userName).orElseThrow(() -> new UsernameNotFoundException("User with email: " + userName + " not found"));
+        var user = mediator.send(new GetUserByEmailQuery(userName));
 
         if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user)) {
             throw new TokenExpiredException("Invalid token");
