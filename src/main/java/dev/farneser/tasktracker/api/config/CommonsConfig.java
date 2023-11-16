@@ -1,7 +1,11 @@
 package dev.farneser.tasktracker.api.config;
 
+import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.mediator.DefaultMediator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,5 +22,11 @@ public class CommonsConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    @Autowired
+    public Mediator mediator(ApplicationContext applicationContext) {
+        return new DefaultMediator(applicationContext);
     }
 }
