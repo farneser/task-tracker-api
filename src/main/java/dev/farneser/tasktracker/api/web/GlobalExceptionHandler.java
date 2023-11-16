@@ -2,7 +2,8 @@ package dev.farneser.tasktracker.api.web;
 
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
-import dev.farneser.tasktracker.api.models.ErrorResponse;
+import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
+import dev.farneser.tasktracker.api.web.models.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Objects;
 
 @Slf4j
 @ControllerAdvice
@@ -63,7 +62,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handler(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage());
-        return getResponseEntity(HttpStatus.BAD_REQUEST, Objects.requireNonNull(ex.getFieldError()).getDefaultMessage());
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getFieldError() != null ?
+                ex.getFieldError().getDefaultMessage() :
+                ex.getBindingResult().getGlobalErrors().get(0).getDefaultMessage()
+        );
+    }
+
+    @ExceptionHandler(UniqueDataException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handler(UniqueDataException ex) {
+        log.error(ex.getMessage());
+        return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)

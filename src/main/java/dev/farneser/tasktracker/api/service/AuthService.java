@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.InternalServerException;
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
+import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
 import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
@@ -12,6 +13,7 @@ import dev.farneser.tasktracker.api.web.dto.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +31,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public JwtDto register(@Valid RegisterRequest registerRequest) throws InternalServerException {
+    public JwtDto register(@Valid RegisterRequest registerRequest) throws InternalServerException, UniqueDataException {
         try {
             var user = User
                     .builder()
@@ -42,6 +44,8 @@ public class AuthService {
 
             return new JwtDto(jwtService.generateAccessToken(user), this.updateRefreshToken(user));
 
+        } catch (DataIntegrityViolationException e) {
+            throw new UniqueDataException(registerRequest.getEmail() + " already taken");
         } catch (Exception e) {
 
             throw new InternalServerException(e.getMessage());

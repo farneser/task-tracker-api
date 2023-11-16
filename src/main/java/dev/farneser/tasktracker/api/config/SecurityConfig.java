@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.config;
 
 import dev.farneser.tasktracker.api.web.filters.JwtAuthenticationFilter;
-import dev.farneser.tasktracker.api.models.Message;
+import dev.farneser.tasktracker.api.web.models.Message;
 import dev.farneser.tasktracker.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
