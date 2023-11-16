@@ -1,6 +1,6 @@
-package dev.farneser.tasktracker.api.annotations;
+package dev.farneser.tasktracker.api.operations.commands.user.register;
 
-import dev.farneser.tasktracker.api.validators.PasswordMatchesValidator;
+import dev.farneser.tasktracker.api.operations.commands.user.register.PasswordMatchesValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

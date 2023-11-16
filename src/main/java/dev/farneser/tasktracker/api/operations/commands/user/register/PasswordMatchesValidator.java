@@ -1,7 +1,6 @@
-package dev.farneser.tasktracker.api.validators;
+package dev.farneser.tasktracker.api.operations.commands.user.register;
 
-import dev.farneser.tasktracker.api.annotations.PasswordMatches;
-import dev.farneser.tasktracker.api.web.dto.RegisterRequest;
+import dev.farneser.tasktracker.api.web.dto.RegisterDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -12,7 +11,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
-        var user = (RegisterRequest) obj;
+        var user = (RegisterDto) obj;
         return user.getPassword().equals(user.getConfirmPassword());
     }
 }
