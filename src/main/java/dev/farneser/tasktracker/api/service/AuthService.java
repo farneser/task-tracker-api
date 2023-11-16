@@ -9,7 +9,6 @@ import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUs
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
-import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import dev.farneser.tasktracker.api.web.dto.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.RegisterDto;

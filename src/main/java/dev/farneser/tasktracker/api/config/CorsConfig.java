@@ -14,6 +14,17 @@ public class CorsConfig {
     @Value("${application.allowed.origins:http://localhost:3000, http://client:3000}")
     private String[] allowedOrigins;
 
+    public static void printCorsConfiguration(CorsConfiguration corsConfiguration) {
+        log.info("=== CORS Configuration ===");
+        log.info("Allowed Origins: " + corsConfiguration.getAllowedOrigins());
+        log.info("Allowed Methods: " + corsConfiguration.getAllowedMethods());
+        log.info("Allowed Headers: " + corsConfiguration.getAllowedHeaders());
+        log.info("Exposed Headers: " + corsConfiguration.getExposedHeaders());
+        log.info("Allow Credentials: " + corsConfiguration.getAllowCredentials());
+        log.info("Max Age: " + corsConfiguration.getMaxAge());
+        log.info("===========================");
+    }
+
     @Bean
     public CorsFilter corsFilter() {
         var source = new UrlBasedCorsConfigurationSource();
@@ -38,16 +49,5 @@ public class CorsConfig {
         printCorsConfiguration(config);
 
         return new CorsFilter(source);
-    }
-
-    public static void printCorsConfiguration(CorsConfiguration corsConfiguration) {
-        log.info("=== CORS Configuration ===");
-        log.info("Allowed Origins: " + corsConfiguration.getAllowedOrigins());
-        log.info("Allowed Methods: " + corsConfiguration.getAllowedMethods());
-        log.info("Allowed Headers: " + corsConfiguration.getAllowedHeaders());
-        log.info("Exposed Headers: " + corsConfiguration.getExposedHeaders());
-        log.info("Allow Credentials: " + corsConfiguration.getAllowCredentials());
-        log.info("Max Age: " + corsConfiguration.getMaxAge());
-        log.info("===========================");
     }
 }

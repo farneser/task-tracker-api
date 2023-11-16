@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.config;
 
-import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.mediator.DefaultMediator;
+import dev.farneser.tasktracker.api.mediator.Mediator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.getbytoken;
+package dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.RefreshTokenNotFoundException;
@@ -7,7 +7,6 @@ import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 
 @Component
 @RequiredArgsConstructor

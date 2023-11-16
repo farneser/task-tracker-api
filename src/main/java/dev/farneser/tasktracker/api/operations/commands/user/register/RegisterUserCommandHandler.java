@@ -27,7 +27,6 @@ public class RegisterUserCommandHandler implements CommandHandler<RegisterUserCo
 
         user = userRepository.save(user);
 
-
         return user.getId();
     }
 }

@@ -63,9 +63,9 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handler(MethodArgumentNotValidException ex) {
         log.error(ex.getMessage());
-        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getFieldError() != null ?
-                ex.getFieldError().getDefaultMessage() :
-                ex.getBindingResult().getGlobalErrors().get(0).getDefaultMessage()
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getFieldError() != null
+                ? ex.getFieldError().getDefaultMessage()
+                : ex.getBindingResult().getGlobalErrors().get(0).getDefaultMessage()
         );
     }
 
