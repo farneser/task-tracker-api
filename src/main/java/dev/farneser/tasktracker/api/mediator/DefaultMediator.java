@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.mediator;
 
+import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class DefaultMediator implements Mediator {
     }
 
     @Override
-    public <T extends Query<R>, R> R send(T request) {
+    public <T extends Query<R>, R> R send(T request) throws NotFoundException {
         if (request != null) {
             var handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", QueryHandler.class);
             return (R) handler.handle(request);
