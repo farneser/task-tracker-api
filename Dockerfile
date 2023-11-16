@@ -2,6 +2,8 @@ FROM maven:3.9.4 AS build
 
 LABEL authors="farneser"
 
+WORKDIR /app
+
 COPY pom.xml /app
 
 RUN mvn dependency:resolve
@@ -23,7 +25,7 @@ ENV ALLOWED_ORIGINS ${ALLOWED_ORIGINS}
 
 RUN mvn -f /app/pom.xml clean package -Dcheckstyle.skip=true -DskipTests
 
-FROM eclipse-temurin:17-jre-alpine as production
+FROM openjdk:17-jdk-slim as production
 
 COPY --from=build /app/target/task-tracker-api*.jar /usr/local/lib/task-tracker-api.jar
 
