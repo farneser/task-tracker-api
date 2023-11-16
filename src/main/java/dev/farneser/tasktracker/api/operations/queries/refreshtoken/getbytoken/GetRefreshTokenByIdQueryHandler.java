@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GetRefreshTokenByTokenQueryHandler implements QueryHandler<GetRefreshTokenByTokenQuery, RefreshToken> {
+public class GetRefreshTokenByIdQueryHandler implements QueryHandler<GetRefreshTokenByIdQuery, RefreshToken> {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public RefreshToken handle(GetRefreshTokenByTokenQuery query) throws NotFoundException {
-        return refreshTokenRepository.findByToken(query.getToken()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getToken()));
+    public RefreshToken handle(GetRefreshTokenByIdQuery query) throws NotFoundException {
+        return refreshTokenRepository.findById(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId().toString()));
     }
 }

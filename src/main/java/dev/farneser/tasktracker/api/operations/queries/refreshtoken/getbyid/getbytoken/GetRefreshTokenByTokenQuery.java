@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken;
+package dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.getbytoken;
 
 import dev.farneser.tasktracker.api.mediator.Query;
 import dev.farneser.tasktracker.api.models.RefreshToken;
