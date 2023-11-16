@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
 
+import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.dto.UserDto;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +26,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved user"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
     })
-    public ResponseEntity<UserDto> get(Authentication authentication) {
+    public ResponseEntity<UserDto> get(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(userService.getUser(authentication));
     }
 }

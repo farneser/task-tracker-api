@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.web;
 
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
+import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
 import dev.farneser.tasktracker.api.web.models.ErrorResponse;
@@ -73,6 +74,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handler(UniqueDataException ex) {
         log.error(ex.getMessage());
         return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handler(NotFoundException ex) {
+        log.error(ex.getMessage());
+        return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
