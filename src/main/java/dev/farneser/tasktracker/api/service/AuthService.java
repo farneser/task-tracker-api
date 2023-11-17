@@ -2,7 +2,6 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.deletebyuserid.DeleteRefreshTokenByUserIdCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
@@ -13,8 +12,8 @@ import dev.farneser.tasktracker.api.web.dto.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.RegisterDto;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,12 +21,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-public class AuthService {
+public class AuthService extends BaseService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final ModelMapper modelMapper;
-    private final Mediator mediator;
+
+    @Autowired
+    public AuthService(Mediator mediator, ModelMapper modelMapper, JwtService jwtService, AuthenticationManager authenticationManager) {
+        super(mediator, modelMapper);
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+    }
 
     public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
         try {
