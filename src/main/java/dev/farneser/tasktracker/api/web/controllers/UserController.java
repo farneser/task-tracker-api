@@ -3,7 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.service.UserService;
-import dev.farneser.tasktracker.api.operations.dto.UserDto;
+import dev.farneser.tasktracker.api.operations.view.UserView;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved user"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
     })
-    public ResponseEntity<UserDto> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<UserView> get(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(userService.getUser(authentication));
     }
 }
