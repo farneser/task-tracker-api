@@ -1,10 +1,13 @@
 package dev.farneser.tasktracker.api.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "columns")
 public class KanbanColumn {
 
@@ -17,9 +20,11 @@ public class KanbanColumn {
     private String columnName;
 
     @Column(name = "is_completed")
-    private Boolean is_completed;
+    private Boolean isCompleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @Column(name = "order_number")
+    private Long orderNumber;
 }
