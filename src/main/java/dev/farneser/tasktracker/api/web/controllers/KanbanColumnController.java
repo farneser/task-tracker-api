@@ -14,12 +14,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/column")
 @RequiredArgsConstructor
 public class KanbanColumnController {
     private final KanbanColumnService columnService;
+
+    @PostMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully returned a list of columns"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    public ResponseEntity<List<KanbanColumnView>> get(Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(columnService.get(authentication));
+    }
+
+    @PostMapping("{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully returned a column by id"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+    })
+    public ResponseEntity<KanbanColumnView> getById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(columnService.get(id, authentication));
+    }
 
     @PostMapping
     @ApiResponses(value = {
