@@ -3,7 +3,7 @@ package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getById;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.operations.view.KanbanColumnView;
+import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
 import dev.farneser.tasktracker.api.repository.KanbanColumnRepository;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

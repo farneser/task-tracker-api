@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.operations.view.KanbanColumnView;
+import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
 import dev.farneser.tasktracker.api.service.KanbanColumnService;
 import dev.farneser.tasktracker.api.web.dto.KanbanColumnDto;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

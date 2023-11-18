@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.view;
+package dev.farneser.tasktracker.api.operations.views;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.KanbanColumn;
