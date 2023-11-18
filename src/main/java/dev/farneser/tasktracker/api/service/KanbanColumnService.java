@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.kanbancolumn.create.CreateKanbanColumnCommand;
+import dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getById.GetKanbanColumnByIdQuery;
 import dev.farneser.tasktracker.api.operations.view.KanbanColumnView;
 import dev.farneser.tasktracker.api.web.dto.KanbanColumnDto;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +30,6 @@ public class KanbanColumnService extends BaseService {
 
         var columnId = mediator.send(command);
 
-        // FIXME: 11/17/23 return from query by id
-        
-        return null;
+        return mediator.send(new GetKanbanColumnByIdQuery(user.getId(), columnId));
     }
 }
