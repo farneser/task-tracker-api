@@ -15,6 +15,5 @@ public class KanbanColumnDto implements ITypeMapper {
         modelMapper.createTypeMap(KanbanColumnDto.class, CreateKanbanColumnCommand.class)
                 .addMapping(KanbanColumnDto::getColumnName, CreateKanbanColumnCommand::setColumnName)
                 .addMapping(KanbanColumnDto::getIsCompleted, CreateKanbanColumnCommand::setIsCompleted);
-
     }
 }
