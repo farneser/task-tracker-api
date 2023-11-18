@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -24,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class KanbanColumnController {
     private final KanbanColumnService columnService;
 
-    @GetMapping
+    @PostMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created column"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
     })
-    public ResponseEntity<KanbanColumnView> get(@RequestBody @Valid KanbanColumnDto kanbanColumnDto, Authentication authentication) throws NotFoundException {
+    public ResponseEntity<KanbanColumnView> create(@RequestBody @Valid KanbanColumnDto kanbanColumnDto, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(columnService.create(kanbanColumnDto, authentication));
     }
 }
