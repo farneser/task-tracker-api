@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GetKanbanColumnByIdQueryHandler implements QueryHandler<GetKanbanColumnByIdQuery, KanbanColumnView> {
     private final KanbanColumnRepository columnRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     @Override

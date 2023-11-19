@@ -1,11 +1,9 @@
 package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyuserid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
 import dev.farneser.tasktracker.api.repository.KanbanColumnRepository;
-import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GetKanbanColumnByUserIdQueryHandler implements QueryHandler<GetKanbanColumnByUserIdQuery, List<KanbanColumnView>> {
     private final KanbanColumnRepository columnRepository;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     @Override

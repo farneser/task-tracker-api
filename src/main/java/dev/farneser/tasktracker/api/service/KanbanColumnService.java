@@ -3,10 +3,13 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.kanbancolumn.create.CreateKanbanColumnCommand;
+import dev.farneser.tasktracker.api.operations.commands.kanbancolumn.delete.DeleteKanbanColumnCommand;
+import dev.farneser.tasktracker.api.operations.commands.kanbancolumn.patch.PatchKanbanColumnCommand;
 import dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyid.GetKanbanColumnByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyuserid.GetKanbanColumnByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
-import dev.farneser.tasktracker.api.web.dto.KanbanColumnDto;
+import dev.farneser.tasktracker.api.web.dto.kanbancolumn.CreateKanbanColumnDto;
+import dev.farneser.tasktracker.api.web.dto.kanbancolumn.PatchKanbanColumnDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,7 @@ public class KanbanColumnService extends BaseService {
         super(mediator, modelMapper);
     }
 
-    public KanbanColumnView create(KanbanColumnDto dto, Authentication authentication) throws NotFoundException {
+    public KanbanColumnView create(CreateKanbanColumnDto dto, Authentication authentication) throws NotFoundException {
 
         var user = this.getUser(authentication);
 
@@ -33,7 +36,7 @@ public class KanbanColumnService extends BaseService {
 
         var columnId = mediator.send(command);
 
-        return mediator.send(new GetKanbanColumnByIdQuery(user.getId(), columnId));
+        return get(columnId, authentication);
     }
 
     public List<KanbanColumnView> get(Authentication authentication) throws NotFoundException {
@@ -46,5 +49,24 @@ public class KanbanColumnService extends BaseService {
         var user = this.getUser(authentication);
 
         return mediator.send(new GetKanbanColumnByIdQuery(user.getId(), id));
+    }
+
+    public void delete(Long id, Authentication authentication) throws NotFoundException {
+        var user = getUser(authentication);
+
+        mediator.send(new DeleteKanbanColumnCommand(user.getId(), id));
+    }
+
+    public KanbanColumnView patch(Long id, PatchKanbanColumnDto patchKanbanColumnDto, Authentication authentication) throws NotFoundException {
+        var user = getUser(authentication);
+
+        var command = modelMapper.map(patchKanbanColumnDto, PatchKanbanColumnCommand.class);
+
+        command.setColumnId(id);
+        command.setUserId(user.getId());
+
+        mediator.send(command);
+
+        return get(id, authentication);
     }
 }

@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.operations.commands.user.register;
 
-import dev.farneser.tasktracker.api.web.dto.RegisterDto;
+import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

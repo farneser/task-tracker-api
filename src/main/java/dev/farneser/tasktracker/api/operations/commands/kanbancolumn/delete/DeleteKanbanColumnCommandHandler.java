@@ -1,15 +1,10 @@
 package dev.farneser.tasktracker.api.operations.commands.kanbancolumn.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
 import dev.farneser.tasktracker.api.repository.KanbanColumnRepository;
-import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 @Component
 @RequiredArgsConstructor
