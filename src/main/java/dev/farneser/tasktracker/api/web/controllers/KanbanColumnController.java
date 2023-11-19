@@ -23,7 +23,7 @@ import java.util.List;
 public class KanbanColumnController {
     private final KanbanColumnService columnService;
 
-    @PostMapping
+    @GetMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned a list of columns"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),

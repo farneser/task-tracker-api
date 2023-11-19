@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getByUserId;
+package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyuserid;
 
 import dev.farneser.tasktracker.api.mediator.Query;
 import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;

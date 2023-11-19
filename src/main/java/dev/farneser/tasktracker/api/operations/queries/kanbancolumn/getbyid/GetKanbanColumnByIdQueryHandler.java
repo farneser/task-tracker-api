@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getById;
+package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
