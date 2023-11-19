@@ -1,7 +1,6 @@
 package dev.farneser.tasktracker.api.operations.queries.kanbancolumn.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
 import dev.farneser.tasktracker.api.repository.KanbanColumnRepository;
@@ -19,9 +18,7 @@ public class GetKanbanColumnByIdQueryHandler implements QueryHandler<GetKanbanCo
 
     @Override
     public KanbanColumnView handle(GetKanbanColumnByIdQuery query) throws NotFoundException {
-        var user = userRepository.findById(query.getUserId()).orElseThrow(() -> new UserNotFoundException(query.getUserId()));
-
-        var column = columnRepository.findByIdAndUserId(query.getColumnId(), user.getId()).orElseThrow(() -> new NotFoundException("Kanban column with id " + query.getColumnId() + " not found"));
+        var column = columnRepository.findByIdAndUserId(query.getColumnId(), query.getUserId()).orElseThrow(() -> new NotFoundException("Kanban column with id " + query.getColumnId() + " not found"));
 
         return modelMapper.map(column, KanbanColumnView.class);
     }
