@@ -39,7 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX)) {
+        // skip if no auth or request for auth
+        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX) || request.getRequestURI().startsWith("/api/v1/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
