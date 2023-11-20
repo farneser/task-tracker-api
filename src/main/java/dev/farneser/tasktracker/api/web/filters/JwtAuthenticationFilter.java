@@ -39,7 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX)) {
+        // skip if no auth or request for auth
+        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX) || request.getRequestURI().startsWith("/api/v1/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 var user = this.userService.loadUserByUsername(email);
 
-                if (jwtService.isTokenValid(jwt, user)) {
+                if (jwtService.isTokenValid(jwt, user.getUsername())) {
                     var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

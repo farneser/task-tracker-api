@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto;
+package dev.farneser.tasktracker.api.web.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import lombok.Data;

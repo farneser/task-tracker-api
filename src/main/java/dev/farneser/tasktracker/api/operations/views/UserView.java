@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto;
+package dev.farneser.tasktracker.api.operations.views;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.User;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-public class UserDto implements ITypeMapper {
+public class UserView implements ITypeMapper {
     private long id;
     private String email;
 
     public void mapping(ModelMapper modelMapper) {
-        modelMapper.createTypeMap(User.class, UserDto.class)
-                .addMapping(User::getId, UserDto::setId)
-                .addMapping(User::getEmail, UserDto::setEmail);
+        modelMapper.createTypeMap(User.class, UserView.class)
+                .addMapping(User::getId, UserView::setId)
+                .addMapping(User::getEmail, UserView::setEmail);
 
     }
 }

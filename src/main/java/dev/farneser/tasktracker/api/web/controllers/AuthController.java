@@ -2,9 +2,9 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.service.AuthService;
-import dev.farneser.tasktracker.api.web.dto.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.RegisterDto;
+import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

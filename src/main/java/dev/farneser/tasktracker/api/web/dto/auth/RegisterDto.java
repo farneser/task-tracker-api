@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto;
+package dev.farneser.tasktracker.api.web.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

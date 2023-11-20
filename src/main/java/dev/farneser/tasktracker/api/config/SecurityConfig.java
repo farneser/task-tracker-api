@@ -6,6 +6,7 @@ import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,25 +39,30 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> {
-                            req.requestMatchers(WHITE_LIST_URL).permitAll();
 
-                            req.requestMatchers(
-                                    "/swagger-ui.html",
-                                    "/swagger-ui/**",
-                                    "/v3/api-docs",
-                                    "/v3/api-docs/swagger-config"
-                            ).permitAll();
+                    req.requestMatchers(HttpMethod.OPTIONS, WHITE_LIST_URL).permitAll();
+                    req.requestMatchers(HttpMethod.GET, WHITE_LIST_URL).permitAll();
+                    req.requestMatchers(HttpMethod.POST, WHITE_LIST_URL).permitAll();
+                    req.requestMatchers(HttpMethod.PUT, WHITE_LIST_URL).permitAll();
+                    req.requestMatchers(HttpMethod.PATCH, WHITE_LIST_URL).permitAll();
+                    req.requestMatchers(HttpMethod.DELETE, WHITE_LIST_URL).permitAll();
 
-                            req.anyRequest().authenticated();
-                        }
-                )
+                    req.requestMatchers(
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/swagger-config"
+                    ).permitAll();
+
+                    req.anyRequest().authenticated();
+                })
                 .formLogin(login -> {
                     login.successHandler(this.successAuth());
                     login.failureHandler(this.failureAuth());
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)
