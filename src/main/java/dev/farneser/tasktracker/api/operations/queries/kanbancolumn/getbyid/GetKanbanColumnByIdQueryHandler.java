@@ -4,7 +4,6 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.KanbanColumnView;
 import dev.farneser.tasktracker.api.repository.KanbanColumnRepository;
-import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
