@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface KanbanColumnRepository extends JpaRepository<KanbanColumn, Long> {
-    Optional<List<KanbanColumn>> findByUserId(Long id);
+    Optional<List<KanbanColumn>> findByUserIdOrderByOrderNumber(Long id);
 
     Optional<KanbanColumn> findByIdAndUserId(Long id, Long userId);
 }

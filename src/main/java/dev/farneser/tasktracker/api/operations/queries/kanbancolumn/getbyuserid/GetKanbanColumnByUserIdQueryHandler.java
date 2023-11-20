@@ -20,7 +20,7 @@ public class GetKanbanColumnByUserIdQueryHandler implements QueryHandler<GetKanb
 
     @Override
     public List<KanbanColumnView> handle(GetKanbanColumnByUserIdQuery query) throws NotFoundException {
-        var column = columnRepository.findByUserId(query.getUserId()).orElse(new ArrayList<>());
+        var column = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
         return column.stream().map(c -> modelMapper.map(c, KanbanColumnView.class)).collect(Collectors.toList());
     }

@@ -21,14 +21,20 @@ public class CreateKanbanColumnCommandHandler implements CommandHandler<CreateKa
     public Long handle(CreateKanbanColumnCommand command) throws NotFoundException {
         var user = userRepository.findById(command.getUserId()).orElseThrow(() -> new UserNotFoundException(command.getUserId()));
 
-        var columns = kanbanColumnRepository.findByUserId(user.getId()).orElse(new ArrayList<>());
+        var columns = kanbanColumnRepository.findByUserIdOrderByOrderNumber(user.getId()).orElse(new ArrayList<>());
+
+        var orderNumber = 1L;
+
+        if (!columns.isEmpty()) {
+            orderNumber = columns.get(columns.size() - 1).getOrderNumber() + 1;
+        }
 
         var column = KanbanColumn
                 .builder()
                 .columnName(command.getColumnName())
                 .isCompleted(command.getIsCompleted())
                 .user(user)
-                .orderNumber((long) columns.size() + 1)
+                .orderNumber(orderNumber)
                 .build();
 
         kanbanColumnRepository.save(column);
