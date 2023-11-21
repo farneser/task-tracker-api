@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchKanbanColumnCommand implements Command<KanbanColumnView> {
+public class PatchKanbanColumnCommand implements Command<Void> {
     private Long userId;
     private Long columnId;
     private String columnName;
