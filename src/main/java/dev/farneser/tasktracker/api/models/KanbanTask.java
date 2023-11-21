@@ -11,7 +11,7 @@ public class KanbanTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long taskId;
+    private Long id;
 
     @Column(name = "task_name")
     private String taskName;
@@ -26,4 +26,7 @@ public class KanbanTask {
     @ManyToOne
     @JoinColumn(name = "column_id", referencedColumnName = "id")
     private KanbanColumn column;
+
+    @Column(name = "order_number")
+    private Long orderNumber;
 }
