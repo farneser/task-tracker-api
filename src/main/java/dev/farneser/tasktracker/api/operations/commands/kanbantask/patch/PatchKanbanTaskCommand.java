@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.commands.kanbancolumn.patch;
+package dev.farneser.tasktracker.api.operations.commands.kanbantask.patch;
 
 import dev.farneser.tasktracker.api.mediator.Command;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchKanbanColumnCommand implements Command<Void> {
+public class PatchKanbanTaskCommand implements Command<Void> {
     private Long userId;
+    private Long taskId;
     private Long columnId;
-    private String columnName;
-    private Boolean isCompleted;
+    private String title;
+    private String description;
     private Long orderNumber;
 }
