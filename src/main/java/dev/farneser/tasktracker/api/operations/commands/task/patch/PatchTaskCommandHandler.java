@@ -20,29 +20,37 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
         var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
         if (command.getColumnId() != null) {
-            task.setColumn(columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found")));
+            if (command.getColumnId() == -1) {
+                task.setColumn(null);
+            } else {
+                task.setColumn(columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found")));
+            }
         }
 
         if (command.getOrderNumber() != null) {
-            var oldOrder = task.getOrderNumber();
-            var newOrder = command.getOrderNumber();
+            if (task.getColumn() != null) {
+                var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
+                long newOrder = command.getOrderNumber();
 
-            task.setOrderNumber(newOrder);
+                task.setOrderNumber(newOrder);
 
-            var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
+                var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
 
-            // FIXME: 11/22/23 fix duplicate code with patch column command handler
-            tasksToChange.forEach(t -> {
-                if (t.getId().equals(task.getId())) {
-                    return;
-                }
+                // FIXME: 11/22/23 fix duplicate code with patch column command handler
+                tasksToChange.forEach(t -> {
+                    if (t.getId().equals(task.getId())) {
+                        return;
+                    }
 
-                if (oldOrder < newOrder) {
-                    t.setOrderNumber(t.getOrderNumber() - 1);
-                } else {
-                    t.setOrderNumber(t.getOrderNumber() + 1);
-                }
-            });
+                    if (oldOrder < newOrder) {
+                        t.setOrderNumber(t.getOrderNumber() - 1);
+                    } else {
+                        t.setOrderNumber(t.getOrderNumber() + 1);
+                    }
+                });
+            } else {
+                task.setOrderNumber(null);
+            }
         }
 
         if (command.getTitle() != null) {

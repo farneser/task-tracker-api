@@ -62,7 +62,7 @@ public class TaskService extends BaseService {
 
         var command = modelMapper.map(patchTaskDto, PatchTaskCommand.class);
 
-        command.setColumnId(id);
+        command.setTaskId(id);
         command.setUserId(user.getId());
 
         mediator.send(command);
