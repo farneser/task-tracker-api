@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +21,6 @@ public class GetColumnByUserIdQueryHandler implements QueryHandler<GetColumnByUs
     public List<ColumnView> handle(GetColumnByUserIdQuery query) throws NotFoundException {
         var column = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
-        return column.stream().map(c -> modelMapper.map(c, ColumnView.class)).collect(Collectors.toList());
+        return column.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
     }
 }

@@ -9,6 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<KanbanTask, Long> {
+    Optional<List<KanbanTask>> findByUserIdOrderByOrderNumber(Long id);
+
     Optional<List<KanbanTask>> findByUserIdAndColumnIdOrderByOrderNumber(Long id, Long columnId);
 
     Optional<KanbanTask> findByIdAndUserId(Long id, Long userId);
