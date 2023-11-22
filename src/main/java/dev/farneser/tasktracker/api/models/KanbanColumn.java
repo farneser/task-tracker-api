@@ -33,6 +33,6 @@ public class KanbanColumn {
     @Column(name = "order_number")
     private Long orderNumber;
 
-    @OneToMany(mappedBy = "kanbanColumn", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
     private List<KanbanTask> tasks;
 }
