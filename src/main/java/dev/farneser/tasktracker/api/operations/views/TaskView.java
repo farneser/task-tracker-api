@@ -11,7 +11,7 @@ public class TaskView implements ITypeMapper {
     private String taskName;
     private String description;
     private Long orderNumber;
-    private Long columnId;
+    private ColumnView column;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(KanbanTask.class, TaskView.class)
@@ -19,7 +19,6 @@ public class TaskView implements ITypeMapper {
                 .addMapping(KanbanTask::getTaskName, TaskView::setTaskName)
                 .addMapping(KanbanTask::getDescription, TaskView::setDescription)
                 .addMapping(KanbanTask::getOrderNumber, TaskView::setOrderNumber)
-                // get column id if column exists, otherwise set to -1
-                .addMapping(task -> task.getColumn() != null ? task.getColumn().getId() : -1, TaskView::setColumnId);
+                .addMapping(task -> modelMapper.map(task.getColumn(), ColumnView.class), TaskView::setColumn);
     }
 }
