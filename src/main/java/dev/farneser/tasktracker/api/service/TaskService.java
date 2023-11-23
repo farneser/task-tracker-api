@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.delete.DeleteTaskCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskCommand;
+import dev.farneser.tasktracker.api.operations.queries.task.getarchived.GetArchivedTaskByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyid.GetTaskByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuserid.GetTaskByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.views.TaskView;
@@ -68,5 +69,11 @@ public class TaskService extends BaseService {
         mediator.send(command);
 
         return get(id, authentication);
+    }
+
+    public List<TaskView> getArchived(Authentication authentication) throws NotFoundException {
+        var user = getUser(authentication);
+
+        return mediator.send(new GetArchivedTaskByUserIdQuery(user.getId()));
     }
 }
