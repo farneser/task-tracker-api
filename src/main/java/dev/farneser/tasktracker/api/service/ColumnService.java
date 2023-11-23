@@ -7,7 +7,9 @@ import dev.farneser.tasktracker.api.operations.commands.column.delete.DeleteColu
 import dev.farneser.tasktracker.api.operations.commands.column.patch.PatchColumnCommand;
 import dev.farneser.tasktracker.api.operations.queries.column.getbyid.GetColumnByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.column.getbyuserid.GetColumnByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid.GetTaskByUserIdAndColumnIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
+import dev.farneser.tasktracker.api.operations.views.TaskView;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
 import lombok.extern.slf4j.Slf4j;
@@ -68,5 +70,11 @@ public class ColumnService extends BaseService {
         mediator.send(command);
 
         return get(id, authentication);
+    }
+
+    public List<TaskView> getTasks(Long id, Authentication authentication) throws NotFoundException {
+        var user = getUser(authentication);
+
+        return mediator.send(new GetTaskByUserIdAndColumnIdQuery(user.getId(), id));
     }
 }
