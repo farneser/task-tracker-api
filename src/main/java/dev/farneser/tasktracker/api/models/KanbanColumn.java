@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Entity
 @Builder
@@ -30,4 +32,7 @@ public class KanbanColumn {
     private User user;
     @Column(name = "order_number")
     private Long orderNumber;
+
+    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
+    private List<KanbanTask> tasks;
 }
