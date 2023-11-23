@@ -34,6 +34,15 @@ public class TaskController {
         return ResponseEntity.ok(taskService.get(authentication));
     }
 
+    @GetMapping("archived")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully returned a list of archived tasks"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<List<TaskView>> getArchived(Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(taskService.getArchived(authentication));
+    }
+
     @PostMapping
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created task"),
