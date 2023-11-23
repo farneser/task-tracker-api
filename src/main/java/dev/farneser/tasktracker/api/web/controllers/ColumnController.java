@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
+import dev.farneser.tasktracker.api.operations.views.TaskView;
 import dev.farneser.tasktracker.api.service.ColumnService;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
@@ -50,6 +51,15 @@ public class ColumnController {
     })
     public ResponseEntity<ColumnView> getById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(columnService.get(id, authentication));
+    }
+
+    @GetMapping("{id}/tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully returned a list of tasks by column by id"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    public ResponseEntity<List<TaskView>> getTasksById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(columnService.getTasks(id, authentication));
     }
 
     @PatchMapping("{id}")
