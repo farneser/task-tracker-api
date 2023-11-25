@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUs
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
+import dev.farneser.tasktracker.api.service.messages.MessageService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
@@ -24,12 +25,14 @@ import org.springframework.stereotype.Service;
 public class AuthService extends BaseService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final MessageService messageService;
 
     @Autowired
-    public AuthService(Mediator mediator, ModelMapper modelMapper, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthService(Mediator mediator, ModelMapper modelMapper, JwtService jwtService, AuthenticationManager authenticationManager, MessageService messageService) {
         super(mediator, modelMapper);
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.messageService = messageService;
     }
 
     public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
@@ -40,7 +43,11 @@ public class AuthService extends BaseService {
 
             var user = mediator.send(new GetUserByIdQuery(userId));
 
-            return new JwtDto(jwtService.generateAccessToken(user.getEmail()), this.updateRefreshToken(user.getEmail()));
+            var jwt = new JwtDto(jwtService.generateAccessToken(user.getEmail()), this.updateRefreshToken(user.getEmail()));
+
+            messageService.sendRegisterMessage(user.getEmail());
+
+            return jwt;
 
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
