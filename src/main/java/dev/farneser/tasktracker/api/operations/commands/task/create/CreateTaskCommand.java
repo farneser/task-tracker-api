@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class CreateTaskCommand implements Command<Long> {
     private Long userId;
     private Long columnId;
-    private String title;
+    private String taskName;
     private String description;
 }

@@ -309,7 +309,7 @@ request body:
 ```json
 {
   "columnId": 0,
-  "title": "string",
+  "taskName": "string",
   "description": "string"
 }
 ```

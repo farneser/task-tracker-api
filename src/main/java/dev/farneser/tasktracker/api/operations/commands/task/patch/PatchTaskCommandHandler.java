@@ -53,8 +53,8 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
             }
         }
 
-        if (command.getTitle() != null) {
-            task.setTaskName(command.getTitle());
+        if (command.getTaskName() != null) {
+            task.setTaskName(command.getTaskName());
         }
 
         if (command.getDescription() != null) {

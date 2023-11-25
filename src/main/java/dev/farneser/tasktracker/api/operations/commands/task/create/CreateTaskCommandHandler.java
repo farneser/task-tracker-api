@@ -23,7 +23,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
         }
 
         var task = KanbanTask.builder()
-                .taskName(command.getTitle())
+                .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
                 .column(column)

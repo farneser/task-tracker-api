@@ -12,7 +12,7 @@ public class PatchTaskCommand implements Command<Void> {
     private Long userId;
     private Long taskId;
     private Long columnId;
-    private String title;
+    private String taskName;
     private String description;
     private Long orderNumber;
 }

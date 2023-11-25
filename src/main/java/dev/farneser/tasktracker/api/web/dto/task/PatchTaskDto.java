@@ -15,7 +15,7 @@ public class PatchTaskDto implements ITypeMapper {
     @Override
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(PatchTaskDto.class, PatchTaskCommand.class)
-                .addMapping(PatchTaskDto::getTaskName, PatchTaskCommand::setTitle)
+                .addMapping(PatchTaskDto::getTaskName, PatchTaskCommand::setTaskName)
                 .addMapping(PatchTaskDto::getDescription, PatchTaskCommand::setDescription)
                 .addMapping(PatchTaskDto::getColumnId, PatchTaskCommand::setColumnId)
                 .addMapping(PatchTaskDto::getOrderNumber, PatchTaskCommand::setOrderNumber);

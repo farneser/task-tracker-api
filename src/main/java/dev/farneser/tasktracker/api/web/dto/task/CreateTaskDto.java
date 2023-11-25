@@ -8,14 +8,14 @@ import org.modelmapper.ModelMapper;
 @Data
 public class CreateTaskDto implements ITypeMapper {
     private Long columnId;
-    private String title;
+    private String taskName;
     private String description;
 
     @Override
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(CreateTaskDto.class, CreateTaskCommand.class)
                 .addMapping(CreateTaskDto::getColumnId, CreateTaskCommand::setColumnId)
-                .addMapping(CreateTaskDto::getTitle, CreateTaskCommand::setTitle)
+                .addMapping(CreateTaskDto::getTaskName, CreateTaskCommand::setTaskName)
                 .addMapping(CreateTaskDto::getDescription, CreateTaskCommand::setDescription);
     }
 }
