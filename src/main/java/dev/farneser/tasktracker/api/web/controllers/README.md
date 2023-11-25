@@ -5,7 +5,9 @@ Additionally, the task implies an improvement in skills related to independent p
 
 # Endpoints
 
-## /api/v1/auth
+## Auth
+
+### /api/v1/auth
 
 `POST`
 
@@ -30,7 +32,7 @@ response body:
 }
 ```
 
-## /api/v1/auth/register
+### /api/v1/auth/register
 
 `POST`
 
@@ -56,7 +58,7 @@ response body:
 }
 ```
 
-## /api/v1/auth/refresh
+### /api/v1/auth/refresh
 
 `POST`
 
@@ -81,7 +83,9 @@ response body:
 }
 ```
 
-## /api/v1/user
+## Users
+
+### /api/v1/user
 
 `GET`
 
@@ -95,4 +99,338 @@ response body
   "id": "number",
   "email": "string"
 }
+```
+
+## Columns
+
+### /api/v1/column
+
+`GET`
+
+This endpoint is used to retrieve columns based on a valid access token. Clients can make a GET request to obtain
+details about the columns.
+
+response body
+
+```json
+[
+  {
+    "id": 0,
+    "columnName": "string",
+    "isCompleted": true,
+    "orderNumber": 0,
+    "tasks": [
+      {
+        "id": 0,
+        "taskName": "string",
+        "description": "string",
+        "orderNumber": 0,
+        "column": "string"
+      }
+    ]
+  }
+]
+```
+
+`POST`
+
+This endpoint is used to create a new column based on a valid access token. Clients can make a POST request to create a
+new column.
+
+request body:
+
+```json
+{
+  "columnName": "string",
+  "isCompleted": true
+}
+```
+
+response body:
+
+```json
+{
+  "id": 0,
+  "columnName": "string",
+  "isCompleted": true,
+  "orderNumber": 0,
+  "tasks": [
+    {
+      "id": 0,
+      "taskName": "string",
+      "description": "string",
+      "orderNumber": 0,
+      "column": "string"
+    }
+  ]
+}
+```
+
+### /api/v1/column/{id}
+
+`GET`
+
+This endpoint is used to retrieve a column based on a valid access token and column id. Clients can make a GET request
+to obtain details about the column.
+
+response body
+
+```json
+{
+  "id": 0,
+  "columnName": "string",
+  "isCompleted": true,
+  "orderNumber": 0,
+  "tasks": [
+    {
+      "id": 0,
+      "taskName": "string",
+      "description": "string",
+      "orderNumber": 0,
+      "column": "string"
+    }
+  ]
+}
+```
+
+`DELETE`
+
+This endpoint is used to delete a column based on a valid access token and column id. Clients can make a DELETE request
+to delete the column.
+
+response body
+
+```json
+{
+  "message": "string"
+}
+```
+
+`PATCH`
+
+This endpoint is used to update a column based on a valid access token and column id. Clients can make a PATCH request
+to update the column.
+
+request body:
+
+```json
+{
+  "columnName": "string",
+  "isCompleted": true,
+  "orderNumber": 0
+}
+```
+
+response body
+
+```json
+{
+  "id": 0,
+  "columnName": "string",
+  "isCompleted": true,
+  "orderNumber": 0,
+  "tasks": [
+    {
+      "id": 0,
+      "taskName": "string",
+      "description": "string",
+      "orderNumber": 0,
+      "column": "string"
+    }
+  ]
+}
+```
+
+### /api/v1/column/{id}/tasks
+
+`GET`
+
+This endpoint is used to retrieve tasks based on a valid access token and column id. Clients can make a GET request to
+obtain details about the tasks.
+
+response body
+
+```json
+[
+  {
+    "id": 0,
+    "taskName": "string",
+    "description": "string",
+    "orderNumber": 0,
+    "column": {
+      "id": 0,
+      "columnName": "string",
+      "isCompleted": true,
+      "orderNumber": 0,
+      "tasks": [
+        "string"
+      ]
+    }
+  }
+]
+```
+
+## Tasks
+
+### /api/v1/task
+
+`GET`
+
+This endpoint is used to retrieve tasks based on a valid access token. Clients can make a GET request to obtain details about the tasks.
+
+response body
+
+```json
+[
+  {
+    "id": 0,
+    "taskName": "string",
+    "description": "string",
+    "orderNumber": 0,
+    "column": {
+      "id": 0,
+      "columnName": "string",
+      "isCompleted": true,
+      "orderNumber": 0,
+      "tasks": [
+        "string"
+      ]
+    }
+  }
+]
+```
+
+`POST`
+
+This endpoint is used to create a new task based on a valid access token. Clients can make a POST request to create a new task. 
+
+request body:
+
+```json
+{
+  "columnId": 0,
+  "title": "string",
+  "description": "string"
+}
+```
+
+response body:
+
+```json
+{
+  "id": 0,
+  "taskName": "string",
+  "description": "string",
+  "orderNumber": 0,
+  "column": {
+    "id": 0,
+    "columnName": "string",
+    "isCompleted": true,
+    "orderNumber": 0,
+    "tasks": [
+      "string"
+    ]
+  }
+}
+```
+
+### /api/v1/task/{id}
+
+`GET`
+
+This endpoint is used to retrieve a task based on a valid access token and task id. Clients can make a GET request to obtain details about the task. 
+
+response body
+
+```json
+{
+  "id": 0,
+  "taskName": "string",
+  "description": "string",
+  "orderNumber": 0,
+  "column": {
+    "id": 0,
+    "columnName": "string",
+    "isCompleted": true,
+    "orderNumber": 0,
+    "tasks": [
+      "string"
+    ]
+  }
+}
+```
+
+`DELETE`
+
+This endpoint is used to delete a task based on a valid access token and task id. Clients can make a DELETE request to delete the task.
+
+response body
+
+```json
+{
+  "message": "string"
+}
+```
+
+`PATCH`
+
+This endpoint is used to update a task based on a valid access token and task id. Clients can make a PATCH request to update the task.
+
+request body:
+
+```json
+{
+  "columnId": 0,
+  "taskName": "string",
+  "description": "string",
+  "orderNumber": 0
+}
+```
+
+response body
+
+```json
+{
+  "id": 0,
+  "taskName": "string",
+  "description": "string",
+  "orderNumber": 0,
+  "column": {
+    "id": 0,
+    "columnName": "string",
+    "isCompleted": true,
+    "orderNumber": 0,
+    "tasks": [
+      "string"
+    ]
+  }
+}
+```
+
+## /api/v1/task/archived
+
+`GET`
+
+This endpoint is used to retrieve archived tasks based on a valid access token. Clients can make a GET request to obtain details about the archived tasks.
+
+response body
+
+```json
+[
+  {
+    "id": 0,
+    "taskName": "string",
+    "description": "string",
+    "orderNumber": 0,
+    "column": {
+      "id": 0,
+      "columnName": "string",
+      "isCompleted": true,
+      "orderNumber": 0,
+      "tasks": [
+        "string"
+      ]
+    }
+  }
+]
 ```

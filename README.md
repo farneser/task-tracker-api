@@ -78,3 +78,7 @@ The relational database design is illustrated in the diagram below:
 | SERVER_PORT       | `8080`                                      | Tomcat server port                   | 
 | LOGGING_LEVEL     | `INFO`                                      | Console logging level                | 
 | ALLOWED_ORIGINS   | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)       | 
+| RABBITMQ_HOST     | `localhost`                                 | RabbitMQ host url                    | 
+| RABBITMQ_PORT     | `5672`                                      | RabbitMQ host port                   | 
+| RABBITMQ_USERNAME | `rabbitmq`                                  | RabbitMQ username                    | 
+| RABBITMQ_PASSWORD | `rabbitmq`                                  | RabbitMQ password                    | 
