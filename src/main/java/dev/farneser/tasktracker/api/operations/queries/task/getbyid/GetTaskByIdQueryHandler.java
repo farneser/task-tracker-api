@@ -2,9 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.task.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.operations.views.ColumnView;
 import dev.farneser.tasktracker.api.operations.views.TaskView;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
