@@ -21,6 +21,10 @@ public class GetTaskByUserIdQueryHandler implements QueryHandler<GetTaskByUserId
     public List<TaskView> handle(GetTaskByUserIdQuery query) throws NotFoundException {
         var tasks = taskRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
-        return tasks.stream().map(task -> modelMapper.map(task, TaskView.class)).toList();
+        var view = tasks.stream().map(task -> modelMapper.map(task, TaskView.class)).toList();
+
+        view.forEach(task -> task.getColumn().getTasks().forEach(t -> t.setColumn(null)));
+
+        return view;
     }
 }
