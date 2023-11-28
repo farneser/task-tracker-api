@@ -9,6 +9,16 @@
       "name": "application.allowed.origins",
       "type": "java.lang.String",
       "description": "The list of allowed client origins."
+    },
+    {
+      "name": "jwt.expiration.access",
+      "type": "java.lang.Long",
+      "description": "The expiration time of the access token."
+    },
+    {
+      "name": "jwt.expiration.refresh",
+      "type": "java.lang.Long",
+      "description": "The expiration time of the refresh token."
     }
   ]
 }

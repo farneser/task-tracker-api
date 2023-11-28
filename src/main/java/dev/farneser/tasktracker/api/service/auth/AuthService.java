@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.deletebyuserid.DeleteRefreshTokenByUserIdCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
+import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
@@ -66,7 +67,9 @@ public class AuthService extends BaseService {
     }
 
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
-        var userName = jwtService.extractUsername(jwtDto.getRefreshToken());
+        var refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
+
+        var userName = jwtService.extractUsername(refreshToken.getToken());
 
         var user = mediator.send(new GetUserByEmailQuery(userName));
 
