@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -29,12 +30,16 @@ public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCo
             orderNumber = columns.get(columns.size() - 1).getOrderNumber() + 1;
         }
 
+        var creationDate = new Date(System.currentTimeMillis());
+
         var column = KanbanColumn
                 .builder()
                 .columnName(command.getColumnName())
                 .isCompleted(command.getIsCompleted())
                 .user(user)
                 .orderNumber(orderNumber)
+                .creatiionDate(creationDate)
+                .editDate(creationDate)
                 .build();
 
         columnRepository.save(column);
