@@ -13,13 +13,15 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Component
 public class UserView implements ITypeMapper {
-    private long id;
+    private Long id;
     private String email;
+    private Boolean isSubscribed;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(User.class, UserView.class)
                 .addMapping(User::getId, UserView::setId)
-                .addMapping(User::getEmail, UserView::setEmail);
+                .addMapping(User::getEmail, UserView::setEmail)
+                .addMapping(User::isSubscribed, UserView::setIsSubscribed);
 
     }
 }
