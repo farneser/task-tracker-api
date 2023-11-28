@@ -22,15 +22,18 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // FIXME: 11/10/23 get time via env
-    // 1000 * 60 * 2 equals two minutes of token lifetime
-    private static final long JWT_EXPIRATION_MS = 1000 * 60 * 2;
+    // 120000 equals two minutes of token lifetime
+    @Value("${jwt.expiration.access:120000}")
+    private long accessTokenExpiration;
 
-    // 1000 * 3600 * 24 * 14 equals two weeks of token lifetime
-    private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000 * 3600 * 24 * 14;
-    private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
+    // 1209600000 equals two weeks of token lifetime
+    @Value("${jwt.expiration.refresh:1209600000}")
+    private long refreshTokenExpiration;
+
     @Value("${jwt.secret}")
     private String secretKey;
+
+    private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
 
     /**
      * Generates a JWT for the provided UserDetails.
@@ -39,7 +42,7 @@ public class JwtService {
      * @return A JWT as a String.
      */
     public String generateAccessToken(String email) {
-        return this.generateToken(new HashMap<>(), new HashMap<>(), email, JWT_EXPIRATION_MS);
+        return this.generateToken(new HashMap<>(), new HashMap<>(), email, accessTokenExpiration);
     }
 
     /**
@@ -53,7 +56,7 @@ public class JwtService {
 
         headers.put(REFRESH_TOKEN_HEADER, true);
 
-        return this.generateToken(new HashMap<>(), headers, email, REFRESH_TOKEN_EXPIRATION_MS);
+        return this.generateToken(new HashMap<>(), headers, email, refreshTokenExpiration);
     }
 
     /**
@@ -142,10 +145,7 @@ public class JwtService {
      * @return The value of the specified header if present and of the expected type, otherwise null.
      */
     public <T> T getHeader(String token, String headerKey, Class<T> headerValueType) {
-        var claimsJws = Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token);
+        var claimsJws = Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
 
         var header = claimsJws.getHeader().get(headerKey);
 
@@ -191,12 +191,7 @@ public class JwtService {
      */
     private Claims extractClaims(String token) throws TokenExpiredException, InvalidTokenException {
         try {
-            return Jwts
-                    .parserBuilder()
-                    .setSigningKey(getSignInKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+            return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             log.info(e.getMessage());
 
