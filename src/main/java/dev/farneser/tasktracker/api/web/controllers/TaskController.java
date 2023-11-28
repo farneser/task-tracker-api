@@ -63,7 +63,7 @@ public class TaskController {
 
     @PatchMapping("{id}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted a task by id"),
+            @ApiResponse(responseCode = "200", description = "Successfully patched a task by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<TaskView> patchById(@PathVariable Long id, @RequestBody @Valid PatchTaskDto patchTaskDto, Authentication authentication) throws NotFoundException {

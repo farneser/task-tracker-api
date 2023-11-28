@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -35,4 +36,12 @@ public class KanbanColumn {
 
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
     private List<KanbanTask> tasks;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date", nullable = false)
+    private Date creatiionDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "edit_date", nullable = false)
+    private Date editDate;
 }

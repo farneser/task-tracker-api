@@ -18,6 +18,10 @@ public class GetColumnByIdQueryHandler implements QueryHandler<GetColumnByIdQuer
     public ColumnView handle(GetColumnByIdQuery query) throws NotFoundException {
         var column = columnRepository.findByIdAndUserId(query.getColumnId(), query.getUserId()).orElseThrow(() -> new NotFoundException("Kanban column with id " + query.getColumnId() + " not found"));
 
-        return modelMapper.map(column, ColumnView.class);
+        var view = modelMapper.map(column, ColumnView.class);
+
+        view.getTasks().forEach(task -> task.setColumn(null));
+
+        return view;
     }
 }

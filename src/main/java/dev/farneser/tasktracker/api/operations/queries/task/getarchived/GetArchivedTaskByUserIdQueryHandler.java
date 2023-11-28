@@ -29,6 +29,8 @@ public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArch
             }
         });
 
+        result.forEach(task -> task.getColumn().getTasks().forEach(t -> t.setColumn(null)));
+
         return result;
     }
 }

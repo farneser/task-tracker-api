@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.service;
+package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.Mediator;

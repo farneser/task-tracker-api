@@ -21,6 +21,10 @@ public class GetColumnByUserIdQueryHandler implements QueryHandler<GetColumnByUs
     public List<ColumnView> handle(GetColumnByUserIdQuery query) throws NotFoundException {
         var column = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
-        return column.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
+        var view = column.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
+
+        view.forEach(c -> c.getTasks().forEach(task -> task.setColumn(null)));
+
+        return view;
     }
 }

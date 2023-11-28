@@ -7,6 +7,8 @@ import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class CreateTaskCommandHandler implements CommandHandler<CreateTaskCommand, Long> {
@@ -22,12 +24,16 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
             orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
         }
 
+        var creationDate = new Date(System.currentTimeMillis());
+
         var task = KanbanTask.builder()
                 .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
                 .column(column)
                 .user(column.getUser())
+                .creatiionDate(creationDate)
+                .editDate(creationDate)
                 .build();
 
         column.getTasks().add(task);

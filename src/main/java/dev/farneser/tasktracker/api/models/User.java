@@ -31,6 +31,9 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "is_subscribed", nullable = false)
+    private boolean isSubscribed;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "register_date", nullable = false)
     private Date registerDate;
