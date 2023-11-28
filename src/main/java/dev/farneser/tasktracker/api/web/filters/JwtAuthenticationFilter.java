@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.web.filters;
 
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
-import dev.farneser.tasktracker.api.service.JwtService;
+import dev.farneser.tasktracker.api.service.auth.JwtService;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.ApiStatus;
 import dev.farneser.tasktracker.api.web.models.ErrorResponse;

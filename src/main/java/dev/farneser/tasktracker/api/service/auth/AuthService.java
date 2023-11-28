@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.service;
+package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUs
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
+import dev.farneser.tasktracker.api.service.BaseService;
 import dev.farneser.tasktracker.api.service.messages.MessageService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
