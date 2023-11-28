@@ -97,7 +97,8 @@ response body
 ```json
 {
   "id": "number",
-  "email": "string"
+  "email": "string",
+  "registrationDate": "string"
 }
 ```
 
@@ -119,13 +120,17 @@ response body
     "columnName": "string",
     "isCompleted": true,
     "orderNumber": 0,
+    "creationDate": "string",
+    "editDate": "string",
     "tasks": [
       {
         "id": 0,
         "taskName": "string",
         "description": "string",
         "orderNumber": 0,
-        "column": "string"
+        "column": null,
+        "creationDate": "string",
+        "editDate": "string"
       }
     ]
   }
@@ -154,13 +159,17 @@ response body:
   "columnName": "string",
   "isCompleted": true,
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "tasks": [
     {
       "id": 0,
       "taskName": "string",
       "description": "string",
       "orderNumber": 0,
-      "column": "string"
+      "creationDate": "string",
+      "editDate": "string",
+      "column": null
     }
   ]
 }
@@ -181,13 +190,17 @@ response body
   "columnName": "string",
   "isCompleted": true,
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "tasks": [
     {
       "id": 0,
       "taskName": "string",
       "description": "string",
       "orderNumber": 0,
-      "column": "string"
+      "column": null,
+      "creationDate": "string",
+      "editDate": "string"
     }
   ]
 }
@@ -229,13 +242,17 @@ response body
   "columnName": "string",
   "isCompleted": true,
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "tasks": [
     {
       "id": 0,
       "taskName": "string",
       "description": "string",
       "orderNumber": 0,
-      "column": "string"
+      "column": null,
+      "creationDate": "string",
+      "editDate": "string"
     }
   ]
 }
@@ -257,15 +274,9 @@ response body
     "taskName": "string",
     "description": "string",
     "orderNumber": 0,
-    "column": {
-      "id": 0,
-      "columnName": "string",
-      "isCompleted": true,
-      "orderNumber": 0,
-      "tasks": [
-        "string"
-      ]
-    }
+    "creationDate": "string",
+    "editDate": "string",
+    "column": null
   }
 ]
 ```
@@ -287,14 +298,16 @@ response body
     "taskName": "string",
     "description": "string",
     "orderNumber": 0,
+    "creationDate": "string",
+    "editDate": "string",
     "column": {
       "id": 0,
       "columnName": "string",
       "isCompleted": true,
       "orderNumber": 0,
-      "tasks": [
-        "string"
-      ]
+      "creationDate": "string",
+      "editDate": "string",
+      "tasks": null
     }
   }
 ]
@@ -322,14 +335,14 @@ response body:
   "taskName": "string",
   "description": "string",
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "column": {
     "id": 0,
     "columnName": "string",
     "isCompleted": true,
     "orderNumber": 0,
-    "tasks": [
-      "string"
-    ]
+    "tasks": null
   }
 }
 ```
@@ -348,14 +361,16 @@ response body
   "taskName": "string",
   "description": "string",
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "column": {
     "id": 0,
     "columnName": "string",
     "isCompleted": true,
     "orderNumber": 0,
-    "tasks": [
-      "string"
-    ]
+    "creationDate": "string",
+    "editDate": "string",
+    "tasks": null
   }
 }
 ```
@@ -395,14 +410,16 @@ response body
   "taskName": "string",
   "description": "string",
   "orderNumber": 0,
+  "creationDate": "string",
+  "editDate": "string",
   "column": {
     "id": 0,
     "columnName": "string",
     "isCompleted": true,
     "orderNumber": 0,
-    "tasks": [
-      "string"
-    ]
+    "creationDate": "string",
+    "editDate": "string",
+    "tasks": null
   }
 }
 ```
@@ -422,14 +439,16 @@ response body
     "taskName": "string",
     "description": "string",
     "orderNumber": 0,
+    "creationDate": "string",
+    "editDate": "string",
     "column": {
       "id": 0,
       "columnName": "string",
       "isCompleted": true,
       "orderNumber": 0,
-      "tasks": [
-        "string"
-      ]
+      "creationDate": "string",
+      "editDate": "string",
+      "tasks": null
     }
   }
 ]
