@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Entity
 @Builder
@@ -35,4 +37,12 @@ public class KanbanTask {
 
     @Column(name = "order_number")
     private Long orderNumber;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date", nullable = false)
+    private Date creatiionDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "edit_date", nullable = false)
+    private Date editDate;
 }

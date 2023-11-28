@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +18,13 @@ public class UserView implements ITypeMapper {
     private Long id;
     private String email;
     private Boolean isSubscribed;
+    private Date registrationDate;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(User.class, UserView.class)
                 .addMapping(User::getId, UserView::setId)
                 .addMapping(User::getEmail, UserView::setEmail)
+                .addMapping(User::getRegisterDate, UserView::setRegistrationDate)
                 .addMapping(User::isSubscribed, UserView::setIsSubscribed);
 
     }
