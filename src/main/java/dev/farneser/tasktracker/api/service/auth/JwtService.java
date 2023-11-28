@@ -24,11 +24,11 @@ public class JwtService {
 
     // 120000 equals two minutes of token lifetime
     @Value("${jwt.expiration.access:120000}")
-    private long accessTokenExpiration;
+    private Long accessTokenExpiration;
 
     // 1209600000 equals two weeks of token lifetime
     @Value("${jwt.expiration.refresh:1209600000}")
-    private long refreshTokenExpiration;
+    private Long refreshTokenExpiration;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -66,7 +66,7 @@ public class JwtService {
      * @param email  The user email address.
      * @return A JWT as a String with specified custom claims.
      */
-    public String generateToken(Map<String, Object> claims, Map<String, Object> headers, String email, long expiration) {
+    public String generateToken(Map<String, Object> claims, Map<String, Object> headers, String email, Long expiration) {
         return Jwts
                 .builder()
                 .setClaims(claims)

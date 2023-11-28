@@ -66,19 +66,51 @@ The relational database design is illustrated in the diagram below:
 
 ## Environment
 
-| Parameter         | Default value                               | Description                          |
-|-------------------|---------------------------------------------|--------------------------------------|
-| POSTGRES_HOST     | `localhost`                                 | IP address of the Postgres DB server |
-| POSTGRES_PORT     | `5432`                                      | Port of the Postgres DB server       |
-| POSTGRES_DB       | `task-tracker`                              | Postgres database name               |
-| POSTGRES_USERNAME | `postgres`                                  | Postgres username                    |
-| POSTGRES_PASSWORD | `postgres`                                  | Postgres password                    |
-| JWT_SECRET        |                                             | JSON Web Token secret encoder        | 
-| USE_SWAGGER       | `true`                                      | Use Swagger UI                       | 
-| SERVER_PORT       | `8080`                                      | Tomcat server port                   | 
-| LOGGING_LEVEL     | `INFO`                                      | Console logging level                | 
-| ALLOWED_ORIGINS   | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)       | 
-| RABBITMQ_HOST     | `localhost`                                 | RabbitMQ host url                    | 
-| RABBITMQ_PORT     | `5672`                                      | RabbitMQ host port                   | 
-| RABBITMQ_USERNAME | `rabbitmq`                                  | RabbitMQ username                    | 
-| RABBITMQ_PASSWORD | `rabbitmq`                                  | RabbitMQ password                    | 
+| Parameter              | Default value                               | Description                                 |
+|------------------------|---------------------------------------------|---------------------------------------------|
+| POSTGRES_HOST          | `localhost`                                 | IP address of the Postgres DB server        |
+| POSTGRES_PORT          | `5432`                                      | Port of the Postgres DB server              |
+| POSTGRES_DB            | `task-tracker`                              | Postgres database name                      |
+| POSTGRES_USERNAME      | `postgres`                                  | Postgres username                           |
+| POSTGRES_PASSWORD      | `postgres`                                  | Postgres password                           |
+| JWT_SECRET             |                                             | JSON Web Token secret encoder (256-bit key) | 
+| JWT_EXPIRATION_ACCESS  | `120000`                                    | Access token lifetime (2 min by default)    | 
+| JWT_EXPIRATION_REFRESH | `1209600000`                                | Refresh token lifetime (14 days by default) | 
+| USE_SWAGGER            | `true`                                      | Use Swagger UI                              | 
+| SERVER_PORT            | `8080`                                      | Tomcat server port                          | 
+| LOGGING_LEVEL          | `INFO`                                      | Console logging level                       | 
+| ALLOWED_ORIGINS        | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)              | 
+| RABBITMQ_HOST          | `localhost`                                 | RabbitMQ host url                           | 
+| RABBITMQ_PORT          | `5672`                                      | RabbitMQ host port                          | 
+| RABBITMQ_USERNAME      | `rabbitmq`                                  | RabbitMQ username                           | 
+| RABBITMQ_PASSWORD      | `rabbitmq`                                  | RabbitMQ password                           | 
+
+## Docker Compose
+
+Example of docker-compose task-tracker-api service:
+
+```yaml
+version: '3'
+
+services:
+  api:
+    image: farneser/task-tracker-api:latest
+    container_name: api-container
+    environment:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: task-tracker
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      JWT_SECRET: F40BB648F9CA2303F6878ACD7CF446A28845426C508BF3CBC06740AD892D7B9B # example 256-bit key
+      JWT_EXPIRATION_ACCESS: 120000
+      JWT_EXPIRATION_REFRESH: 1209600000
+      USE_SWAGGER: true
+      SERVER_PORT: 8080
+      LOGGING_LEVEL: INFO
+      ALLOWED_ORIGINS: http://localhost:3000, http://client:3000
+      RABBITMQ_HOST: localhost
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: rabbitmq
+      RABBITMQ_PASSWORD: rabbitmq
+```
