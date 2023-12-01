@@ -60,30 +60,62 @@ The relational database design is illustrated in the diagram below:
 
 ## Build
 
+## Install
+
 ```bash
 ./mvnw clean install
 ```
 
+## Run tests
+
+```bash
+./mvnw clean test
+```
+
+## Run
+
+```bash
+./mvnw clean spring-boot:run
+```
+
+## Run jar
+
+```bash
+java -jar target/task-tracker-api-1.0.0.jar
+```
+
 ## Environment
 
-| Parameter              | Default value                               | Description                                 |
-|------------------------|---------------------------------------------|---------------------------------------------|
-| POSTGRES_HOST          | `localhost`                                 | IP address of the Postgres DB server        |
-| POSTGRES_PORT          | `5432`                                      | Port of the Postgres DB server              |
-| POSTGRES_DB            | `task-tracker`                              | Postgres database name                      |
-| POSTGRES_USERNAME      | `postgres`                                  | Postgres username                           |
-| POSTGRES_PASSWORD      | `postgres`                                  | Postgres password                           |
-| JWT_SECRET             |                                             | JSON Web Token secret encoder (256-bit key) | 
-| JWT_EXPIRATION_ACCESS  | `120000`                                    | Access token lifetime (2 min by default)    | 
-| JWT_EXPIRATION_REFRESH | `1209600000`                                | Refresh token lifetime (14 days by default) | 
-| USE_SWAGGER            | `true`                                      | Use Swagger UI                              | 
-| SERVER_PORT            | `8080`                                      | Tomcat server port                          | 
-| LOGGING_LEVEL          | `INFO`                                      | Console logging level                       | 
-| ALLOWED_ORIGINS        | `http://localhost:3000, http://client:3000` | Allowed clients of api (array)              | 
-| RABBITMQ_HOST          | `localhost`                                 | RabbitMQ host url                           | 
-| RABBITMQ_PORT          | `5672`                                      | RabbitMQ host port                          | 
-| RABBITMQ_USERNAME      | `rabbitmq`                                  | RabbitMQ username                           | 
-| RABBITMQ_PASSWORD      | `rabbitmq`                                  | RabbitMQ password                           | 
+### Application
+
+| Parameter              | Default value                               | Description                                                                 |
+|------------------------|---------------------------------------------|-----------------------------------------------------------------------------|
+| JWT_SECRET             |                                             | Secret key for JSON Web Token (JWT) authentication                          |
+| JWT_EXPIRATION_ACCESS  | `120000`                                    | Expiration time for access JWT tokens (in milliseconds) 2 min by default    |
+| JWT_EXPIRATION_REFRESH | `1209600000`                                | Expiration time for refresh JWT tokens (in milliseconds) 14 days by default |
+| LOG_LEVEL              | `INFO`                                      | Logging level for the application                                           |
+| SERVER_PORT            | `8080`                                      | Port on which the server is running                                         |
+| USE_SWAGGER            | true                                        | Enable/disable Swagger UI for API documentation                             |
+| ALLOWED_ORIGINS        | `http://localhost:3000, http://client:3000` | Comma-separated list of allowed origins for CORS                            |
+
+### Postgres
+
+| Parameter         | Default value  | Description                                    |
+|-------------------|----------------|------------------------------------------------|
+| POSTGRES_HOST     | `localhost`    | PostgreSQL database server IP address          |
+| POSTGRES_PORT     | `5432`         | PostgreSQL database server port                |
+| POSTGRES_DB       | `task-tracker` | PostgreSQL database name                       |
+| POSTGRES_USERNAME | `postgres`     | Username for connecting to PostgreSQL database |
+| POSTGRES_PASSWORD | `postgres`     | Password for connecting to PostgreSQL database |
+
+### RabbitMQ
+
+| Parameter         | Default value | Description                         |
+|-------------------|---------------|-------------------------------------|
+| RABBITMQ_HOST     | `localhost`   | RabbitMQ server host                |
+| RABBITMQ_PORT     | `5672`        | RabbitMQ server port                |
+| RABBITMQ_USERNAME | `rabbitmq`    | Username for connecting to RabbitMQ |
+| RABBITMQ_PASSWORD | `rabbitmq`    | Password for connecting to RabbitMQ |
 
 ## Docker Compose
 
@@ -97,20 +129,22 @@ services:
     image: farneser/task-tracker-api:latest
     container_name: api-container
     environment:
+      JWT_SECRET: F40BB648F9CA2303F6878ACD7CF446A28845426C508BF3CBC06740AD892D7B9B # example 256-bit key
+      JWT_EXPIRATION_ACCESS: 120000
+      JWT_EXPIRATION_REFRESH: 1209600000
+      LOG_LEVEL: INFO
+      SERVER_PORT: 8080
+      USE_SWAGGER: true
+      ALLOWED_ORIGINS: http://localhost:3000, http://client:3000
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: task-tracker
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: postgres
-      JWT_SECRET: F40BB648F9CA2303F6878ACD7CF446A28845426C508BF3CBC06740AD892D7B9B # example 256-bit key
-      JWT_EXPIRATION_ACCESS: 120000
-      JWT_EXPIRATION_REFRESH: 1209600000
-      USE_SWAGGER: true
-      SERVER_PORT: 8080
-      LOGGING_LEVEL: INFO
-      ALLOWED_ORIGINS: http://localhost:3000, http://client:3000
       RABBITMQ_HOST: localhost
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: rabbitmq
       RABBITMQ_PASSWORD: rabbitmq
+    ports:
+      - "8080:8080"
 ```

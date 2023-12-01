@@ -20,8 +20,9 @@ public class TestContainerConfig {
                 .withUsername("postgres")
                 .withPassword("postgres")
                 .withExposedPorts(5432)
-                .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(
-                        new HostConfig().withPortBindings(new PortBinding(Ports.Binding.bindPort(15432), new ExposedPort(5432)))));
+                .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig()
+                        .withPortBindings(new PortBinding(Ports.Binding.bindPort(15432), new ExposedPort(5432))))
+                );
 
         pgContainer.start();
 
@@ -31,6 +32,7 @@ public class TestContainerConfig {
         dataSource.setUrl(pgContainer.getJdbcUrl());
         dataSource.setUsername(pgContainer.getUsername());
         dataSource.setPassword(pgContainer.getPassword());
+
         return dataSource;
     }
 }
