@@ -3,10 +3,8 @@ package dev.farneser.tasktracker.api.service.auth;
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
-import dev.farneser.tasktracker.api.operations.commands.refreshtoken.deletebyuserid.DeleteRefreshTokenByUserIdCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
-import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbytoken.GetRefreshTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
 import dev.farneser.tasktracker.api.service.BaseService;
@@ -15,6 +13,7 @@ import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class AuthService extends BaseService {
     private final AuthenticationManager authenticationManager;
@@ -69,9 +69,7 @@ public class AuthService extends BaseService {
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
         var refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
 
-        var userName = jwtService.extractUsername(refreshToken.getToken());
-
-        var user = mediator.send(new GetUserByEmailQuery(userName));
+        var user = refreshToken.getUser();
 
         if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user.getEmail())) {
             throw new TokenExpiredException("Invalid token");
@@ -84,14 +82,10 @@ public class AuthService extends BaseService {
 
         var user = mediator.send(new GetUserByEmailQuery(email));
 
-        mediator.send(new DeleteRefreshTokenByUserIdCommand(user.getId()));
-
         var tokenString = jwtService.generateRefreshToken(user.getEmail());
 
-        var tokenId = mediator.send(new CreateRefreshTokenCommand(tokenString, user.getId()));
+        mediator.send(new CreateRefreshTokenCommand(tokenString, user.getId()));
 
-        var newToken = mediator.send(new GetRefreshTokenByIdQuery(tokenId));
-
-        return newToken.getToken();
+        return tokenString;
     }
 }

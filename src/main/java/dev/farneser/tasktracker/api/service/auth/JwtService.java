@@ -22,18 +22,15 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
     // 120000 equals two minutes of token lifetime
     @Value("${jwt.expiration.access:120000}")
     private Long accessTokenExpiration;
-
     // 1209600000 equals two weeks of token lifetime
     @Value("${jwt.expiration.refresh:1209600000}")
     private Long refreshTokenExpiration;
-
     @Value("${jwt.secret}")
     private String secretKey;
-
-    private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
 
     /**
      * Generates a JWT for the provided UserDetails.

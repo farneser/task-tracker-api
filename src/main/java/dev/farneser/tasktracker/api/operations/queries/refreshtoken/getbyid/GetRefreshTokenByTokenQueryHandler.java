@@ -15,6 +15,6 @@ public class GetRefreshTokenByTokenQueryHandler implements QueryHandler<GetRefre
 
     @Override
     public RefreshToken handle(GetRefreshTokenByTokenQuery query) throws NotFoundException {
-        return refreshTokenRepository.findByToken(query.getToken()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getToken()));
+        return refreshTokenRepository.findRefreshTokenByToken(query.getToken()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getToken()));
     }
 }

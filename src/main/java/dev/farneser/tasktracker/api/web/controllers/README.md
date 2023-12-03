@@ -287,7 +287,8 @@ response body
 
 `GET`
 
-This endpoint is used to retrieve tasks based on a valid access token. Clients can make a GET request to obtain details about the tasks.
+This endpoint is used to retrieve tasks based on a valid access token. Clients can make a GET request to obtain details
+about the tasks.
 
 response body
 
@@ -315,7 +316,8 @@ response body
 
 `POST`
 
-This endpoint is used to create a new task based on a valid access token. Clients can make a POST request to create a new task. 
+This endpoint is used to create a new task based on a valid access token. Clients can make a POST request to create a
+new task.
 
 request body:
 
@@ -351,7 +353,8 @@ response body:
 
 `GET`
 
-This endpoint is used to retrieve a task based on a valid access token and task id. Clients can make a GET request to obtain details about the task. 
+This endpoint is used to retrieve a task based on a valid access token and task id. Clients can make a GET request to
+obtain details about the task.
 
 response body
 
@@ -377,7 +380,8 @@ response body
 
 `DELETE`
 
-This endpoint is used to delete a task based on a valid access token and task id. Clients can make a DELETE request to delete the task.
+This endpoint is used to delete a task based on a valid access token and task id. Clients can make a DELETE request to
+delete the task.
 
 response body
 
@@ -389,7 +393,8 @@ response body
 
 `PATCH`
 
-This endpoint is used to update a task based on a valid access token and task id. Clients can make a PATCH request to update the task.
+This endpoint is used to update a task based on a valid access token and task id. Clients can make a PATCH request to
+update the task.
 
 request body:
 
@@ -428,7 +433,8 @@ response body
 
 `GET`
 
-This endpoint is used to retrieve archived tasks based on a valid access token. Clients can make a GET request to obtain details about the archived tasks.
+This endpoint is used to retrieve archived tasks based on a valid access token. Clients can make a GET request to obtain
+details about the archived tasks.
 
 response body
 
