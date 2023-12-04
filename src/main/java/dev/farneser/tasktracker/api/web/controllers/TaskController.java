@@ -7,8 +7,11 @@ import dev.farneser.tasktracker.api.service.TaskService;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
 import dev.farneser.tasktracker.api.web.models.Message;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +82,17 @@ public class TaskController {
         taskService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
+    }
+
+    @PutMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully archived tasks"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @ApiOperation(value = "Archive all tasks", notes = "Archives all tasks for the authenticated user from columns with isCompleted set to true")
+    public ResponseEntity<Message> archieTasks(Authentication authentication) throws NotFoundException {
+        taskService.archiveTasks(authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully archived tasks"));
     }
 }
