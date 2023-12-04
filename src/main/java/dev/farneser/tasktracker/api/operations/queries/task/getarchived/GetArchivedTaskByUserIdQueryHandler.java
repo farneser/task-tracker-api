@@ -4,8 +4,8 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.TaskView;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
+import dev.farneser.tasktracker.api.operations.queries.task.TaskMapper;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,22 +15,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArchivedTaskByUserIdQuery, List<TaskView>> {
     private final TaskRepository taskRepository;
-    private final ModelMapper modelMapper;
+    private final TaskMapper taskMapper;
 
     @Override
     public List<TaskView> handle(GetArchivedTaskByUserIdQuery query) throws NotFoundException {
-        var tasks = taskRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
+        var tasks = taskRepository
+                .findByUserIdOrderByOrderNumber(query.getUserId())
+                .orElse(new ArrayList<>())
+                .stream()
+                .filter(task -> task.getColumn() == null)
+                .toList();
 
-        var result = new ArrayList<TaskView>();
-
-        tasks.forEach(task -> {
-            if (task.getColumn() == null) {
-                result.add(modelMapper.map(task, TaskView.class));
-            }
-        });
-
-        result.forEach(task -> task.getColumn().getTasks().forEach(t -> t.setColumn(null)));
-
-        return result;
+        return taskMapper.mapTaskToTaskView(tasks);
     }
 }

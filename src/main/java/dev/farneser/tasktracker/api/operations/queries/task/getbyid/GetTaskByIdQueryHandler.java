@@ -20,7 +20,9 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
 
         var view = modelMapper.map(task, TaskView.class);
 
-        view.getColumn().getTasks().forEach(t -> t.setColumn(null));
+        if (view.getColumn() != null && view.getColumn().getTasks() != null) {
+            view.getColumn().getTasks().forEach(t -> t.setColumn(null));
+        }
 
         return view;
     }

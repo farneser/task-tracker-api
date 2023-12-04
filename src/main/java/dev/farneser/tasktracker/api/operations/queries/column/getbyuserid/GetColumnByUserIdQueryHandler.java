@@ -23,7 +23,11 @@ public class GetColumnByUserIdQueryHandler implements QueryHandler<GetColumnByUs
 
         var view = column.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
 
-        view.forEach(c -> c.getTasks().forEach(task -> task.setColumn(null)));
+        view.forEach(c -> {
+            if (c.getTasks() != null) {
+                c.getTasks().forEach(task -> task.setColumn(null));
+            }
+        });
 
         return view;
     }
