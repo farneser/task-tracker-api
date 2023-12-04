@@ -117,6 +117,13 @@ java -jar target/task-tracker-api-1.0.0.jar
 | RABBITMQ_USERNAME | `rabbitmq`    | Username for connecting to RabbitMQ |
 | RABBITMQ_PASSWORD | `rabbitmq`    | Password for connecting to RabbitMQ |
 
+### Redis
+
+| Parameter  | Default value | Description       |
+|------------|---------------|-------------------|
+| REDIS_HOST | `locahost`    | Redis server host |
+| REDIS_PORT | `6379`        | Redis server port |
+
 ## Docker Compose
 
 Example of docker-compose task-tracker-api service:
@@ -145,6 +152,8 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: rabbitmq
       RABBITMQ_PASSWORD: rabbitmq
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
     ports:
       - "8080:8080"
 ```

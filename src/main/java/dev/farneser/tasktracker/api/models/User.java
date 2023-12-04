@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Column(name = "register_date", nullable = false)
     private Date registerDate;
 
+    @Column(name = "is_enabled", nullable = false)
+    private boolean isEnabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -60,11 +63,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }

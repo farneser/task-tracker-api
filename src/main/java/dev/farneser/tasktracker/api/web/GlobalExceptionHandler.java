@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -90,10 +91,17 @@ public class GlobalExceptionHandler {
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponse> handler(DisabledException ex) {
+        log.error(ex.getMessage());
+        return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handler(Exception ex) {
-        log.error(ex.getMessage());
+        log.error(ex.getClass().getSimpleName() + " " + ex.getMessage());
         return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 

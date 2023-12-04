@@ -11,14 +11,24 @@
       "description": "The list of allowed client origins."
     },
     {
+      "name": "application.email.confirmation.required",
+      "type": "java.lang.Boolean",
+      "description": "Whether the user email confirmation is required."
+    },
+    {
+      "name": "application.email.confirmation.token-lifetime",
+      "type": "java.lang.Long",
+      "description": "The lifetime of the email confirmation token (ms)."
+    },
+    {
       "name": "jwt.expiration.access",
       "type": "java.lang.Long",
-      "description": "The expiration time of the access token."
+      "description": "The expiration time of the access token (ms)."
     },
     {
       "name": "jwt.expiration.refresh",
       "type": "java.lang.Long",
-      "description": "The expiration time of the refresh token."
+      "description": "The expiration time of the refresh token (ms)."
     }
   ]
 }
