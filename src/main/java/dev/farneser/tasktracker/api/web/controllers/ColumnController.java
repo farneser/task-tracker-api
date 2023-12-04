@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.service.ColumnService;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
 import dev.farneser.tasktracker.api.web.models.Message;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully returned a list of columns"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
+    @ApiOperation(value = "Get columns", notes = "Gets columns for the authenticated user")
     public ResponseEntity<List<ColumnView>> get(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(columnService.get(authentication));
     }
@@ -40,7 +42,11 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully created column"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<ColumnView> create(@RequestBody @Valid CreateColumnDto createColumnDto, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Create a column", notes = "Creates a column")
+    public ResponseEntity<ColumnView> create(
+            @RequestBody @Valid CreateColumnDto createColumnDto,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(columnService.create(createColumnDto, authentication));
     }
 
@@ -49,7 +55,11 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully returned a column by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<ColumnView> getById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Get column by id", notes = "Gets a column by id")
+    public ResponseEntity<ColumnView> getById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(columnService.get(id, authentication));
     }
 
@@ -58,7 +68,11 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully returned a list of tasks by column by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<List<TaskView>> getTasksById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Get tasks by column by id", notes = "Gets tasks by column by id")
+    public ResponseEntity<List<TaskView>> getTasksById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(columnService.getTasks(id, authentication));
     }
 
@@ -67,7 +81,12 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully deleted a column by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<ColumnView> patchById(@PathVariable Long id, @RequestBody @Valid PatchColumnDto patchColumnDto, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Patch a column", notes = "Patches a column by id")
+    public ResponseEntity<ColumnView> patchById(
+            @PathVariable Long id,
+            @RequestBody @Valid PatchColumnDto patchColumnDto,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(columnService.patch(id, patchColumnDto, authentication));
     }
 
@@ -76,7 +95,11 @@ public class ColumnController {
             @ApiResponse(responseCode = "200", description = "Successfully deleted a column by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Message> deleteById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Delete a column", notes = "Deletes a column by id")
+    public ResponseEntity<Message> deleteById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
         columnService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));

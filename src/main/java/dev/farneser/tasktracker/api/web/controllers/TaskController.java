@@ -7,6 +7,7 @@ import dev.farneser.tasktracker.api.service.TaskService;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
 import dev.farneser.tasktracker.api.web.models.Message;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -30,15 +31,17 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully returned a list of tasks"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
+    @ApiOperation(value = "Get tasks", notes = "Gets tasks for the authenticated user")
     public ResponseEntity<List<TaskView>> get(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(taskService.get(authentication));
     }
 
-    @GetMapping("archived")
+    @GetMapping("archive")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned a list of archived tasks"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
+    @ApiOperation(value = "Get archived tasks", notes = "Gets archived tasks for the authenticated user")
     public ResponseEntity<List<TaskView>> getArchived(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(taskService.getArchived(authentication));
     }
@@ -48,7 +51,11 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully created task"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<TaskView> create(@RequestBody @Valid CreateTaskDto createTaskDto, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Create a task", notes = "Creates a task")
+    public ResponseEntity<TaskView> create(
+            @RequestBody @Valid CreateTaskDto createTaskDto,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(taskService.create(createTaskDto, authentication));
     }
 
@@ -57,7 +64,11 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully returned a task by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<TaskView> getById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Get a task", notes = "Gets a task by id")
+    public ResponseEntity<TaskView> getById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(taskService.get(id, authentication));
     }
 
@@ -66,7 +77,12 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully patched a task by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<TaskView> patchById(@PathVariable Long id, @RequestBody @Valid PatchTaskDto patchTaskDto, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Patch a task", notes = "Patches a task by id")
+    public ResponseEntity<TaskView> patchById(
+            @PathVariable Long id,
+            @RequestBody @Valid PatchTaskDto patchTaskDto,
+            Authentication authentication
+    ) throws NotFoundException {
         return ResponseEntity.ok(taskService.patch(id, patchTaskDto, authentication));
     }
 
@@ -75,9 +91,28 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully deleted a task by id"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Message> deleteById(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+    @ApiOperation(value = "Delete a task", notes = "Deletes a task by id")
+    public ResponseEntity<Message> deleteById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
         taskService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
+    }
+
+    @PutMapping("/archive")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully archived tasks"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @ApiOperation(
+            value = "Archive all tasks",
+            notes = "Archives all tasks for the authenticated user from columns with isCompleted set to true"
+    )
+    public ResponseEntity<Message> archieTasks(Authentication authentication) throws NotFoundException {
+        taskService.archiveTasks(authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully archived tasks"));
     }
 }

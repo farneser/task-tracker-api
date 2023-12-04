@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.operations.commands.task.archive.ArchiveTasksCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.delete.DeleteTaskCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskCommand;
@@ -75,5 +76,11 @@ public class TaskService extends BaseService {
         var user = getUser(authentication);
 
         return mediator.send(new GetArchivedTaskByUserIdQuery(user.getId()));
+    }
+
+    public void archiveTasks(Authentication authentication) throws NotFoundException {
+        var user = getUser(authentication);
+
+        mediator.send(new ArchiveTasksCommand(user.getId()));
     }
 }
