@@ -36,21 +36,20 @@ public class ConfirmEmailService {
     }
 
     public void requireConfirm(String email) {
-        log.info("Require confirm for {}", email);
-        messageService.sendConfirmEmail(createConfirmationToken(email));
+        var confirmationToken = createConfirmationToken(email);
+
+        confirmEmailTokenRepository.save(confirmationToken, confirmationTokenLifetime);
+        messageService.sendConfirmEmail(confirmationToken);
     }
 
     public void sendRegisterMessage(String email) throws NotFoundException {
         if (confirmationRequired) {
             var confirmationToken = createConfirmationToken(email);
-            log.info("Send register message for {}", email);
-            confirmEmailTokenRepository.save(confirmationToken);
-            log.info("Saved token {}", confirmationToken);
+
+            confirmEmailTokenRepository.save(confirmationToken, confirmationTokenLifetime);
             messageService.sendRegisterMessage(confirmationToken);
         } else {
-            log.info("Send activate command for {}", email);
             mediator.send(new ActivateUserCommand(email));
-            log.info("Send register message for {}", email);
             messageService.sendRegisterMessage(email);
         }
     }
@@ -61,6 +60,8 @@ public class ConfirmEmailService {
         if (confirmEmailToken != null) {
             // FIXME: 12/5/23    send successfully activated account message
             mediator.send(new ActivateUserCommand(confirmEmailToken.getEmail()));
+        } else {
+            throw new NotFoundException("Confirm email token not found");
         }
     }
 }

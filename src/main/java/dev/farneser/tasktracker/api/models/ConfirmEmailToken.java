@@ -12,8 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ConfirmEmailToken implements Serializable {
     @Id
-    private String email;
     private UUID token;
+    private String email;
     private Date expiresAt;
 
     public ConfirmEmailToken(String email, Date expiresAt) {

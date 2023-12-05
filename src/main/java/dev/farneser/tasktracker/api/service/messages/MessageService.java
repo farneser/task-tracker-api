@@ -17,6 +17,7 @@ public class MessageService {
     }
 
     public void sendConfirmEmail(ConfirmEmailToken confirmationToken) {
+        System.out.println("Sending confirm email " + confirmationToken);
         rabbitTemplate.convertAndSend(QueueType.CONFIRM_EMAIL.toString(), new Gson().toJson(confirmationToken));
     }
 

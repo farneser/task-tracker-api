@@ -24,9 +24,9 @@ public class ConfirmEmailTokenRepository {
         hashOperations = redisTemplate.opsForHash();
     }
 
-    public void save(ConfirmEmailToken confirmEmailToken) {
+    public void save(ConfirmEmailToken confirmEmailToken, Long lifetime) {
         hashOperations.put(emailTokens, confirmEmailToken.getToken().toString(), confirmEmailToken);
-        redisTemplate.expire(confirmEmailToken.getToken().toString(), confirmEmailToken.getExpiresAt().getTime(), TimeUnit.SECONDS);
+        redisTemplate.expire(emailTokens, lifetime, TimeUnit.MILLISECONDS);
     }
 
     public ConfirmEmailToken get(UUID id) {
