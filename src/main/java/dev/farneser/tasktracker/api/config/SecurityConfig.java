@@ -47,6 +47,13 @@ public class SecurityConfig {
                     req.requestMatchers(HttpMethod.PATCH, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.DELETE, WHITE_LIST_URL).permitAll();
 
+                    req.requestMatchers(
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/swagger-config"
+                    ).permitAll();
+
                     req.anyRequest().authenticated();
                 })
                 .formLogin(login -> {
