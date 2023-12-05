@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum QueueType {
-    NEW_REGISTER("new_register");
+    NEW_REGISTER("new_register"),
+    CONFIRM_EMAIL("confirm_email");
 
     private final String queueName;
 

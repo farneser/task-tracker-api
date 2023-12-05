@@ -22,6 +22,11 @@ access.
 Highlights an unauthorized request resulting from an expired refresh token. Users should refresh their authentication
 tokens to regain access.
 
+### 403 FORBIDDEN
+
+The server understood the request but refuses to authorize it. This is often due to the user not having the necessary.
+For example user is not enabled.
+
 ### 404 NOT_FOUND
 
 The requested resource does not exist. The server could not find the resource matching the provided path.
