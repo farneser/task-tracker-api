@@ -19,13 +19,15 @@ public class UserView implements ITypeMapper {
     private String email;
     private Boolean isSubscribed;
     private Date registrationDate;
+    private boolean isEnabled;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(User.class, UserView.class)
                 .addMapping(User::getId, UserView::setId)
                 .addMapping(User::getEmail, UserView::setEmail)
                 .addMapping(User::getRegisterDate, UserView::setRegistrationDate)
-                .addMapping(User::isSubscribed, UserView::setIsSubscribed);
+                .addMapping(User::isSubscribed, UserView::setIsSubscribed)
+                .addMapping(User::isEnabled, UserView::setEnabled);
 
     }
 }
