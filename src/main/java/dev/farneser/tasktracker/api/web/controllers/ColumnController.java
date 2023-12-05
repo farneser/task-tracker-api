@@ -8,9 +8,6 @@ import dev.farneser.tasktracker.api.service.ColumnService;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
 import dev.farneser.tasktracker.api.web.models.Message;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,21 +25,11 @@ public class ColumnController {
     private final ColumnService columnService;
 
     @GetMapping
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully returned a list of columns"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Get columns", notes = "Gets columns for the authenticated user")
     public ResponseEntity<List<ColumnView>> get(Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(columnService.get(authentication));
     }
 
     @PostMapping
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully created column"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Create a column", notes = "Creates a column")
     public ResponseEntity<ColumnView> create(
             @RequestBody @Valid CreateColumnDto createColumnDto,
             Authentication authentication
@@ -51,11 +38,6 @@ public class ColumnController {
     }
 
     @GetMapping("{id}")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully returned a column by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Get column by id", notes = "Gets a column by id")
     public ResponseEntity<ColumnView> getById(
             @PathVariable Long id,
             Authentication authentication
@@ -64,11 +46,6 @@ public class ColumnController {
     }
 
     @GetMapping("{id}/tasks")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully returned a list of tasks by column by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Get tasks by column by id", notes = "Gets tasks by column by id")
     public ResponseEntity<List<TaskView>> getTasksById(
             @PathVariable Long id,
             Authentication authentication
@@ -77,11 +54,6 @@ public class ColumnController {
     }
 
     @PatchMapping("{id}")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted a column by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Patch a column", notes = "Patches a column by id")
     public ResponseEntity<ColumnView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchColumnDto patchColumnDto,
@@ -91,11 +63,6 @@ public class ColumnController {
     }
 
     @DeleteMapping("{id}")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted a column by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @ApiOperation(value = "Delete a column", notes = "Deletes a column by id")
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             Authentication authentication
