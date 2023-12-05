@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.views;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,17 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@Schema(name = "UserView", description = "User view")
 public class UserView implements ITypeMapper {
+    @Schema(name = "id", description = "User id", example = "1")
     private Long id;
+    @Schema(name = "email", description = "User email", example = "example@email.com")
     private String email;
+    @Schema(name = "isSubscribed", description = "Is user subscribed for the email notification", example = "false")
     private Boolean isSubscribed;
+    @Schema(name = "registrationDate", description = "User registration date", example = "2021-01-01T00:00:00.000Z")
     private Date registrationDate;
+    @Schema(name = "isEnabled", description = "Is user enabled", example = "true")
     private boolean isEnabled;
 
     public void mapping(ModelMapper modelMapper) {
