@@ -8,7 +8,7 @@ import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetR
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
 import dev.farneser.tasktracker.api.service.BaseService;
-import dev.farneser.tasktracker.api.service.messages.MessageService;
+import dev.farneser.tasktracker.api.service.ConfirmEmailService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
@@ -22,19 +22,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class AuthService extends BaseService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final MessageService messageService;
+    private final ConfirmEmailService confirmEmailService;
 
     @Autowired
-    public AuthService(Mediator mediator, ModelMapper modelMapper, JwtService jwtService, AuthenticationManager authenticationManager, MessageService messageService) {
+    public AuthService(Mediator mediator, ModelMapper modelMapper, JwtService jwtService, AuthenticationManager authenticationManager, ConfirmEmailService confirmEmailService) {
         super(mediator, modelMapper);
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
-        this.messageService = messageService;
+        this.confirmEmailService = confirmEmailService;
     }
 
     public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
@@ -47,7 +49,7 @@ public class AuthService extends BaseService {
 
             var jwt = new JwtDto(jwtService.generateAccessToken(user.getEmail()), this.updateRefreshToken(user.getEmail()));
 
-            messageService.sendRegisterMessage(user.getEmail());
+            confirmEmailService.sendRegisterMessage(user.getEmail());
 
             return jwt;
 
@@ -60,6 +62,10 @@ public class AuthService extends BaseService {
 
     public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException, NotFoundException {
         var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
+
+        if (!user.isEnabled()) {
+            confirmEmailService.requireConfirm(user.getEmail());
+        }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -87,5 +93,9 @@ public class AuthService extends BaseService {
         mediator.send(new CreateRefreshTokenCommand(tokenString, user.getId()));
 
         return tokenString;
+    }
+
+    public void activateAccount(UUID id) throws NotFoundException {
+        confirmEmailService.confirm(id);
     }
 }

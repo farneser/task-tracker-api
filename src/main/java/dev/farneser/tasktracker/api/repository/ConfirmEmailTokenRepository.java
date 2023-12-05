@@ -7,13 +7,14 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
 public class ConfirmEmailTokenRepository {
     // FIXME: 12/5/23 EMAILS_KEY get from env
-    private final String EMAIL_TOKENS = "emailTokens";
+    private final String emailTokens = "emailTokens";
 
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, String, Object> hashOperations;
@@ -24,15 +25,15 @@ public class ConfirmEmailTokenRepository {
     }
 
     public void save(ConfirmEmailToken confirmEmailToken) {
-        hashOperations.put(EMAIL_TOKENS, confirmEmailToken.getEmail(), confirmEmailToken);
-        redisTemplate.expire(confirmEmailToken.getEmail(), confirmEmailToken.getExpiresAt().getTime(), TimeUnit.SECONDS);
+        hashOperations.put(emailTokens, confirmEmailToken.getToken().toString(), confirmEmailToken);
+        redisTemplate.expire(confirmEmailToken.getToken().toString(), confirmEmailToken.getExpiresAt().getTime(), TimeUnit.SECONDS);
     }
 
-    public ConfirmEmailToken get(String email) {
-        return (ConfirmEmailToken) hashOperations.get(EMAIL_TOKENS, email);
+    public ConfirmEmailToken get(UUID id) {
+        return (ConfirmEmailToken) hashOperations.get(emailTokens, id.toString());
     }
 
-    public void delete(String email) {
-        hashOperations.delete(EMAIL_TOKENS, email);
+    public void delete(UUID id) {
+        hashOperations.delete(emailTokens, id.toString());
     }
 }

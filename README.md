@@ -88,17 +88,17 @@ java -jar target/task-tracker-api-1.0.0.jar
 
 ### Application
 
-| Parameter              | Default value                               | Description                                                                 |
-|------------------------|---------------------------------------------|-----------------------------------------------------------------------------|
-| JWT_SECRET             |                                             | Secret key for JSON Web Token (JWT) authentication                          |
-| JWT_EXPIRATION_ACCESS  | `120000`                                    | Expiration time for access JWT tokens (in milliseconds) 2 min by default    |
-| JWT_EXPIRATION_REFRESH | `1209600000`                                | Expiration time for refresh JWT tokens (in milliseconds) 14 days by default |
-| LOG_LEVEL              | `INFO`                                      | Logging level for the application                                           |
-| SERVER_PORT            | `8080`                                      | Port on which the server is running                                         |
-| USE_SWAGGER            | true                                        | Enable/disable Swagger UI for API documentation                             |
-| ALLOWED_ORIGINS        | `http://localhost:3000, http://client:3000` | Comma-separated list of allowed origins for CORS                            |
-
-### Postgres
+| Parameter                         | Default value                               | Description                                                                 |
+|-----------------------------------|---------------------------------------------|-----------------------------------------------------------------------------|
+| JWT_SECRET                        |                                             | Secret key for JSON Web Token (JWT) authentication                          |
+| JWT_EXPIRATION_ACCESS             | `120000`                                    | Expiration time for access JWT tokens (in milliseconds) 2 min by default    |
+| JWT_EXPIRATION_REFRESH            | `1209600000`                                | Expiration time for refresh JWT tokens (in milliseconds) 14 days by default |
+| LOG_LEVEL                         | `INFO`                                      | Logging level for the application                                           |
+| SERVER_PORT                       | `8080`                                      | Port on which the server is running                                         |
+| USE_SWAGGER                       | true                                        | Enable/disable Swagger UI for API documentation                             |
+| ALLOWED_ORIGINS                   | `http://localhost:3000, http://client:3000` | Comma-separated list of allowed origins for CORS                            |
+| EMAIL_CONFIRMATION_REQUIRED       | `true`                                      | Enable/disable email confirmation                                           |
+| EMAIL_CONFIRMATION_TOKEN_LIFETIME | `86400000`                                  | Email confirmation code lifetime                                            |
 
 | Parameter         | Default value  | Description                                    |
 |-------------------|----------------|------------------------------------------------|
