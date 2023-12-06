@@ -28,6 +28,7 @@ public class UserService extends BaseService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
+        log.debug("Loading user by email {}", email);
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
@@ -36,13 +37,20 @@ public class UserService extends BaseService implements UserDetailsService {
     }
 
     public UserView patch(PatchUserDto patchUserDto, Authentication authentication) throws NotFoundException {
+        log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
+
         var user = super.getUser(authentication);
+        log.debug("User {} found", user.getId());
 
         var command = modelMapper.map(patchUserDto, PatchUserCommand.class);
 
         command.setUserId(user.getId());
 
+        log.debug("Sending patch user command {}", command);
+
         mediator.send(command);
+
+        log.debug("Patch user command sent");
 
         return getUser(authentication);
     }

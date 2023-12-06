@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.filters.JwtAuthenticationFilter;
 import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -76,8 +78,12 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
 
+        log.debug("Creating authentication provider");
+
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder);
+
+        log.debug("Authentication provider created");
 
         return authProvider;
     }

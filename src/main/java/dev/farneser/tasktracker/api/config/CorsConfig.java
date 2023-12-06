@@ -33,19 +33,40 @@ public class CorsConfig {
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
+        log.debug("Starting CORS configuration");
+
         var source = new UrlBasedCorsConfigurationSource();
         var config = new CorsConfiguration();
 
         for (String allowedOrigin : allowedOrigins) {
+            log.debug("Adding allowed origin {}", allowedOrigin);
+
             config.addAllowedOrigin(allowedOrigin);
         }
+        log.debug("Adding allowed methods");
 
+        log.debug("Adding allowed methods GET");
         config.addAllowedMethod("GET");
+
+        log.debug("Adding allowed methods POST");
         config.addAllowedMethod("POST");
+
+        log.debug("Adding allowed methods PUT");
         config.addAllowedMethod("PUT");
+
+        log.debug("Adding allowed methods PATCH");
         config.addAllowedMethod("PATCH");
+
+        log.debug("Adding allowed methods DELETE");
         config.addAllowedMethod("DELETE");
+
+        log.debug("Adding allowed methods OPTIONS");
+        config.addAllowedMethod("OPTIONS");
+
+        log.debug("Set allow credentials to true");
         config.setAllowCredentials(true);
+
+        log.debug("Set allowed headers to *");
         config.setAllowedHeaders(List.of("*"));
 
         source.registerCorsConfiguration("/api/**", config);
