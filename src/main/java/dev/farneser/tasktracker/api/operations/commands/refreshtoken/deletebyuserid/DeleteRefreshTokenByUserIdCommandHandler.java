@@ -20,11 +20,13 @@ public class DeleteRefreshTokenByUserIdCommandHandler implements CommandHandler<
     public Void handle(DeleteRefreshTokenByUserIdCommand command) {
         try {
             var token = mediator.send(new GetRefreshTokenByUserIdQuery(command.getUserId()));
+            log.debug("Refresh token found for user with id: {}", command.getUserId());
 
             refreshTokenRepository.delete(token);
+            log.debug("Refresh token deleted for user with id: {}", command.getUserId());
 
         } catch (NotFoundException e) {
-            log.warn("Refresh token not found for user with id: {}", command.getUserId());
+            log.debug("Refresh token not found for user with id: {}", command.getUserId());
         }
 
         return null;

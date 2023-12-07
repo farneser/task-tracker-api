@@ -6,8 +6,10 @@ import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.RefreshToken;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GetRefreshTokenByUserIdQueryHandler implements QueryHandler<GetRefreshTokenByUserIdQuery, RefreshToken> {
@@ -17,9 +19,14 @@ public class GetRefreshTokenByUserIdQueryHandler implements QueryHandler<GetRefr
     public RefreshToken handle(GetRefreshTokenByUserIdQuery query) throws NotFoundException {
         var tokens = refreshTokenRepository.findByUserId(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId()));
 
+        log.debug("Tokens found: {}", tokens);
+
         if (tokens.isEmpty()) {
+            log.debug("Tokens empty: {}", tokens);
             throw new RefreshTokenNotFoundException(query.getId());
         }
+
+        log.debug("Tokens not empty: {}", tokens);
 
         return tokens.get(tokens.size() - 1);
     }

@@ -4,9 +4,11 @@ import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.operations.commands.column.patch.PatchColumnCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 
 @Data
+@Slf4j
 @Schema(name = "PatchColumnDto", description = "Patch column DTO")
 public class PatchColumnDto implements ITypeMapper {
     @Schema(name = "columnName", description = "Column name", example = "To do")
@@ -18,6 +20,8 @@ public class PatchColumnDto implements ITypeMapper {
 
     @Override
     public void mapping(ModelMapper modelMapper) {
+        log.debug("Mapping PatchColumnDto");
+
         modelMapper.createTypeMap(PatchColumnDto.class, PatchColumnCommand.class)
                 .addMapping(PatchColumnDto::getColumnName, PatchColumnCommand::setColumnName)
                 .addMapping(PatchColumnDto::getIsCompleted, PatchColumnCommand::setIsCompleted)

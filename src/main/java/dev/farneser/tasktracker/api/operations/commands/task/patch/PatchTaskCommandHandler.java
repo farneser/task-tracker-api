@@ -21,28 +21,44 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
     public Void handle(PatchTaskCommand command) throws NotFoundException {
         var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
+        log.debug("Task found: {}", task);
+
         if (command.getColumnId() != null) {
+            log.debug("Column id: {}", command.getColumnId());
+
             if (command.getColumnId() == -1) {
+                log.debug("Column set to null");
                 task.setColumn(null);
             } else {
+                log.debug("Column set to {}", command.getColumnId());
+
                 task.setColumn(columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found")));
             }
         }
 
         if (command.getOrderNumber() != null) {
+            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
             if (task.getColumn() != null) {
                 var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
                 long newOrder = command.getOrderNumber();
+
+                log.debug("Old order: {}", oldOrder);
 
                 task.setOrderNumber(newOrder);
 
                 var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
 
+                log.debug("Tasks to change: {}", tasksToChange);
+
                 // FIXME: 11/22/23 fix duplicate code with patch column command handler
                 tasksToChange.forEach(t -> {
+                    log.debug("Task found: {}", t);
+
                     if (t.getId().equals(task.getId())) {
                         return;
                     }
+
+                    log.debug("Task order number changed from {} to {}", t.getOrderNumber(), t.getOrderNumber() + 1);
 
                     if (oldOrder < newOrder) {
                         t.setOrderNumber(t.getOrderNumber() - 1);
@@ -51,21 +67,30 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
                     }
                 });
             } else {
+                log.debug("Column is null");
                 task.setOrderNumber(null);
             }
         }
 
         if (command.getTaskName() != null) {
+            log.debug("Task name changed from {} to {}", task.getTaskName(), command.getTaskName());
+
             task.setTaskName(command.getTaskName());
         }
 
         if (command.getDescription() != null) {
+            log.debug("Description changed from {} to {}", task.getDescription(), command.getDescription());
+
             task.setDescription(command.getDescription());
         }
 
         task.setEditDate(new Date(System.currentTimeMillis()));
 
+        log.debug("Task updated: {}", task);
+
         taskRepository.save(task);
+
+        log.debug("Task saved: {}", task);
 
         return null;
     }

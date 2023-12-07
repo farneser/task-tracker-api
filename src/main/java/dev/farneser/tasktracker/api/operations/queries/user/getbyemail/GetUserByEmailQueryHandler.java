@@ -6,9 +6,11 @@ import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GetUserByEmailQueryHandler implements QueryHandler<GetUserByEmailQuery, UserView> {
@@ -17,9 +19,12 @@ public class GetUserByEmailQueryHandler implements QueryHandler<GetUserByEmailQu
 
     @Override
     public UserView handle(GetUserByEmailQuery query) throws NotFoundException {
+        log.debug("Query: {}", query);
+
         var user = userRepository.findByEmail(query.getEmail()).orElseThrow(() -> new UserNotFoundException(query.getEmail()));
 
-        return modelMapper.map(user, UserView.class);
+        log.debug("User found: {}", user);
 
+        return modelMapper.map(user, UserView.class);
     }
 }

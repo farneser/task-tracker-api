@@ -18,11 +18,17 @@ public class PatchUserCommandHandler implements CommandHandler<PatchUserCommand,
     public Void handle(PatchUserCommand command) throws NotFoundException {
         var user = userRepository.findById(command.getUserId()).orElseThrow(() -> new UserNotFoundException(command.getUserId()));
 
+        log.debug("User found: {}", user);
+
         if (command.getIsSubscribed() != null) {
+            log.debug("User subscribed: {}", command.getIsSubscribed());
+
             user.setSubscribed(command.getIsSubscribed());
         }
 
         userRepository.save(user);
+
+        log.debug("User saved: {}", user);
 
         return null;
     }

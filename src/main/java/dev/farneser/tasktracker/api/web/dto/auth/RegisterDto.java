@@ -8,10 +8,12 @@ import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUs
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 @Data
+@Slf4j
 @JsonNaming
 @PasswordMatches
 @Schema(name = "RegisterDto", description = "Register DTO")
@@ -29,6 +31,8 @@ public class RegisterDto implements ITypeMapper {
 
     @Override
     public void mapping(ModelMapper modelMapper) {
+        log.debug("Mapping RegisterDto");
+
         modelMapper.createTypeMap(RegisterDto.class, RegisterUserCommand.class)
                 .addMapping(RegisterDto::getEmail, RegisterUserCommand::setEmail)
                 .addMapping(RegisterDto::getPassword, RegisterUserCommand::setPassword)

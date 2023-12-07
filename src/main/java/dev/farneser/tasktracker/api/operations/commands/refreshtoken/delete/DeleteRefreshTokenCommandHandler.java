@@ -6,8 +6,10 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeleteRefreshTokenCommandHandler implements CommandHandler<DeleteRefreshTokenCommand, Void> {
@@ -19,6 +21,8 @@ public class DeleteRefreshTokenCommandHandler implements CommandHandler<DeleteRe
         var token = mediator.send(new GetRefreshTokenByTokenQuery(command.getToken()));
 
         refreshTokenRepository.delete(token);
+
+        log.debug("Refresh token deleted: {}", command.getToken());
 
         return null;
     }
