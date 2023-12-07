@@ -20,24 +20,38 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        var redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
+        try {
+            var redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
 
-        log.debug("Connecting to Redis at {}:{}", redisHost, redisPort);
+            log.debug("Redis host:port = {}:{}", redisHost, redisPort);
 
-        return new JedisConnectionFactory(redisStandaloneConfiguration);
+            log.debug("Start redis connection factory");
+
+            return new JedisConnectionFactory(redisStandaloneConfiguration);
+        } catch (Exception e) {
+            log.error("Redis connection error: {}", e.getMessage());
+
+            return null;
+        }
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        var template = new RedisTemplate<String, Object>();
+        try {
+            var template = new RedisTemplate<String, Object>();
 
-        log.debug("Creating Redis template");
+            log.debug("Redis template created");
 
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+            template.setConnectionFactory(jedisConnectionFactory());
+            template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-        log.debug("Redis template created");
+            log.debug("Redis template value serializer set to GenericJackson2JsonRedisSerializer");
 
-        return template;
+            return template;
+        } catch (Exception e) {
+            log.error("Redis template error: {}", e.getMessage());
+
+            return null;
+        }
     }
 }

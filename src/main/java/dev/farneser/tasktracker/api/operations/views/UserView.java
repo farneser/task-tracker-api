@@ -6,15 +6,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Data
+@Slf4j
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 @Schema(name = "UserView", description = "User view")
 public class UserView implements ITypeMapper {
     @Schema(name = "id", description = "User id", example = "1")
@@ -29,6 +31,8 @@ public class UserView implements ITypeMapper {
     private boolean isEnabled;
 
     public void mapping(ModelMapper modelMapper) {
+        log.debug("Mapping UserView");
+
         modelMapper.createTypeMap(User.class, UserView.class)
                 .addMapping(User::getId, UserView::setId)
                 .addMapping(User::getEmail, UserView::setEmail)

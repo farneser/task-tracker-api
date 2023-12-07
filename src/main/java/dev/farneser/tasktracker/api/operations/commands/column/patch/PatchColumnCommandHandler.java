@@ -21,11 +21,16 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
         var columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
         var column = columns.stream().filter(c -> c.getId().equals(command.getColumnId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
 
+        log.debug("Column found: {}", column);
+
         if (command.getColumnName() != null) {
+            log.debug("Column name changed from {} to {}", column.getColumnName(), command.getColumnName());
             column.setColumnName(command.getColumnName());
         }
 
         if (command.getOrderNumber() != null) {
+            log.debug("Column order number changed from {} to {}", column.getOrderNumber(), command.getOrderNumber());
+
             var oldOrder = column.getOrderNumber();
             var newOrder = command.getOrderNumber();
 
@@ -47,13 +52,17 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
         }
 
         if (command.getIsCompleted() != null) {
+            log.debug("Column isCompleted changed from {} to {}", column.getIsCompleted(), command.getIsCompleted());
             column.setIsCompleted(command.getIsCompleted());
         }
-
+        log.debug("Column edit date changed from {} to {}", column.getEditDate(), new Date(System.currentTimeMillis()));
         column.setEditDate(new Date(System.currentTimeMillis()));
+
+        log.debug("Column saved: {}", column);
 
         columnRepository.save(column);
 
+        log.debug("Column saved: {}", column);
         return null;
     }
 }

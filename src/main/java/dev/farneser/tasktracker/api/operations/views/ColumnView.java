@@ -4,12 +4,14 @@ import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.KanbanColumn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@Slf4j
 @Schema(name = "ColumnView", description = "Column view")
 public class ColumnView implements ITypeMapper {
     @Schema(name = "id", description = "Column id", example = "1")
@@ -28,6 +30,8 @@ public class ColumnView implements ITypeMapper {
     private Date editDate;
 
     public void mapping(ModelMapper modelMapper) {
+        log.debug("Mapping ColumnView");
+
         modelMapper.createTypeMap(KanbanColumn.class, ColumnView.class)
                 .addMapping(KanbanColumn::getId, ColumnView::setId)
                 .addMapping(KanbanColumn::getColumnName, ColumnView::setColumnName)

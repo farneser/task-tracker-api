@@ -27,35 +27,39 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ErrorResponse> handler(BadCredentialsException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ErrorResponse> handler(InvalidTokenException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ErrorResponse> handler(TokenExpiredException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ErrorResponse> handler(ExpiredJwtException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public ResponseEntity<ErrorResponse> handler(HttpMessageNotReadableException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getMessage());
     }
@@ -63,7 +67,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handler(MethodArgumentNotValidException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getFieldError() != null
                 ? ex.getFieldError().getDefaultMessage()
                 : ex.getBindingResult().getGlobalErrors().get(0).getDefaultMessage()
@@ -73,35 +78,40 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UniqueDataException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ErrorResponse> handler(UniqueDataException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handler(NotFoundException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handler(UsernameNotFoundException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(DisabledException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ErrorResponse> handler(DisabledException ex) {
-        log.error(ex.getMessage());
+        log.debug(ex.getMessage());
+
         return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handler(Exception ex) {
-        log.error(ex.getClass().getSimpleName() + " " + ex.getMessage());
+        log.debug(ex.getClass().getSimpleName() + " " + ex.getMessage());
+
         return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 

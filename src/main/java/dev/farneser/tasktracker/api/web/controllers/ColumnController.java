@@ -35,6 +35,8 @@ public class ColumnController {
             @ApiResponse(responseCode = "404", description = "Columns not found")
     })
     public ResponseEntity<List<ColumnView>> get(Authentication authentication) throws NotFoundException {
+        log.info("Getting columns for user {}", authentication.getName());
+
         return ResponseEntity.ok(columnService.get(authentication));
     }
 
@@ -48,6 +50,8 @@ public class ColumnController {
             @RequestBody @Valid CreateColumnDto createColumnDto,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Creating column for user {}, column name: {}", authentication.getName(), createColumnDto.getColumnName());
+
         return ResponseEntity.status(201).body(columnService.create(createColumnDto, authentication));
     }
 
@@ -62,6 +66,8 @@ public class ColumnController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
+
         return ResponseEntity.ok(columnService.get(id, authentication));
     }
 
@@ -76,6 +82,8 @@ public class ColumnController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Getting tasks for user {}, column id: {}", authentication.getName(), id);
+
         return ResponseEntity.ok(columnService.getTasks(id, authentication));
     }
 
@@ -91,6 +99,8 @@ public class ColumnController {
             @RequestBody @Valid PatchColumnDto patchColumnDto,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Patching column for user {}, column id: {}", authentication.getName(), id);
+
         return ResponseEntity.ok(columnService.patch(id, patchColumnDto, authentication));
     }
 
@@ -105,6 +115,8 @@ public class ColumnController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
+
         columnService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));

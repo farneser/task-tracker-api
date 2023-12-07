@@ -4,9 +4,11 @@ import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 
 @Data
+@Slf4j
 @Schema(name = "PatchTaskDto", description = "Patch task DTO")
 public class PatchTaskDto implements ITypeMapper {
     @Schema(name = "taskName", description = "Task name", example = "Do something")
@@ -20,6 +22,8 @@ public class PatchTaskDto implements ITypeMapper {
 
     @Override
     public void mapping(ModelMapper modelMapper) {
+        log.debug("Mapping PatchTaskDto");
+
         modelMapper.createTypeMap(PatchTaskDto.class, PatchTaskCommand.class)
                 .addMapping(PatchTaskDto::getTaskName, PatchTaskCommand::setTaskName)
                 .addMapping(PatchTaskDto::getDescription, PatchTaskCommand::setDescription)
