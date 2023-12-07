@@ -42,14 +42,13 @@ public class UserService implements UserDetailsService {
     public UserView patch(PatchUserDto patchUserDto, Authentication authentication) throws NotFoundException {
         log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
 
-        var user = super.getUser(authentication);
+        var user = getUser(authentication);
       
         log.debug("User {} found", user.getId());
 
         var command = modelMapper.map(patchUserDto, PatchUserCommand.class);
 
         command.setUserId(user.getId());
-
 
         log.debug("Sending patch user command {}", command);
 
