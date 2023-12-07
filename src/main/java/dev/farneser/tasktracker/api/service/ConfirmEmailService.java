@@ -60,6 +60,7 @@ public class ConfirmEmailService {
         if (confirmEmailToken != null) {
             // FIXME: 12/5/23    send successfully activated account message
             mediator.send(new ActivateUserCommand(confirmEmailToken.getEmail()));
+            confirmEmailTokenRepository.delete(id);
         } else {
             throw new NotFoundException("Confirm email token not found");
         }

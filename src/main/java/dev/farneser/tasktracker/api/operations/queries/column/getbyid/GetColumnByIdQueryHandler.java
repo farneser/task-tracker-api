@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 @Component
@@ -26,6 +27,8 @@ public class GetColumnByIdQueryHandler implements QueryHandler<GetColumnByIdQuer
         if (view.getTasks() != null) {
             view.getTasks().forEach(task -> task.setColumn(null));
             view.getTasks().sort(Comparator.comparing(TaskView::getOrderNumber));
+        } else {
+            view.setTasks(new ArrayList<>());
         }
 
         return view;

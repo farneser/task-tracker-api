@@ -43,16 +43,11 @@ public class AuthService extends BaseService {
         try {
             var command = modelMapper.map(registerDto, RegisterUserCommand.class);
 
-            var userId = mediator.send(command);
+            mediator.send(command);
 
-            var user = mediator.send(new GetUserByIdQuery(userId));
+            confirmEmailService.sendRegisterMessage(registerDto.getEmail());
 
-            var jwt = new JwtDto(jwtService.generateAccessToken(user.getEmail()), this.updateRefreshToken(user.getEmail()));
-
-            confirmEmailService.sendRegisterMessage(user.getEmail());
-
-            return jwt;
-
+            return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
         } catch (Exception e) {
