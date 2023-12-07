@@ -121,7 +121,7 @@ java -jar target/task-tracker-api-1.0.0.jar
 
 | Parameter  | Default value | Description       |
 |------------|---------------|-------------------|
-| REDIS_HOST | `locahost`    | Redis server host |
+| REDIS_HOST | `localhost`   | Redis server host |
 | REDIS_PORT | `6379`        | Redis server port |
 
 ## Docker Compose

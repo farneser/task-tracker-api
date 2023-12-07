@@ -86,12 +86,12 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
 
-        log.debug("Authentication provider");
+        log.debug("Creating authentication provider");
 
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder);
 
-        log.debug("Authentication provider: {}", authProvider);
+        log.debug("Authentication provider created");
 
         return authProvider;
     }
