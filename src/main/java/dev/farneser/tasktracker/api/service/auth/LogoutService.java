@@ -24,19 +24,29 @@ public class LogoutService implements LogoutHandler {
             HttpServletResponse response,
             Authentication authentication
     ) {
+        log.debug("Logging out user {}", authentication.getName());
+
         var authHeader = request.getHeader("Authorization");
+
+        log.debug("Auth header: {}", authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
 
+        log.debug("Auth header: {}", authHeader);
+
         var jwt = authHeader.substring(7);
 
         try {
+            log.debug("Deleting refresh token {}", jwt);
+
             mediator.send(new DeleteRefreshTokenCommand(jwt));
         } catch (NotFoundException e) {
-            log.warn(e.getMessage());
+            log.debug(e.getMessage());
         }
+
+        log.debug("Logging out user {}", authentication.getName());
 
         SecurityContextHolder.clearContext();
     }

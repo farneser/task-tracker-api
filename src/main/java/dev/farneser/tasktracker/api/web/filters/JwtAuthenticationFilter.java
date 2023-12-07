@@ -36,11 +36,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws IOException, ServletException {
+        log.debug("Jwt authentication filter");
 
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        log.debug("Auth header: {}", authHeader);
+
         // skip if no auth or request for auth
         if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX) || request.getRequestURI().startsWith("/api/v1/auth")) {
+            log.debug("Skip jwt authentication filter");
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,13 +55,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             var email = jwtService.extractUsername(jwt);
 
+            log.debug("Email: {}", email);
+
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 var user = this.userService.loadUserByUsername(email);
+
+                log.debug("User: {}", user);
 
                 if (jwtService.isTokenValid(jwt, user.getUsername())) {
                     var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
+                    log.debug("Auth token created for user: {}", user.getUsername());
+
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    log.debug("Auth token details set for user: {}", user.getUsername());
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -64,17 +77,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             }
         } catch (TokenExpiredException e) {
-            log.error(e.getMessage());
+            log.debug(e.getMessage());
 
             handleError(response, e.getMessage(), ApiStatus.ACCESS_TOKEN_EXPIRED.getCode());
         } catch (InvalidTokenException e) {
-            log.error(e.getMessage());
+            log.debug(e.getMessage());
 
             handleError(response, e.getMessage(), ApiStatus.UNAUTHORIZED.getCode());
         }
     }
 
     private void handleError(HttpServletResponse response, String message, Integer code) throws IOException {
+        log.debug("Handle error with message: {}, code: {}", message, code);
+
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(

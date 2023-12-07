@@ -33,6 +33,8 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) throws NotFoundException {
+        log.info("Authenticating user {}", loginDto.getEmail());
+
         return ResponseEntity.ok(authService.authenticate(loginDto));
     }
 
@@ -44,6 +46,8 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "User already exists")
     })
     public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
+        log.info("Registering user {}", registerDto.getEmail());
+
         return ResponseEntity.status(201).body(authService.register(registerDto));
     }
 
@@ -56,6 +60,8 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<JwtDto> refresh(@RequestBody @Valid JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
+        log.info("Refreshing JWT token {}", jwtDto);
+
         return ResponseEntity.ok(authService.refresh(jwtDto));
     }
 
@@ -66,6 +72,8 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<Message> confirm(@RequestParam UUID token) throws NotFoundException {
+        log.info("Confirming email with token {}", token);
+
         authService.activateAccount(token);
 
         return ResponseEntity.ok(Message.body("Successfully confirmed email"));

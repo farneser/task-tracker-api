@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.filters.JwtAuthenticationFilter;
 import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import java.util.Arrays;
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,10 +40,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.debug("Security filter chain");
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> {
-
+                    log.debug("Authorize http requests");
+                    log.debug("White list url: {}", Arrays.toString(WHITE_LIST_URL));
                     req.requestMatchers(HttpMethod.OPTIONS, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.GET, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.POST, WHITE_LIST_URL).permitAll();
@@ -47,6 +54,7 @@ public class SecurityConfig {
                     req.requestMatchers(HttpMethod.PATCH, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.DELETE, WHITE_LIST_URL).permitAll();
 
+                    log.debug("Authorize swagger requests");
                     req.requestMatchers(
                             "/swagger-ui.html",
                             "/swagger-ui/**",
@@ -54,9 +62,11 @@ public class SecurityConfig {
                             "/v3/api-docs/swagger-config"
                     ).permitAll();
 
+                    log.debug("Authorize any request");
                     req.anyRequest().authenticated();
                 })
                 .formLogin(login -> {
+                    log.debug("Form login");
                     login.successHandler(this.successAuth());
                     login.failureHandler(this.failureAuth());
                 })
@@ -76,8 +86,12 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider();
 
+        log.debug("Authentication provider");
+
         authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder);
+
+        log.debug("Authentication provider: {}", authProvider);
 
         return authProvider;
     }

@@ -33,6 +33,8 @@ public class TaskController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
     public ResponseEntity<List<TaskView>> get(Authentication authentication) throws NotFoundException {
+        log.info("Getting tasks for user {}", authentication.getName());
+
         return ResponseEntity.ok(taskService.get(authentication));
     }
 
@@ -43,6 +45,8 @@ public class TaskController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
     public ResponseEntity<List<TaskView>> getArchived(Authentication authentication) throws NotFoundException {
+        log.info("Getting archived tasks for user {}", authentication.getName());
+
         return ResponseEntity.ok(taskService.getArchived(authentication));
     }
 
@@ -57,6 +61,8 @@ public class TaskController {
             @RequestBody @Valid CreateTaskDto createTaskDto,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Creating task for user {}, task name: {}", authentication.getName(), createTaskDto.getTaskName());
+
         return ResponseEntity.status(201).body(taskService.create(createTaskDto, authentication));
     }
 
@@ -71,6 +77,8 @@ public class TaskController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Getting task for user {}, task id: {}", authentication.getName(), id);
+
         return ResponseEntity.ok(taskService.get(id, authentication));
     }
 
@@ -86,6 +94,8 @@ public class TaskController {
             @RequestBody @Valid PatchTaskDto patchTaskDto,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Patching task for user {}, task id: {}", authentication.getName(), id);
+
         return ResponseEntity.ok(taskService.patch(id, patchTaskDto, authentication));
     }
 
@@ -100,6 +110,8 @@ public class TaskController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Deleting task for user {}, task id: {}", authentication.getName(), id);
+
         taskService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
@@ -112,6 +124,8 @@ public class TaskController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
     public ResponseEntity<Message> archieTasks(Authentication authentication) throws NotFoundException {
+        log.info("Archiving tasks for user {}", authentication.getName());
+
         taskService.archiveTasks(authentication);
 
         return ResponseEntity.ok(Message.body("Successfully archived tasks"));

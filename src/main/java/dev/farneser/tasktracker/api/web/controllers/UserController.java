@@ -30,6 +30,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<UserView> get(Authentication authentication) throws NotFoundException {
+        log.info("Getting user {}", authentication.getName());
+
         return ResponseEntity.ok(userService.getUser(authentication));
     }
 
@@ -44,6 +46,8 @@ public class UserController {
             @RequestBody @Valid PatchUserDto patchUserDto,
             Authentication authentication
     ) throws NotFoundException {
+        log.info("Patching user {}", authentication.getName());
+
         return ResponseEntity.ok(userService.patch(patchUserDto, authentication));
     }
 }

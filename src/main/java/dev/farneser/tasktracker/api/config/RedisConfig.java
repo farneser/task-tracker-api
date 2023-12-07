@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
     @Value("${spring.redis.host:localhost}")
@@ -18,18 +20,38 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        var redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
+        try {
+            var redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
 
-        return new JedisConnectionFactory(redisStandaloneConfiguration);
+            log.debug("Redis host:port = {}:{}", redisHost, redisPort);
+
+            log.debug("Start redis connection factory");
+
+            return new JedisConnectionFactory(redisStandaloneConfiguration);
+        } catch (Exception e) {
+            log.error("Redis connection error: {}", e.getMessage());
+
+            return null;
+        }
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        var template = new RedisTemplate<String, Object>();
+        try {
+            var template = new RedisTemplate<String, Object>();
 
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+            log.debug("Redis template created");
 
-        return template;
+            template.setConnectionFactory(jedisConnectionFactory());
+            template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+            log.debug("Redis template value serializer set to GenericJackson2JsonRedisSerializer");
+
+            return template;
+        } catch (Exception e) {
+            log.error("Redis template error: {}", e.getMessage());
+
+            return null;
+        }
     }
 }
