@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.KanbanTask;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,35 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
             }
         }
 
+        patchOrder(command, task);
+
+        if (command.getTaskName() != null) {
+            log.debug("Task name changed from {} to {}", task.getTaskName(), command.getTaskName());
+
+            task.setTaskName(command.getTaskName());
+        }
+
+        if (command.getDescription() != null) {
+            log.debug("Description changed from {} to {}", task.getDescription(), command.getDescription());
+
+            task.setDescription(command.getDescription());
+        }
+
+        task.setEditDate(new Date(System.currentTimeMillis()));
+
+        log.debug("Task updated: {}", task);
+
+        taskRepository.save(task);
+
+        log.debug("Task saved: {}", task);
+
+        return null;
+    }
+
+    private static void patchOrder(PatchTaskCommand command, KanbanTask task) {
         if (command.getOrderNumber() != null) {
             log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
+
             if (task.getColumn() != null) {
                 var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
                 long newOrder = command.getOrderNumber();
@@ -71,27 +99,5 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
                 task.setOrderNumber(null);
             }
         }
-
-        if (command.getTaskName() != null) {
-            log.debug("Task name changed from {} to {}", task.getTaskName(), command.getTaskName());
-
-            task.setTaskName(command.getTaskName());
-        }
-
-        if (command.getDescription() != null) {
-            log.debug("Description changed from {} to {}", task.getDescription(), command.getDescription());
-
-            task.setDescription(command.getDescription());
-        }
-
-        task.setEditDate(new Date(System.currentTimeMillis()));
-
-        log.debug("Task updated: {}", task);
-
-        taskRepository.save(task);
-
-        log.debug("Task saved: {}", task);
-
-        return null;
     }
 }
