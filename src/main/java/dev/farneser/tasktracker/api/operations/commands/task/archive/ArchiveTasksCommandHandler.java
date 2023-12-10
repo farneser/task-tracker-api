@@ -24,6 +24,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
             log.debug("Task found: {}", task);
 
             task.setColumn(null);
+            task.setOrderNumber(-1L);
         }));
 
         log.debug("Tasks archived");
