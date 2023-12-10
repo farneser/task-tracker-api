@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.Date;
 
 @Slf4j
@@ -18,18 +19,24 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
     @Override
     public Long handle(CreateTaskCommand command) throws NotFoundException {
-        var column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + "  not found"));
+        var column = columnRepository
+                .findByIdAndUserId(command.getColumnId(), command.getUserId())
+                .orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
 
         log.debug("Column found: {}", column);
 
         var orderNumber = 1L;
 
-        if (!column.getTasks().isEmpty()) {
-            log.debug("Tasks found: {}", column.getTasks());
+        if (column.getTasks() != null) {
 
-            orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
+            column.getTasks().sort(Comparator.comparing(KanbanTask::getOrderNumber));
+
+            if (!column.getTasks().isEmpty()) {
+                log.debug("Tasks found: {}", column.getTasks());
+
+                orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
+            }
         }
-
         var creationDate = new Date(System.currentTimeMillis());
 
         log.debug("Order number: {}", orderNumber);
@@ -40,7 +47,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
                 .orderNumber(orderNumber)
                 .column(column)
                 .user(column.getUser())
-                .creatiionDate(creationDate)
+                .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
 

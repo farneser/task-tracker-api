@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -21,22 +22,17 @@ public class GetColumnByUserIdQueryHandler implements QueryHandler<GetColumnByUs
 
     @Override
     public List<ColumnView> handle(GetColumnByUserIdQuery query) throws NotFoundException {
-        var column = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
+        var columns = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
-        log.debug("Column found: {}", column);
+        log.debug("Column found: {}", columns);
 
-        var view = column.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
+        var view = columns.stream().map(c -> modelMapper.map(c, ColumnView.class)).toList();
 
-        log.debug("Column mapped: {}", view);
+        log.debug("Column mapped: {}", Arrays.toString(view.toArray()));
 
-        view.forEach(c -> {
-            log.debug("Column found: {}", c);
-
-            if (c.getTasks() != null) {
-                log.debug("Tasks found: {}", c.getTasks());
-                c.getTasks().forEach(task -> task.setColumn(null));
-            }
-        });
+        if (!query.getRetrieveTasks()) {
+            view.forEach(c -> c.setTasks(null));
+        }
 
         return view;
     }

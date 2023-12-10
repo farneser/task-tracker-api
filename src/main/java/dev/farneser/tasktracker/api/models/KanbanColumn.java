@@ -31,6 +31,7 @@ public class KanbanColumn {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
     @Column(name = "order_number")
     private Long orderNumber;
 
@@ -39,7 +40,7 @@ public class KanbanColumn {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
-    private Date creatiionDate;
+    private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "edit_date", nullable = false)

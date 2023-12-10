@@ -46,7 +46,7 @@ public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCo
                 .isCompleted(command.getIsCompleted())
                 .user(user)
                 .orderNumber(orderNumber)
-                .creatiionDate(creationDate)
+                .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
 

@@ -40,7 +40,7 @@ public class KanbanTask {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)
-    private Date creatiionDate;
+    private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "edit_date", nullable = false)

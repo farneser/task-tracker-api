@@ -7,6 +7,7 @@ import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -71,7 +72,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Successfully confirmed email"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<Message> confirm(@RequestParam UUID token) throws NotFoundException {
+    public ResponseEntity<Message> confirm(
+            @Parameter(description = "Confirm email token (uuid)")
+            @RequestParam UUID token
+    ) throws NotFoundException {
         log.info("Confirming email with token {}", token);
 
         authService.activateAccount(token);

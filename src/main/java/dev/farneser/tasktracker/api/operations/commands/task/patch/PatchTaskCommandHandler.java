@@ -18,6 +18,45 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
     private final ColumnRepository columnRepository;
     private final TaskRepository taskRepository;
 
+    private static void patchOrder(PatchTaskCommand command, KanbanTask task) {
+        if (command.getOrderNumber() != null) {
+            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
+
+            if (task.getColumn() != null) {
+                var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
+                long newOrder = command.getOrderNumber();
+
+                log.debug("Old order: {}", oldOrder);
+
+                task.setOrderNumber(newOrder);
+
+                var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
+
+                log.debug("Tasks to change: {}", tasksToChange);
+
+                // FIXME: 11/22/23 fix duplicate code with patch column command handler
+                tasksToChange.forEach(t -> {
+                    log.debug("Task found: {}", t);
+
+                    if (t.getId().equals(task.getId())) {
+                        return;
+                    }
+
+                    log.debug("Task order number changed from {} to {}", t.getOrderNumber(), t.getOrderNumber() + 1);
+
+                    if (oldOrder < newOrder) {
+                        t.setOrderNumber(t.getOrderNumber() - 1);
+                    } else {
+                        t.setOrderNumber(t.getOrderNumber() + 1);
+                    }
+                });
+            } else {
+                log.debug("Column is null");
+                task.setOrderNumber(null);
+            }
+        }
+    }
+
     @Override
     public Void handle(PatchTaskCommand command) throws NotFoundException {
         var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
@@ -60,44 +99,5 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
         log.debug("Task saved: {}", task);
 
         return null;
-    }
-
-    private static void patchOrder(PatchTaskCommand command, KanbanTask task) {
-        if (command.getOrderNumber() != null) {
-            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
-
-            if (task.getColumn() != null) {
-                var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
-                long newOrder = command.getOrderNumber();
-
-                log.debug("Old order: {}", oldOrder);
-
-                task.setOrderNumber(newOrder);
-
-                var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
-
-                log.debug("Tasks to change: {}", tasksToChange);
-
-                // FIXME: 11/22/23 fix duplicate code with patch column command handler
-                tasksToChange.forEach(t -> {
-                    log.debug("Task found: {}", t);
-
-                    if (t.getId().equals(task.getId())) {
-                        return;
-                    }
-
-                    log.debug("Task order number changed from {} to {}", t.getOrderNumber(), t.getOrderNumber() + 1);
-
-                    if (oldOrder < newOrder) {
-                        t.setOrderNumber(t.getOrderNumber() - 1);
-                    } else {
-                        t.setOrderNumber(t.getOrderNumber() + 1);
-                    }
-                });
-            } else {
-                log.debug("Column is null");
-                task.setOrderNumber(null);
-            }
-        }
     }
 }

@@ -11,4 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetColumnByUserIdQuery implements Query<List<ColumnView>> {
     private Long userId;
+    private Boolean retrieveTasks;
 }

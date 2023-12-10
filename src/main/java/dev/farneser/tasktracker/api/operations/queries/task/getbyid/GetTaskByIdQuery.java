@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.operations.queries.task.getbyid;
 
 import dev.farneser.tasktracker.api.mediator.Query;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
