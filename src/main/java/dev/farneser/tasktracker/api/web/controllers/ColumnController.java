@@ -3,12 +3,13 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.ColumnService;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -34,10 +35,14 @@ public class ColumnController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Columns not found")
     })
-    public ResponseEntity<List<ColumnView>> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<ColumnView>> get(
+            @Parameter(description = "Toggles inclusion of current task details in the response")
+            @RequestParam(defaultValue = "true") Boolean retrieveTasks,
+            Authentication authentication
+    ) throws NotFoundException {
         log.info("Getting columns for user {}", authentication.getName());
 
-        return ResponseEntity.ok(columnService.get(authentication));
+        return ResponseEntity.ok(columnService.get(retrieveTasks, authentication));
     }
 
     @PostMapping
@@ -78,7 +83,7 @@ public class ColumnController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Tasks not found")
     })
-    public ResponseEntity<List<TaskView>> getTasksById(
+    public ResponseEntity<List<TaskLookupView>> getTasksById(
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {

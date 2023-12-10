@@ -3,7 +3,7 @@ package dev.farneser.tasktracker.api.operations.queries.task.getarchived;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.queries.task.TaskMapper;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +15,12 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArchivedTaskByUserIdQuery, List<TaskView>> {
+public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArchivedTaskByUserIdQuery, List<TaskLookupView>> {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
     @Override
-    public List<TaskView> handle(GetArchivedTaskByUserIdQuery query) throws NotFoundException {
+    public List<TaskLookupView> handle(GetArchivedTaskByUserIdQuery query) throws NotFoundException {
         log.debug("Query: {}", query);
 
         var tasks = taskRepository
@@ -32,6 +32,6 @@ public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArch
 
         log.debug("Tasks found: {}", tasks);
 
-        return taskMapper.mapTaskToTaskView(tasks);
+        return taskMapper.mapTaskToTaskLookupView(tasks);
     }
 }

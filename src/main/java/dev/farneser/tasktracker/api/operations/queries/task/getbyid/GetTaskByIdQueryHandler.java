@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.task.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +24,11 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
 
         var view = modelMapper.map(task, TaskView.class);
 
-        log.debug("Task mapped: {}", view);
-
-        if (view.getColumn() != null && view.getColumn().getTasks() != null) {
-            log.debug("Tasks found: {}", view.getColumn().getTasks());
-
-            view.getColumn().getTasks().forEach(t -> t.setColumn(null));
+        if (view.getColumn() != null) {
+            view.getColumn().setTasks(null);
         }
+
+        log.debug("Task mapped: {}", view);
 
         return view;
     }

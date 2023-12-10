@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.mediator.DefaultMediator;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,11 @@ public class CommonsConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        var mapper = new ModelMapper();
+
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        return mapper;
     }
 
     @Bean

@@ -18,7 +18,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
     @Override
     public Long handle(CreateTaskCommand command) throws NotFoundException {
-        var column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + "  not found"));
+        var column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
 
         log.debug("Column found: {}", column);
 
@@ -40,7 +40,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
                 .orderNumber(orderNumber)
                 .column(column)
                 .user(column.getUser())
-                .creatiionDate(creationDate)
+                .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
 

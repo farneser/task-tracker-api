@@ -1,7 +1,10 @@
 package dev.farneser.tasktracker.api.operations.views;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.KanbanColumn;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +26,11 @@ public class ColumnView implements ITypeMapper {
     @Schema(name = "orderNumber", description = "Column order number", example = "1")
     private Long orderNumber;
     @Schema(name = "tasks", description = "Column tasks")
-    private List<TaskView> tasks;
+    private List<TaskLookupView> tasks;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Schema(name = "creationDate", description = "Column creation date", example = "2021-01-01T00:00:00.000Z")
     private Date creationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Schema(name = "editDate", description = "Column edit date", example = "2021-01-01T00:00:00.000Z")
     private Date editDate;
 
@@ -37,8 +42,8 @@ public class ColumnView implements ITypeMapper {
                 .addMapping(KanbanColumn::getColumnName, ColumnView::setColumnName)
                 .addMapping(KanbanColumn::getIsCompleted, ColumnView::setIsCompleted)
                 .addMapping(KanbanColumn::getIsCompleted, ColumnView::setIsCompleted)
+                .addMapping(KanbanColumn::getCreationDate, ColumnView::setCreationDate)
                 .addMapping(KanbanColumn::getEditDate, ColumnView::setEditDate)
-                .addMapping(KanbanColumn::getCreatiionDate, ColumnView::setCreationDate)
                 .addMapping(col -> col.getTasks().stream().map(source -> modelMapper.map(source, TaskView.class)).toList(), ColumnView::setTasks);
     }
 }

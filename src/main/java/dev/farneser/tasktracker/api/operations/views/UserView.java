@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.operations.views;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +26,7 @@ public class UserView implements ITypeMapper {
     private String email;
     @Schema(name = "isSubscribed", description = "Is user subscribed for the email notification", example = "false")
     private Boolean isSubscribed;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Schema(name = "registrationDate", description = "User registration date", example = "2021-01-01T00:00:00.000Z")
     private Date registrationDate;
     @Schema(name = "isEnabled", description = "Is user enabled", example = "true")

@@ -9,7 +9,7 @@ import dev.farneser.tasktracker.api.operations.queries.column.getbyid.GetColumnB
 import dev.farneser.tasktracker.api.operations.queries.column.getbyuserid.GetColumnByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid.GetTaskByUserIdAndColumnIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
 import lombok.RequiredArgsConstructor;
@@ -50,12 +50,12 @@ public class ColumnService {
         return get(columnId, authentication);
     }
 
-    public List<ColumnView> get(Authentication authentication) throws NotFoundException {
+    public List<ColumnView> get(Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
         log.debug("Getting columns for user {}", user.getEmail());
 
-        return mediator.send(new GetColumnByUserIdQuery(user.getId()));
+        return mediator.send(new GetColumnByUserIdQuery(user.getId(), retrieveTasks));
     }
 
     public ColumnView get(Long id, Authentication authentication) throws NotFoundException {
@@ -95,7 +95,7 @@ public class ColumnService {
         return get(id, authentication);
     }
 
-    public List<TaskView> getTasks(Long id, Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getTasks(Long id, Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
         log.debug("Getting tasks for column {} for user {}", id, user.getEmail());

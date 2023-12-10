@@ -2,7 +2,8 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.service.TaskService;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
@@ -32,7 +33,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskView>> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> get(Authentication authentication) throws NotFoundException {
         log.info("Getting tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.get(authentication));
@@ -44,7 +45,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskView>> getArchived(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> getArchived(Authentication authentication) throws NotFoundException {
         log.info("Getting archived tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.getArchived(authentication));

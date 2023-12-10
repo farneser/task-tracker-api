@@ -3,15 +3,11 @@ package dev.farneser.tasktracker.api.operations.queries.column.getbyid;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 
 @Slf4j
 @Component
@@ -29,17 +25,6 @@ public class GetColumnByIdQueryHandler implements QueryHandler<GetColumnByIdQuer
         var view = modelMapper.map(column, ColumnView.class);
 
         log.debug("Column mapped: {}", view);
-
-        if (view.getTasks() != null) {
-            log.debug("Tasks found: {}", view.getTasks());
-
-            view.getTasks().forEach(task -> task.setColumn(null));
-            view.getTasks().sort(Comparator.comparing(TaskView::getOrderNumber));
-        } else {
-            log.debug("Tasks not found");
-
-            view.setTasks(new ArrayList<>());
-        }
 
         return view;
     }

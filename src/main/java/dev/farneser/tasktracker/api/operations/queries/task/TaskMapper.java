@@ -1,11 +1,12 @@
 package dev.farneser.tasktracker.api.operations.queries.task;
 
 import dev.farneser.tasktracker.api.models.KanbanTask;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -13,15 +14,21 @@ import java.util.List;
 public class TaskMapper {
     private final ModelMapper modelMapper;
 
-    public List<TaskView> mapTaskToTaskView(List<KanbanTask> tasks) {
-        var view = tasks.stream().map(task -> modelMapper.map(task, TaskView.class)).toList();
+    public List<TaskLookupView> mapTaskToTaskLookupView(List<KanbanTask> tasks) {
+        var result = new ArrayList<TaskLookupView>();
 
-        view.forEach(task -> {
-            if (task.getColumn() != null && task.getColumn().getTasks() != null) {
-                task.getColumn().getTasks().forEach(t -> t.setColumn(null));
+        tasks.forEach(task -> {
+            var view = modelMapper.map(task, TaskLookupView.class);
+
+            if (task.getColumn() != null) {
+                view.setColumnId(task.getColumn().getId());
+            } else {
+                view.setColumnId(-1L);
             }
+
+            result.add(view);
         });
 
-        return view;
+        return result;
     }
 }

@@ -9,7 +9,8 @@ import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskComm
 import dev.farneser.tasktracker.api.operations.queries.task.getarchived.GetArchivedTaskByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyid.GetTaskByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuserid.GetTaskByUserIdQuery;
-import dev.farneser.tasktracker.api.operations.views.TaskView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class TaskService {
         return get(columnId, authentication);
     }
 
-    public List<TaskView> get(Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> get(Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
         log.debug("Getting tasks for user {}", user.getEmail());
@@ -93,7 +94,7 @@ public class TaskService {
         return get(id, authentication);
     }
 
-    public List<TaskView> getArchived(Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getArchived(Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
         log.debug("Getting archived tasks for user {}", user.getEmail());
