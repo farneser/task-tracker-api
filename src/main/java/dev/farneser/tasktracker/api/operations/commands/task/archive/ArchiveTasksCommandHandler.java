@@ -20,12 +20,18 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
 
         log.debug("Columns found: {}", columns);
 
-        columns.forEach(column -> column.getTasks().forEach(task -> {
-            log.debug("Task found: {}", task);
+        columns.forEach(column -> {
+            log.debug("Column found: {}", column);
 
-            task.setColumn(null);
-            task.setOrderNumber(-1L);
-        }));
+            if (column.getIsCompleted() && column.getTasks() != null) {
+                column.getTasks().forEach(task -> {
+                    log.debug("Task found: {}", task);
+
+                    task.setColumn(null);
+                    task.setOrderNumber(-1L);
+                });
+            }
+        });
 
         log.debug("Tasks archived");
 
