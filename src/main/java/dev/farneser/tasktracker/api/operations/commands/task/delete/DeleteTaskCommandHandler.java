@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -15,11 +17,27 @@ public class DeleteTaskCommandHandler implements CommandHandler<DeleteTaskComman
 
     @Override
     public Void handle(DeleteTaskCommand command) throws NotFoundException {
-        var column = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
+        var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
-        log.debug("Task found: {}", column);
+        log.debug("Task found: {}", task);
 
-        taskRepository.delete(column);
+        var tasks = taskRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+
+        log.debug("Tasks found: {}", tasks);
+
+        var tasksToUpdate = tasks.stream().filter(t -> t.getOrderNumber() > task.getOrderNumber()).toList();
+
+        log.debug("Tasks to update: {}", tasksToUpdate);
+
+        tasksToUpdate.forEach(t -> t.setOrderNumber(t.getOrderNumber() - 1));
+
+        log.debug("Tasks to update after: {}", tasksToUpdate);
+
+        taskRepository.saveAll(tasksToUpdate);
+
+        log.debug("Tasks updated");
+
+        taskRepository.delete(task);
 
         log.debug("Task deleted: {}", command.getTaskId());
 

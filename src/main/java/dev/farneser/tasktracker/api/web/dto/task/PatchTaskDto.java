@@ -5,12 +5,14 @@ import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskComm
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 @Data
 @Slf4j
 @Schema(name = "PatchTaskDto", description = "Patch task DTO")
 public class PatchTaskDto implements ITypeMapper {
+    @Length(min = 1, max = 255)
     @Schema(name = "taskName", description = "Task name", example = "Do something")
     private String taskName;
     @Schema(name = "description", description = "Task description", example = "Do something with something")

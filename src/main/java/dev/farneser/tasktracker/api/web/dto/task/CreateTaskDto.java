@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCo
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 @Data
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 public class CreateTaskDto implements ITypeMapper {
     @Schema(name = "columnId", description = "Column id", example = "1")
     private Long columnId;
+    @Length(min = 1, max = 255)
     @Schema(name = "taskName", description = "Task name", example = "Do something")
     private String taskName;
     @Schema(name = "description", description = "Task description", example = "Do something with something")

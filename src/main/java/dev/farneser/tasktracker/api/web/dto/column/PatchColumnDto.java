@@ -5,12 +5,14 @@ import dev.farneser.tasktracker.api.operations.commands.column.patch.PatchColumn
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 @Data
 @Slf4j
 @Schema(name = "PatchColumnDto", description = "Patch column DTO")
 public class PatchColumnDto implements ITypeMapper {
+    @Length(min = 1, max = 255)
     @Schema(name = "columnName", description = "Column name", example = "To do")
     private String columnName;
     @Schema(name = "isCompleted", description = "Is column completed", example = "false")
