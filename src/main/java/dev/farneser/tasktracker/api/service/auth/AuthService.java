@@ -66,6 +66,7 @@ public class AuthService {
 
             confirmEmailService.requireConfirm(user.getEmail());
         }
+
         log.debug("Authenticating user {}", loginRequest.getEmail());
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

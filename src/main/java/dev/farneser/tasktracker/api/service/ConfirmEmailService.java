@@ -35,16 +35,24 @@ public class ConfirmEmailService {
         return new ConfirmEmailToken(email, confirmTokenExpiration);
     }
 
-    public void requireConfirm(String email) {
+    public void requireConfirm(String email) throws NotFoundException {
         var confirmationToken = createConfirmationToken(email);
 
-        log.debug("Confirm token: {}", confirmationToken);
+        if (confirmationRequired) {
+            log.debug("Confirm token: {}", confirmationToken);
 
-        confirmEmailTokenRepository.save(confirmationToken, confirmationTokenLifetime);
+            confirmEmailTokenRepository.save(confirmationToken, confirmationTokenLifetime);
 
-        log.debug("Confirm token saved: {}", confirmationToken);
+            log.debug("Confirm token saved: {}", confirmationToken);
 
-        messageService.sendConfirmEmail(confirmationToken);
+            messageService.sendConfirmEmail(confirmationToken);
+        }else{
+            log.debug("Confirmation not required for email {}", email);
+
+            mediator.send(new ActivateUserCommand(email));
+
+            log.debug("User activated: {}", email);
+        }
     }
 
     public void sendRegisterMessage(String email) throws NotFoundException {
