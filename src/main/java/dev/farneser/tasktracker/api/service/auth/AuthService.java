@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,8 @@ public class AuthService {
             return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
+        } catch (DisabledException e) {
+            throw e;
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
         }
