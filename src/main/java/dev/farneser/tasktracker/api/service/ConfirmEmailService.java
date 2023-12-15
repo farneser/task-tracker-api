@@ -46,7 +46,7 @@ public class ConfirmEmailService {
             log.debug("Confirm token saved: {}", confirmationToken);
 
             messageService.sendConfirmEmail(confirmationToken);
-        }else{
+        } else {
             log.debug("Confirmation not required for email {}", email);
 
             mediator.send(new ActivateUserCommand(email));
