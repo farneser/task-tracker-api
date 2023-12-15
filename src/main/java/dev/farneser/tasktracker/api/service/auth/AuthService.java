@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,31 +53,35 @@ public class AuthService {
             return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
-        } catch (DisabledException e) {
+        } catch (DisabledException | BadCredentialsException e) {
             throw e;
         } catch (Exception e) {
             throw new InternalServerException(e.getMessage());
         }
     }
 
-    public JwtDto authenticate(LoginRequest loginRequest) throws UsernameNotFoundException, NotFoundException {
-        var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
+    public JwtDto authenticate(LoginRequest loginRequest) {
+        try {
+            var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
 
-        log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getEmail());
 
-        if (!user.isEnabled()) {
-            log.debug("User {} is not enabled", loginRequest.getEmail());
+            if (!user.isEnabled()) {
+                log.debug("User {} is not enabled", loginRequest.getEmail());
 
-            confirmEmailService.requireConfirm(user.getEmail());
+                confirmEmailService.requireConfirm(user.getEmail());
+            }
+
+            log.debug("Authenticating user {}", loginRequest.getEmail());
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+            log.debug("Authenticating user {}", loginRequest.getEmail());
+
+            return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
+        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException e) {
+            throw new BadCredentialsException("Invalid credentials");
         }
-
-        log.debug("Authenticating user {}", loginRequest.getEmail());
-
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-        log.debug("Authenticating user {}", loginRequest.getEmail());
-
-        return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
     }
 
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {

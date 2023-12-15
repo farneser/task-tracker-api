@@ -33,7 +33,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Bad credentials"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) throws NotFoundException {
+    public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) {
         log.info("Authenticating user {}", loginDto.getEmail());
 
         return ResponseEntity.ok(authService.authenticate(loginDto));
@@ -46,7 +46,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Invalid credentials"),
             @ApiResponse(responseCode = "409", description = "User already exists")
     })
-    public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
+    public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, NotFoundException {
         log.info("Registering user {}", registerDto.getEmail());
 
         return ResponseEntity.status(201).body(authService.register(registerDto));
