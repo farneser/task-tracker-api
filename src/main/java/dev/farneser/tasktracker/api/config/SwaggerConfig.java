@@ -73,7 +73,6 @@ public class SwaggerConfig {
 
         var defaultServerUrl = getDefaultServer(serverScheme, serverHost, serverPort, contextPath);
 
-
         if (enableSsl) {
             var sslServerUrl = getDefaultServer("https", serverHost, serverPort, contextPath);
 

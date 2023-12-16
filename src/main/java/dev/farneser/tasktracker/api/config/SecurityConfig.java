@@ -56,6 +56,7 @@ public class SecurityConfig {
 
                     log.debug("Authorize swagger requests");
                     req.requestMatchers(
+                            "/",
                             "/swagger-ui.html",
                             "/swagger-ui/**",
                             "/v3/api-docs",
