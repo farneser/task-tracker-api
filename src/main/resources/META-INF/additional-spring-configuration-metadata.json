@@ -29,6 +29,16 @@
       "name": "jwt.expiration.refresh",
       "type": "java.lang.Long",
       "description": "The expiration time of the refresh token (ms)."
+    },
+    {
+      "name": "application.swagger.enable-ssl",
+      "type": "java.lang.String",
+      "description": "Whether to enable SSL for Swagger server."
+    },
+    {
+      "name": "application.swagger.hosts",
+      "type": "java.lang.String",
+      "description": "The list of allowed Swagger hosts."
     }
   ]
 }

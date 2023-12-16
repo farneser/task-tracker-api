@@ -16,6 +16,13 @@ Use Cases:
 * Daily Task Management: Enhance daily productivity by visualizing and prioritizing tasks for personal and professional
   growth.
 
+Comments:
+
+* The API is designed for individual users, not teams. As such, it does not include features for collaboration or
+  sharing.
+* The API is not designed for large-scale projects. It is intended for personal use only.
+* To archive task you can archive all tasks or put task to columnId: `-1`
+
 ## Authentication
 
 Authentication is performed using JWT with refresh tokens and 256-bit encryption.
@@ -95,10 +102,19 @@ java -jar target/task-tracker-api-1.0.0.jar
 | JWT_EXPIRATION_REFRESH            | `1209600000`                                | Expiration time for refresh JWT tokens (in milliseconds) 14 days by default |
 | API_LOG_LEVEL                     | `INFO`                                      | Logging level for the application                                           |
 | SERVER_PORT                       | `8080`                                      | Port on which the server is running                                         |
-| USE_SWAGGER                       | true                                        | Enable/disable Swagger UI for API documentation                             |
 | ALLOWED_ORIGINS                   | `http://localhost:3000, http://client:3000` | Comma-separated list of allowed origins for CORS                            |
 | EMAIL_CONFIRMATION_REQUIRED       | `true`                                      | Enable/disable email confirmation                                           |
 | EMAIL_CONFIRMATION_TOKEN_LIFETIME | `86400000`                                  | Email confirmation code lifetime                                            |
+
+#### Swagger
+
+| Parameter          | Default value | Description                                                                                       |
+|--------------------|---------------|---------------------------------------------------------------------------------------------------|
+| USE_SWAGGER        | `true`        | Enable/disable Swagger UI for API documentation                                                   |
+| SWAGGER_ENABLE_SSL | `false`       | Enable/disable SSL for Swagger UI                                                                 |
+| SWAGGER_HOSTS      |               | Comma-separated list of allowed hosts for Swagger UI (ex. `http://127.0.0.1:8080, https://.....`) |
+
+### Postgres
 
 | Parameter         | Default value  | Description                                    |
 |-------------------|----------------|------------------------------------------------|
@@ -137,11 +153,8 @@ services:
     container_name: api-container
     environment:
       JWT_SECRET: F40BB648F9CA2303F6878ACD7CF446A28845426C508BF3CBC06740AD892D7B9B # example 256-bit key
-      JWT_EXPIRATION_ACCESS: 120000
-      JWT_EXPIRATION_REFRESH: 1209600000
-      LOG_LEVEL: INFO
-      SERVER_PORT: 8080
       USE_SWAGGER: true
+      SWAGGER_ENABLE_SSL: true
       ALLOWED_ORIGINS: http://localhost:3000, http://client:3000
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
