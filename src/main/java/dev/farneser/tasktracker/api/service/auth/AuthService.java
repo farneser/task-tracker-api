@@ -24,6 +24,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * The `AuthService` class provides authentication and authorization-related functionality,
+ * including user registration, login, token refresh, and account activation.
+ * It interacts with the authentication manager, JWT service, confirmation email service, and mediator
+ * to handle user-related operations.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,6 +40,14 @@ public class AuthService {
     private final Mediator mediator;
     private final ModelMapper modelMapper;
 
+    /**
+     * Registers a new user with the provided registration data.
+     *
+     * @param registerDto The registration data for the new user.
+     * @return A JWT containing an access token and a refresh token upon successful registration.
+     * @throws InternalServerException If an unexpected internal server error occurs.
+     * @throws UniqueDataException     If the provided email is already taken.
+     */
     public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
         log.debug("Registering user {}", registerDto.getEmail());
 
@@ -60,6 +74,13 @@ public class AuthService {
         }
     }
 
+    /**
+     * Authenticates a user with the provided login credentials.
+     *
+     * @param loginRequest The login credentials.
+     * @return A JWT containing an access token and a refresh token upon successful authentication.
+     * @throws BadCredentialsException If the provided credentials are invalid.
+     */
     public JwtDto authenticate(LoginRequest loginRequest) {
         try {
             var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
@@ -84,6 +105,15 @@ public class AuthService {
         }
     }
 
+    /**
+     * Refreshes an access token using a valid refresh token.
+     *
+     * @param jwtDto The JWT containing the refresh token.
+     * @return A new JWT with an updated access token and refresh token.
+     * @throws TokenExpiredException If the refresh token is expired.
+     * @throws InvalidTokenException If the refresh token is invalid.
+     * @throws NotFoundException     If the refresh token is not found.
+     */
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
@@ -105,6 +135,13 @@ public class AuthService {
         return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
     }
 
+    /**
+     * Updates the refresh token for the specified user and returns the new refresh token.
+     *
+     * @param email The email of the user for whom to update the refresh token.
+     * @return The newly generated refresh token.
+     * @throws NotFoundException If the user is not found.
+     */
     private String updateRefreshToken(String email) throws NotFoundException {
         log.debug("Updating refresh token for user {}", email);
 
@@ -123,6 +160,12 @@ public class AuthService {
         return tokenString;
     }
 
+    /**
+     * Activates a user account with the specified activation ID.
+     *
+     * @param id The activation ID.
+     * @throws NotFoundException If the activation ID is not found.
+     */
     public void activateAccount(UUID id) throws NotFoundException {
         log.debug("Activating account {}", id);
 

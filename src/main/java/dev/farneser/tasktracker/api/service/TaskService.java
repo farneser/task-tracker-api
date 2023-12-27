@@ -21,6 +21,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * The `TaskService` class provides functionality related to task management.
+ * It allows creating, retrieving, updating, and deleting tasks for a user.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,14 @@ public class TaskService {
     private final ModelMapper modelMapper;
     private final UserService userService;
 
+    /**
+     * Creates a new task for the authenticated user.
+     *
+     * @param dto            The data to create the task.
+     * @param authentication The authentication object representing the current user.
+     * @return The created task view.
+     * @throws NotFoundException If the user is not found.
+     */
     public TaskView create(CreateTaskDto dto, Authentication authentication) throws NotFoundException {
         log.debug("Creating task {}", dto.getTaskName());
 
@@ -42,15 +54,20 @@ public class TaskService {
 
         command.setUserId(user.getId());
 
-        log.debug("Creating task {}", dto.getTaskName());
-
-        var columnId = mediator.send(command);
+        var taskId = mediator.send(command);
 
         log.debug("Created task {}", dto.getTaskName());
 
-        return get(columnId, authentication);
+        return get(taskId, authentication);
     }
 
+    /**
+     * Retrieves all tasks for the authenticated user.
+     *
+     * @param authentication The authentication object representing the current user.
+     * @return The list of task lookup views.
+     * @throws NotFoundException If the user is not found.
+     */
     public List<TaskLookupView> get(Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
@@ -59,6 +76,14 @@ public class TaskService {
         return mediator.send(new GetTaskByUserIdQuery(user.getId()));
     }
 
+    /**
+     * Retrieves a specific task for the authenticated user.
+     *
+     * @param id             The ID of the task to retrieve.
+     * @param authentication The authentication object representing the current user.
+     * @return The task view for the specified task ID.
+     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     */
     public TaskView get(Long id, Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
@@ -67,6 +92,13 @@ public class TaskService {
         return mediator.send(new GetTaskByIdQuery(user.getId(), id));
     }
 
+    /**
+     * Deletes a specific task for the authenticated user.
+     *
+     * @param id             The ID of the task to delete.
+     * @param authentication The authentication object representing the current user.
+     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     */
     public void delete(Long id, Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
@@ -75,6 +107,15 @@ public class TaskService {
         mediator.send(new DeleteTaskCommand(user.getId(), id));
     }
 
+    /**
+     * Updates a specific task for the authenticated user.
+     *
+     * @param id             The ID of the task to update.
+     * @param patchTaskDto   The data to patch the task.
+     * @param authentication The authentication object representing the current user.
+     * @return The updated task view for the specified task ID.
+     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     */
     public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
@@ -94,6 +135,13 @@ public class TaskService {
         return get(id, authentication);
     }
 
+    /**
+     * Retrieves all archived tasks for the authenticated user.
+     *
+     * @param authentication The authentication object representing the current user.
+     * @return The list of archived task lookup views.
+     * @throws NotFoundException If the user is not found.
+     */
     public List<TaskLookupView> getArchived(Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 
@@ -102,6 +150,12 @@ public class TaskService {
         return mediator.send(new GetArchivedTaskByUserIdQuery(user.getId()));
     }
 
+    /**
+     * Archives all tasks for the authenticated user.
+     *
+     * @param authentication The authentication object representing the current user.
+     * @throws NotFoundException If the user is not found.
+     */
     public void archiveTasks(Authentication authentication) throws NotFoundException {
         var user = userService.getUser(authentication);
 

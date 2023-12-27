@@ -16,6 +16,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * The `UserService` class provides functionality related to user management.
+ * It implements the Spring `UserDetailsService` interface for user authentication.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,13 +28,28 @@ public class UserService implements UserDetailsService {
     private final Mediator mediator;
     private final ModelMapper modelMapper;
 
+    /**
+     * Load user details by username (email) for authentication.
+     *
+     * @param email The email (username) of the user.
+     * @return UserDetails representing the user.
+     * @throws UsernameNotFoundException If the user with the given email is not found.
+     */
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.debug("Loading user by email {}", email);
 
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
+    /**
+     * Get user details for the authenticated user.
+     *
+     * @param authentication The authentication object representing the current user.
+     * @return UserView representing the authenticated user.
+     * @throws NotFoundException If the user is not found.
+     */
     public UserView getUser(Authentication authentication) throws NotFoundException {
         var username = authentication.getName();
 
@@ -39,6 +58,14 @@ public class UserService implements UserDetailsService {
         return mediator.send(new GetUserByEmailQuery(username));
     }
 
+    /**
+     * Patch user details for the authenticated user.
+     *
+     * @param patchUserDto   The data to patch the user.
+     * @param authentication The authentication object representing the current user.
+     * @return UserView representing the patched user.
+     * @throws NotFoundException If the user is not found.
+     */
     public UserView patch(PatchUserDto patchUserDto, Authentication authentication) throws NotFoundException {
         log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
 

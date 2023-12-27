@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * The `ConfirmEmailService` class provides functionality for email confirmation and user activation.
+ * It manages the creation, sending, and confirmation of email tokens.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,12 +25,20 @@ public class ConfirmEmailService {
     private final MessageService messageService;
     private final ConfirmEmailTokenRepository confirmEmailTokenRepository;
     private final Mediator mediator;
+
     @Value("${application.email.confirmation.required:true}")
     private Boolean confirmationRequired;
-    // default 24h
+
+    // Default token lifetime: 24 hours
     @Value("${application.email.confirmation.token-lifetime:86400000}")
     private Long confirmationTokenLifetime;
 
+    /**
+     * Creates a confirmation token for the specified email address.
+     *
+     * @param email The email address for which to create the confirmation token.
+     * @return The created confirmation token.
+     */
     private ConfirmEmailToken createConfirmationToken(String email) {
         var confirmTokenExpiration = new Date(System.currentTimeMillis() + confirmationTokenLifetime);
 
@@ -35,6 +47,12 @@ public class ConfirmEmailService {
         return new ConfirmEmailToken(email, confirmTokenExpiration);
     }
 
+    /**
+     * Sends a confirmation email or activates the user immediately based on the application's configuration.
+     *
+     * @param email The email address for which to send the confirmation.
+     * @throws NotFoundException If the user is not found.
+     */
     public void requireConfirm(String email) throws NotFoundException {
         var confirmationToken = createConfirmationToken(email);
 
@@ -55,6 +73,12 @@ public class ConfirmEmailService {
         }
     }
 
+    /**
+     * Sends a registration message and initiates email confirmation or user activation based on the application's configuration.
+     *
+     * @param email The email address for which to send the registration message.
+     * @throws NotFoundException If the user is not found.
+     */
     public void sendRegisterMessage(String email) throws NotFoundException {
         log.debug("Sending register message for email {}", email);
 
@@ -78,6 +102,12 @@ public class ConfirmEmailService {
         }
     }
 
+    /**
+     * Confirms the user's email address using the provided confirmation token.
+     *
+     * @param id The ID of the confirmation token to use for email confirmation.
+     * @throws NotFoundException If the confirmation token is not found.
+     */
     public void confirm(UUID id) throws NotFoundException {
         var confirmEmailToken = confirmEmailTokenRepository.get(id);
 

@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * The `JwtService` class provides functionality for handling JSON Web Tokens (JWT) in the context of user authentication.
+ * It includes methods for generating access tokens, refresh tokens, and validating the integrity and expiration of tokens.
+ * This service utilizes the io.jsonwebtoken library for JWT processing.
+ */
 @Slf4j
 @Service
 public class JwtService {
