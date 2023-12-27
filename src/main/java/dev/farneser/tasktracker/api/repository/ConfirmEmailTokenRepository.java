@@ -36,11 +36,13 @@ public class ConfirmEmailTokenRepository {
 
     public ConfirmEmailToken get(UUID id) {
         log.debug("Getting confirm email token {}", id);
+
         return (ConfirmEmailToken) hashOperations.get(emailTokens, id.toString());
     }
 
     public void delete(UUID id) {
         log.debug("Deleting confirm email token {}", id);
+
         hashOperations.delete(emailTokens, id.toString());
     }
 }
