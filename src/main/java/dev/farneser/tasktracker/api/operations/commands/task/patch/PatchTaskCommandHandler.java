@@ -36,13 +36,9 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
 
                 // FIXME: 11/22/23 fix duplicate code with patch column command handler
                 tasksToChange.forEach(t -> {
-                    log.debug("Task found: {}", t);
-
                     if (t.getId().equals(task.getId())) {
                         return;
                     }
-
-                    log.debug("Task order number changed from {} to {}", t.getOrderNumber(), t.getOrderNumber() + 1);
 
                     if (oldOrder < newOrder) {
                         t.setOrderNumber(t.getOrderNumber() - 1);
