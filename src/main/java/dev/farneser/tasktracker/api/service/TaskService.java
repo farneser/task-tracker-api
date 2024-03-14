@@ -9,6 +9,7 @@ import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskComm
 import dev.farneser.tasktracker.api.operations.queries.task.getarchived.GetArchivedTaskByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyid.GetTaskByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuserid.GetTaskByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
@@ -44,17 +45,17 @@ public class TaskService {
     public TaskView create(CreateTaskDto dto, Authentication authentication) throws NotFoundException {
         log.debug("Creating task {}", dto.getTaskName());
 
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Creating task {}", dto.getTaskName());
 
-        var command = modelMapper.map(dto, CreateTaskCommand.class);
+        CreateTaskCommand command = modelMapper.map(dto, CreateTaskCommand.class);
 
         log.debug("Creating task {}", dto.getTaskName());
 
         command.setUserId(user.getId());
 
-        var taskId = mediator.send(command);
+        Long taskId = mediator.send(command);
 
         log.debug("Created task {}", dto.getTaskName());
 
@@ -69,7 +70,7 @@ public class TaskService {
      * @throws NotFoundException If the user is not found.
      */
     public List<TaskLookupView> get(Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting tasks for user {}", user.getEmail());
 
@@ -85,7 +86,7 @@ public class TaskService {
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
     public TaskView get(Long id, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting task {} for user {}", id, user.getEmail());
 
@@ -100,7 +101,7 @@ public class TaskService {
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
     public void delete(Long id, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Deleting task {} for user {}", id, user.getEmail());
 
@@ -117,11 +118,11 @@ public class TaskService {
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
     public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Patching task {} for user {}", id, user.getEmail());
 
-        var command = modelMapper.map(patchTaskDto, PatchTaskCommand.class);
+        PatchTaskCommand command = modelMapper.map(patchTaskDto, PatchTaskCommand.class);
 
         command.setTaskId(id);
         command.setUserId(user.getId());
@@ -143,7 +144,7 @@ public class TaskService {
      * @throws NotFoundException If the user is not found.
      */
     public List<TaskLookupView> getArchived(Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting archived tasks for user {}", user.getEmail());
 
@@ -157,7 +158,7 @@ public class TaskService {
      * @throws NotFoundException If the user is not found.
      */
     public void archiveTasks(Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Archiving tasks for user {}", user.getEmail());
 

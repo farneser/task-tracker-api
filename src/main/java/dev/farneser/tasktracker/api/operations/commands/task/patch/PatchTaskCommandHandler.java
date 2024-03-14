@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -21,26 +22,27 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
 
     private static void patchOrder(long orderNumber, KanbanTask task) {
         if (task.getColumn() != null) {
-            var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
+            long oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
 
             log.debug("Old order: {}", oldOrder);
 
             task.setOrderNumber(orderNumber);
 
-            var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, orderNumber) && c.getOrderNumber() <= Math.max(oldOrder, orderNumber)).toList();
+            List<KanbanTask> tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, orderNumber) && c.getOrderNumber() <= Math.max(oldOrder, orderNumber)).toList();
 
             log.debug("Tasks to change: {}", tasksToChange);
 
             OrderService.patchOrder(task.getId(), orderNumber, oldOrder, tasksToChange);
         } else {
             log.debug("Column is null");
+
             task.setOrderNumber(null);
         }
     }
 
     @Override
     public Void handle(PatchTaskCommand command) throws NotFoundException {
-        var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
+        KanbanTask task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
         log.debug("Task found: {}", task);
 

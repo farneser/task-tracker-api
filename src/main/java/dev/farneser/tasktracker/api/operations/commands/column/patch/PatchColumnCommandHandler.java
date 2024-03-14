@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.column.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.KanbanColumn;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -19,8 +21,8 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
 
     @Override
     public Void handle(PatchColumnCommand command) throws NotFoundException {
-        var columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
-        var column = columns.stream().filter(c -> c.getId().equals(command.getColumnId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
+        List<KanbanColumn> columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+        KanbanColumn column = columns.stream().filter(c -> c.getId().equals(command.getColumnId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
 
         log.debug("Column found: {}", column);
 
@@ -32,24 +34,12 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
         if (command.getOrderNumber() != null) {
             log.debug("Column order number changed from {} to {}", column.getOrderNumber(), command.getOrderNumber());
 
-            var oldOrder = column.getOrderNumber();
-            var newOrder = command.getOrderNumber();
+            long oldOrder = column.getOrderNumber();
+            long newOrder = command.getOrderNumber();
 
             column.setOrderNumber(newOrder);
 
-            var columnsToChange = columns.stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
-
-            columnsToChange.forEach(c -> {
-                if (c.getId().equals(column.getId())) {
-                    return;
-                }
-
-                if (oldOrder < newOrder) {
-                    c.setOrderNumber(c.getOrderNumber() - 1);
-                } else {
-                    c.setOrderNumber(c.getOrderNumber() + 1);
-                }
-            });
+            List<KanbanColumn> columnsToChange = columns.stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
 
             OrderService.patchOrder(column.getId(), newOrder, oldOrder, columnsToChange);
         }
@@ -58,6 +48,7 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
             log.debug("Column isCompleted changed from {} to {}", column.getIsCompleted(), command.getIsCompleted());
             column.setIsCompleted(command.getIsCompleted());
         }
+
         log.debug("Column edit date changed from {} to {}", column.getEditDate(), new Date(System.currentTimeMillis()));
         column.setEditDate(new Date(System.currentTimeMillis()));
 
@@ -66,6 +57,7 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
         columnRepository.save(column);
 
         log.debug("Column saved: {}", column);
+
         return null;
     }
 }

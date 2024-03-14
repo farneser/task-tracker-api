@@ -40,7 +40,7 @@ public class ConfirmEmailService {
      * @return The created confirmation token.
      */
     private ConfirmEmailToken createConfirmationToken(String email) {
-        var confirmTokenExpiration = new Date(System.currentTimeMillis() + confirmationTokenLifetime);
+        Date confirmTokenExpiration = new Date(System.currentTimeMillis() + confirmationTokenLifetime);
 
         log.debug("Confirm token expiration: {}", confirmTokenExpiration);
 
@@ -54,7 +54,7 @@ public class ConfirmEmailService {
      * @throws NotFoundException If the user is not found.
      */
     public void requireConfirm(String email) throws NotFoundException {
-        var confirmationToken = createConfirmationToken(email);
+        ConfirmEmailToken confirmationToken = createConfirmationToken(email);
 
         if (confirmationRequired) {
             log.debug("Confirm token: {}", confirmationToken);
@@ -85,7 +85,7 @@ public class ConfirmEmailService {
         if (confirmationRequired) {
             log.debug("Confirmation required for email {}", email);
 
-            var confirmationToken = createConfirmationToken(email);
+            ConfirmEmailToken confirmationToken = createConfirmationToken(email);
 
             log.debug("Confirm token: {}", confirmationToken);
 
@@ -109,7 +109,7 @@ public class ConfirmEmailService {
      * @throws NotFoundException If the confirmation token is not found.
      */
     public void confirm(UUID id) throws NotFoundException {
-        var confirmEmailToken = confirmEmailTokenRepository.get(id);
+        ConfirmEmailToken confirmEmailToken = confirmEmailTokenRepository.get(id);
 
         log.debug("Confirm email token: {}", confirmEmailToken);
 

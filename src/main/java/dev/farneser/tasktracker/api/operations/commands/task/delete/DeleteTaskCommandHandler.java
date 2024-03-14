@@ -2,12 +2,14 @@ package dev.farneser.tasktracker.api.operations.commands.task.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.KanbanTask;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -17,15 +19,15 @@ public class DeleteTaskCommandHandler implements CommandHandler<DeleteTaskComman
 
     @Override
     public Void handle(DeleteTaskCommand command) throws NotFoundException {
-        var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
+        KanbanTask task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
         log.debug("Task found: {}", task);
 
-        var tasks = taskRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+        List<KanbanTask> tasks = taskRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
 
         log.debug("Tasks found: {}", tasks);
 
-        var tasksToUpdate = tasks.stream().filter(t -> t.getOrderNumber() > task.getOrderNumber()).toList();
+        List<KanbanTask> tasksToUpdate = tasks.stream().filter(t -> t.getOrderNumber() > task.getOrderNumber()).toList();
 
         log.debug("Tasks to update: {}", tasksToUpdate);
 

@@ -1,7 +1,5 @@
 package dev.farneser.tasktracker.api.service.order;
 
-import dev.farneser.tasktracker.api.models.KanbanTask;
-
 import java.util.List;
 
 public abstract class OrderService {

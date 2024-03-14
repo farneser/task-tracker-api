@@ -1,12 +1,14 @@
 package dev.farneser.tasktracker.api.operations.commands.task.archive;
 
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.KanbanColumn;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -16,7 +18,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
 
     @Override
     public Void handle(ArchiveTasksCommand command) {
-        var columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+        List<KanbanColumn> columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
 
         log.debug("Columns found: {}", columns);
 

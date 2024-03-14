@@ -21,7 +21,7 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         try {
-            var redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
+            RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
 
             log.debug("Redis host:port = {}:{}", redisHost, redisPort);
 
@@ -38,7 +38,7 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         try {
-            var template = new RedisTemplate<String, Object>();
+            RedisTemplate<String, Object> template = new RedisTemplate<>();
 
             log.debug("Redis template created");
 

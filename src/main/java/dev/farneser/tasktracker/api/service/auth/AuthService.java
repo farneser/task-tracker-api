@@ -2,10 +2,13 @@ package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.models.RefreshToken;
+import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
+import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
@@ -52,7 +55,7 @@ public class AuthService {
         log.debug("Registering user {}", registerDto.getEmail());
 
         try {
-            var command = modelMapper.map(registerDto, RegisterUserCommand.class);
+            RegisterUserCommand command = modelMapper.map(registerDto, RegisterUserCommand.class);
 
             log.debug("Registering user {}", registerDto.getEmail());
 
@@ -83,7 +86,7 @@ public class AuthService {
      */
     public JwtDto authenticate(LoginRequest loginRequest) {
         try {
-            var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
+            UserView user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
 
             log.debug("Authenticating user {}", loginRequest.getEmail());
 
@@ -117,11 +120,11 @@ public class AuthService {
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
-        var refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
+        RefreshToken refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
 
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
-        var user = refreshToken.getUser();
+        User user = refreshToken.getUser();
 
         log.debug("User {} found", user.getEmail());
 
@@ -145,11 +148,11 @@ public class AuthService {
     private String updateRefreshToken(String email) throws NotFoundException {
         log.debug("Updating refresh token for user {}", email);
 
-        var user = mediator.send(new GetUserByEmailQuery(email));
+        UserView user = mediator.send(new GetUserByEmailQuery(email));
 
         log.debug("User {} found", user.getEmail());
 
-        var tokenString = jwtService.generateRefreshToken(user.getEmail());
+        String tokenString = jwtService.generateRefreshToken(user.getEmail());
 
         log.debug("Token generated for user {}", user.getEmail());
 

@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 public class TestContainerConfig {
     @Bean
     public DataSource dataSource() {
-        var pgContainer = new PostgreSQLContainer<>("postgres:latest")
+        PostgreSQLContainer pgContainer = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("task-tracker")
                 .withUsername("postgres")
                 .withPassword("postgres")
@@ -26,7 +26,7 @@ public class TestContainerConfig {
 
         pgContainer.start();
 
-        var dataSource = new DriverManagerDataSource();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl(pgContainer.getJdbcUrl());

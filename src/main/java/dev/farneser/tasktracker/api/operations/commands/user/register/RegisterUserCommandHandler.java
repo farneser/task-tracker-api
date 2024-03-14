@@ -21,7 +21,7 @@ public class RegisterUserCommandHandler implements CommandHandler<RegisterUserCo
     public Long handle(RegisterUserCommand command) {
         log.debug("Registering user: {}", command);
 
-        var user = User
+        User user = User
                 .builder()
                 .email(command.getEmail())
                 .password(passwordEncoder.encode(command.getPassword()))

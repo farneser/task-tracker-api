@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws IOException, ServletException {
         log.debug("Jwt authentication filter");
 
-        var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         log.debug("Auth header: {}", authHeader);
 
@@ -50,20 +51,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        var jwt = authHeader.substring(AUTH_PREFIX.length());
+        String jwt = authHeader.substring(AUTH_PREFIX.length());
 
         try {
-            var email = jwtService.extractUsername(jwt);
+            String email = jwtService.extractUsername(jwt);
 
             log.debug("Email: {}", email);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                var user = this.userService.loadUserByUsername(email);
+                UserDetails user = this.userService.loadUserByUsername(email);
 
                 log.debug("User: {}", user);
 
                 if (jwtService.isTokenValid(jwt, user.getUsername())) {
-                    var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
                     log.debug("Auth token created for user: {}", user.getUsername());
 

@@ -15,7 +15,7 @@ public class UserRepositoryTest {
 
     @Test
     void userSaveTest() {
-        var user = new User();
+        User user = new User();
 
         user.setEmail("test@email.com");
         user.setPassword("password");

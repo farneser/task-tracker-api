@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.operations.queries.user.getbyemail;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
+import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class GetUserByEmailQueryHandler implements QueryHandler<GetUserByEmailQu
     public UserView handle(GetUserByEmailQuery query) throws NotFoundException {
         log.debug("Query: {}", query);
 
-        var user = userRepository.findByEmail(query.getEmail()).orElseThrow(() -> new UserNotFoundException(query.getEmail()));
+        User user = userRepository.findByEmail(query.getEmail()).orElseThrow(() -> new UserNotFoundException(query.getEmail()));
 
         log.debug("User found: {}", user);
 

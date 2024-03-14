@@ -15,10 +15,10 @@ public class TaskMapper {
     private final ModelMapper modelMapper;
 
     public List<TaskLookupView> mapTaskToTaskLookupView(List<KanbanTask> tasks) {
-        var result = new ArrayList<TaskLookupView>();
+        ArrayList<TaskLookupView> result = new ArrayList<>();
 
         tasks.forEach(task -> {
-            var view = modelMapper.map(task, TaskLookupView.class);
+            TaskLookupView view = modelMapper.map(task, TaskLookupView.class);
 
             if (task.getColumn() != null) {
                 view.setColumnId(task.getColumn().getId());

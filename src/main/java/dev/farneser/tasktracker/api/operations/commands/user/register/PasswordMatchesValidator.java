@@ -13,7 +13,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
-        var user = (RegisterDto) obj;
+        RegisterDto user = (RegisterDto) obj;
 
         log.debug("Validating password matches for user: {}", user);
 

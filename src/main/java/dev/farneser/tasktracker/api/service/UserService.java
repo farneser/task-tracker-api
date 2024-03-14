@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
      * @throws NotFoundException If the user is not found.
      */
     public UserView getUser(Authentication authentication) throws NotFoundException {
-        var username = authentication.getName();
+        String username = authentication.getName();
 
         log.debug("Getting user {}", username);
 
@@ -69,11 +69,11 @@ public class UserService implements UserDetailsService {
     public UserView patch(PatchUserDto patchUserDto, Authentication authentication) throws NotFoundException {
         log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
 
-        var user = getUser(authentication);
+        UserView user = getUser(authentication);
 
         log.debug("User {} found", user.getId());
 
-        var command = modelMapper.map(patchUserDto, PatchUserCommand.class);
+        PatchUserCommand command = modelMapper.map(patchUserDto, PatchUserCommand.class);
 
         command.setUserId(user.getId());
 

@@ -38,7 +38,7 @@ public class LogoutService implements LogoutHandler {
     ) {
         log.debug("Logging out user {}", authentication.getName());
 
-        var authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
         log.debug("Auth header: {}", authHeader);
 
@@ -48,7 +48,7 @@ public class LogoutService implements LogoutHandler {
 
         log.debug("Auth header: {}", authHeader);
 
-        var jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7);
 
         try {
             log.debug("Deleting refresh token {}", jwt);

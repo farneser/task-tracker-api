@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.KanbanColumn;
 import dev.farneser.tasktracker.api.models.KanbanTask;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,13 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
     @Override
     public Long handle(CreateTaskCommand command) throws NotFoundException {
-        var column = columnRepository
+        KanbanColumn column = columnRepository
                 .findByIdAndUserId(command.getColumnId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
 
         log.debug("Column found: {}", column);
 
-        var orderNumber = 1L;
+        long orderNumber = 1L;
 
         if (column.getTasks() != null) {
 
@@ -37,11 +38,12 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
                 orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
             }
         }
-        var creationDate = new Date(System.currentTimeMillis());
+
+        Date creationDate = new Date(System.currentTimeMillis());
 
         log.debug("Order number: {}", orderNumber);
 
-        var task = KanbanTask.builder()
+        KanbanTask task = KanbanTask.builder()
                 .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)

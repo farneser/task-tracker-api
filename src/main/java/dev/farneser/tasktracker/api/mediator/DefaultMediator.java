@@ -28,7 +28,7 @@ public class DefaultMediator implements Mediator {
         log.debug("Send request: {}", request);
 
         if (request != null) {
-            var handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", CommandHandler.class);
+            CommandHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", CommandHandler.class);
 
             log.debug("Handler for request: {}, {} found. Request data: {}", request.getClass().getSimpleName(), handler.getClass().getSimpleName(), request);
 
@@ -45,7 +45,7 @@ public class DefaultMediator implements Mediator {
         log.debug("Send request: {}", request);
 
         if (request != null) {
-            var handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", QueryHandler.class);
+            QueryHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", QueryHandler.class);
 
             log.debug("Handler for request: {}, {} found. Request data: {}", request.getClass().getSimpleName(), handler.getClass().getSimpleName(), request);
 

@@ -22,7 +22,7 @@ public class CommonsConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        var mapper = new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
 
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 

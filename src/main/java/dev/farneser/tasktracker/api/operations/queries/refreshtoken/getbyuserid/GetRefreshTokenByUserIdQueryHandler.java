@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class GetRefreshTokenByUserIdQueryHandler implements QueryHandler<GetRefr
 
     @Override
     public RefreshToken handle(GetRefreshTokenByUserIdQuery query) throws NotFoundException {
-        var tokens = refreshTokenRepository.findByUserId(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId()));
+        List<RefreshToken> tokens = refreshTokenRepository.findByUserId(query.getId()).orElseThrow(() -> new RefreshTokenNotFoundException(query.getId()));
 
         log.debug("Tokens found: {}", tokens);
 

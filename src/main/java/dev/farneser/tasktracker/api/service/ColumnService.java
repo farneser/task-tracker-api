@@ -9,6 +9,7 @@ import dev.farneser.tasktracker.api.operations.queries.column.getbyid.GetColumnB
 import dev.farneser.tasktracker.api.operations.queries.column.getbyuserid.GetColumnByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid.GetTaskByUserIdAndColumnIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
+import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
 import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
@@ -43,11 +44,11 @@ public class ColumnService {
     public ColumnView create(CreateColumnDto dto, Authentication authentication) throws NotFoundException {
         log.debug("Creating column {}", dto.getColumnName());
 
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Creating column {}", dto.getColumnName());
 
-        var command = modelMapper.map(dto, CreateColumnCommand.class);
+        CreateColumnCommand command = modelMapper.map(dto, CreateColumnCommand.class);
 
         log.debug("Creating column {}", dto.getColumnName());
 
@@ -55,7 +56,7 @@ public class ColumnService {
 
         log.debug("Creating column {}", dto.getColumnName());
 
-        var columnId = mediator.send(command);
+        Long columnId = mediator.send(command);
 
         log.debug("Created column {}", dto.getColumnName());
 
@@ -71,7 +72,7 @@ public class ColumnService {
      * @throws NotFoundException If the user is not found.
      */
     public List<ColumnView> get(Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting columns for user {}", user.getEmail());
 
@@ -87,7 +88,7 @@ public class ColumnService {
      * @throws NotFoundException If the user or column is not found.
      */
     public ColumnView get(Long id, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting column {} for user {}", id, user.getEmail());
 
@@ -102,7 +103,7 @@ public class ColumnService {
      * @throws NotFoundException If the user or column is not found.
      */
     public void delete(Long id, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Deleting column {} for user {}", id, user.getEmail());
 
@@ -119,11 +120,11 @@ public class ColumnService {
      * @throws NotFoundException If the user or column is not found.
      */
     public ColumnView patch(Long id, PatchColumnDto patchColumnDto, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Patching column {} for user {}", id, user.getEmail());
 
-        var command = modelMapper.map(patchColumnDto, PatchColumnCommand.class);
+        PatchColumnCommand command = modelMapper.map(patchColumnDto, PatchColumnCommand.class);
 
         log.debug("Patching column {} for user {}", id, user.getEmail());
 
@@ -148,7 +149,7 @@ public class ColumnService {
      * @throws NotFoundException If the user or column is not found.
      */
     public List<TaskLookupView> getTasks(Long id, Authentication authentication) throws NotFoundException {
-        var user = userService.getUser(authentication);
+        UserView user = userService.getUser(authentication);
 
         log.debug("Getting tasks for column {} for user {}", id, user.getEmail());
 
