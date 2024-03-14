@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.models;
 
+import dev.farneser.tasktracker.api.service.order.OrderIdentifier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tasks")
-public class KanbanTask {
+public class KanbanTask implements OrderIdentifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

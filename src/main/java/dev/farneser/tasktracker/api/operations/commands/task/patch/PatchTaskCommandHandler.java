@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.KanbanTask;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
+import dev.farneser.tasktracker.api.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,38 +19,22 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
     private final ColumnRepository columnRepository;
     private final TaskRepository taskRepository;
 
-    private static void patchOrder(PatchTaskCommand command, KanbanTask task) {
-        if (command.getOrderNumber() != null) {
-            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
+    private static void patchOrder(long orderNumber, KanbanTask task) {
+        if (task.getColumn() != null) {
+            var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
 
-            if (task.getColumn() != null) {
-                var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
-                long newOrder = command.getOrderNumber();
+            log.debug("Old order: {}", oldOrder);
 
-                log.debug("Old order: {}", oldOrder);
+            task.setOrderNumber(orderNumber);
 
-                task.setOrderNumber(newOrder);
+            var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, orderNumber) && c.getOrderNumber() <= Math.max(oldOrder, orderNumber)).toList();
 
-                var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
+            log.debug("Tasks to change: {}", tasksToChange);
 
-                log.debug("Tasks to change: {}", tasksToChange);
-
-                // FIXME: 11/22/23 fix duplicate code with patch column command handler
-                tasksToChange.forEach(t -> {
-                    if (t.getId().equals(task.getId())) {
-                        return;
-                    }
-
-                    if (oldOrder < newOrder) {
-                        t.setOrderNumber(t.getOrderNumber() - 1);
-                    } else {
-                        t.setOrderNumber(t.getOrderNumber() + 1);
-                    }
-                });
-            } else {
-                log.debug("Column is null");
-                task.setOrderNumber(null);
-            }
+            OrderService.patchOrder(task.getId(), orderNumber, oldOrder, tasksToChange);
+        } else {
+            log.debug("Column is null");
+            task.setOrderNumber(null);
         }
     }
 
@@ -71,9 +56,11 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
                 task.setColumn(columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found")));
             }
         }
+        if (command.getOrderNumber() != null) {
+            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
 
-        patchOrder(command, task);
-
+            patchOrder(command.getOrderNumber(), task);
+        }
         if (command.getTaskName() != null) {
             log.debug("Task name changed from {} to {}", task.getTaskName(), command.getTaskName());
 

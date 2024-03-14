@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.operations.commands.column.patch;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,8 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
                     c.setOrderNumber(c.getOrderNumber() + 1);
                 }
             });
+
+            OrderService.patchOrder(column.getId(), newOrder, oldOrder, columnsToChange);
         }
 
         if (command.getIsCompleted() != null) {
