@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tasks")
-public class KanbanTask implements OrderIdentifier {
+public class Task implements OrderIdentifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +30,11 @@ public class KanbanTask implements OrderIdentifier {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User assignedFor;
 
     @ManyToOne
-    @JoinColumn(name = "column_id", referencedColumnName = "id")
-    private KanbanColumn column;
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private Status status;
 
     @Column(name = "order_number")
     private Long orderNumber;

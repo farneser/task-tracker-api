@@ -15,29 +15,32 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "columns")
-public class KanbanColumn implements OrderIdentifier {
+@Table(name = "statuses")
+public class Status implements OrderIdentifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "column_name")
-    private String columnName;
+    @Column(name = "status_name")
+    private String statusName;
+
+    @Column(name = "status_color")
+    private String statusColor;
 
     @Column(name = "is_completed")
     private Boolean isCompleted;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
 
     @Column(name = "order_number")
     private Long orderNumber;
 
-    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
-    private List<KanbanTask> tasks;
+    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "creation_date", nullable = false)

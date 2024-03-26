@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.models;
 
+import dev.farneser.tasktracker.api.models.permissions.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,6 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "users", indexes = {
+        @Index(name = "username_index", columnList = "username", unique = true),
         @Index(name = "email_index", columnList = "email", unique = true)
 })
 public class User implements UserDetails {
@@ -24,6 +27,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
+
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -38,17 +44,20 @@ public class User implements UserDetails {
     @Column(name = "register_date", nullable = false)
     private Date registerDate;
 
-    @Column(name = "is_enabled", nullable = false)
+    @Column(name = "is_enabled")
     private boolean isEnabled;
+    @Column(name = "is_locked")
+    private boolean isLocked;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<ProjectMember> projects;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
+        return role.getAuthorities();
     }
 
     @Override
@@ -58,7 +67,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
 
     @Override
