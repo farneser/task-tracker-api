@@ -2,7 +2,11 @@ package dev.farneser.tasktracker.api.models;
 
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "project_members")
 public class ProjectMember {

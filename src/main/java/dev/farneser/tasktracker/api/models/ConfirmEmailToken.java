@@ -1,20 +1,18 @@
 package dev.farneser.tasktracker.api.models;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
+@Getter
 public class ConfirmEmailToken implements Serializable {
     @Id
-    private UUID token;
-    private String email;
-    private Date expiresAt;
+    private final UUID token;
+    private final String email;
+    private final Date expiresAt;
 
     public ConfirmEmailToken(String email, Date expiresAt) {
         this.email = email;
