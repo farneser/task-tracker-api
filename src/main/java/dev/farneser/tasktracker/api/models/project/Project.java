@@ -1,5 +1,6 @@
-package dev.farneser.tasktracker.api.models;
+package dev.farneser.tasktracker.api.models.project;
 
+import dev.farneser.tasktracker.api.models.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

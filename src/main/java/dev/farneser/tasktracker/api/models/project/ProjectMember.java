@@ -1,6 +1,6 @@
-package dev.farneser.tasktracker.api.models;
+package dev.farneser.tasktracker.api.models.project;
 
-import dev.farneser.tasktracker.api.models.permissions.Role;
+import dev.farneser.tasktracker.api.models.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +22,5 @@ public class ProjectMember {
     private Project project;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private ProjectRole role;
 }
