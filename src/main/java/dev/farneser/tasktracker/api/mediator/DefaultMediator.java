@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.mediator;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -24,7 +25,7 @@ public class DefaultMediator implements Mediator {
     }
 
     @Override
-    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException {
+    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Send request: {}", request);
 
         if (request != null) {
