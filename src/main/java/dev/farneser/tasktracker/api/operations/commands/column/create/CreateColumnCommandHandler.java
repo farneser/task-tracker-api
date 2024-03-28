@@ -1,12 +1,13 @@
 package dev.farneser.tasktracker.api.operations.commands.column.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
-import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.models.Status;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
-import dev.farneser.tasktracker.api.repository.UserRepository;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,16 +20,19 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCommand, Long> {
-    private final UserRepository userRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final ColumnRepository columnRepository;
 
     @Override
-    public Long handle(CreateColumnCommand command) throws NotFoundException {
-        User user = userRepository.findById(command.getUserId()).orElseThrow(() -> new UserNotFoundException(command.getUserId()));
+    public Long handle(CreateColumnCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
-        log.debug("User found: {}", user);
+        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
 
-        List<KanbanColumn> columns = columnRepository.findByUserIdOrderByOrderNumber(user.getId()).orElse(new ArrayList<>());
+        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)){
+            throw new OperationNotAuthorizedException();
+        }
+
+        List<Status> columns = columnRepository.findByProjectIdOrderByOrderNumber(command.getProjectId()).orElse(new ArrayList<>());
 
         log.debug("Columns found: {}", columns);
 
@@ -42,11 +46,11 @@ public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCo
 
         Date creationDate = new Date(System.currentTimeMillis());
 
-        KanbanColumn column = KanbanColumn
+        Status column = Status
                 .builder()
-                .columnName(command.getColumnName())
+                .statusName(command.getColumnName())
                 .isCompleted(command.getIsCompleted())
-                .user(user)
+                .project(member.getProject())
                 .orderNumber(orderNumber)
                 .creationDate(creationDate)
                 .editDate(creationDate)

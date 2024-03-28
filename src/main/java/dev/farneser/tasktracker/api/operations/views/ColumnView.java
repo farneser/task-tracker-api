@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.views;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
+import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,13 +37,13 @@ public class ColumnView implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         log.debug("Mapping ColumnView");
 
-        modelMapper.createTypeMap(KanbanColumn.class, ColumnView.class)
-                .addMapping(KanbanColumn::getId, ColumnView::setId)
-                .addMapping(KanbanColumn::getColumnName, ColumnView::setColumnName)
-                .addMapping(KanbanColumn::getIsCompleted, ColumnView::setIsCompleted)
-                .addMapping(KanbanColumn::getIsCompleted, ColumnView::setIsCompleted)
-                .addMapping(KanbanColumn::getCreationDate, ColumnView::setCreationDate)
-                .addMapping(KanbanColumn::getEditDate, ColumnView::setEditDate)
+        modelMapper.createTypeMap(Status.class, ColumnView.class)
+                .addMapping(Status::getId, ColumnView::setId)
+                .addMapping(Status::getStatusName, ColumnView::setColumnName)
+                .addMapping(Status::getIsCompleted, ColumnView::setIsCompleted)
+                .addMapping(Status::getIsCompleted, ColumnView::setIsCompleted)
+                .addMapping(Status::getCreationDate, ColumnView::setCreationDate)
+                .addMapping(Status::getEditDate, ColumnView::setEditDate)
                 .addMapping(col -> col.getTasks().stream().map(source -> modelMapper.map(source, TaskView.class)).toList(), ColumnView::setTasks);
     }
 }

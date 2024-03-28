@@ -12,4 +12,5 @@ public class CreateColumnCommand implements Command<Long> {
     private Long userId;
     private String columnName;
     private Boolean isCompleted;
+    private Long projectId;
 }
