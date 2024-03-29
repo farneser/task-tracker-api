@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.models;
 
+import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.service.order.OrderIdentifier;
 import jakarta.persistence.*;
 import lombok.*;

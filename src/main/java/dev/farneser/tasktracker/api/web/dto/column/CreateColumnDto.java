@@ -17,6 +17,8 @@ public class CreateColumnDto implements ITypeMapper {
     private String columnName;
     @Schema(name = "isCompleted", description = "Is column completed", example = "false")
     private Boolean isCompleted;
+    @Schema(name = "projectId", description = "Project id", example = "12")
+    private Long projectId;
 
     @Override
     public void mapping(ModelMapper modelMapper) {
@@ -24,6 +26,7 @@ public class CreateColumnDto implements ITypeMapper {
 
         modelMapper.createTypeMap(CreateColumnDto.class, CreateColumnCommand.class)
                 .addMapping(CreateColumnDto::getColumnName, CreateColumnCommand::setColumnName)
-                .addMapping(CreateColumnDto::getIsCompleted, CreateColumnCommand::setIsCompleted);
+                .addMapping(CreateColumnDto::getIsCompleted, CreateColumnCommand::setIsCompleted)
+                .addMapping(CreateColumnDto::getProjectId, CreateColumnCommand::setProjectId);
     }
 }

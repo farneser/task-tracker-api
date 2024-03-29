@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
@@ -45,7 +46,7 @@ public class UserController {
     public ResponseEntity<UserView> patchBy(
             @RequestBody @Valid PatchUserDto patchUserDto,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Patching user {}", authentication.getName());
 
         return ResponseEntity.ok(userService.patch(patchUserDto, authentication));

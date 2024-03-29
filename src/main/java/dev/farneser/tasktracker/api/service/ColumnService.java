@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.column.create.CreateColumnCommand;
 import dev.farneser.tasktracker.api.operations.commands.column.delete.DeleteColumnCommand;
@@ -22,7 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * The `ColumnService` class provides operations related to columns, including creation, retrieval, updating, and deletion.
+ * The `ColumnService` class provides operations related to columns, including creation, retrieval,
+ * updating, and deletion.
  * It interacts with the mediator to send commands and queries for column-related operations.
  */
 @Slf4j
@@ -41,7 +43,8 @@ public class ColumnService {
      * @return The created column view.
      * @throws NotFoundException If the user is not found.
      */
-    public ColumnView create(CreateColumnDto dto, Authentication authentication) throws NotFoundException {
+    public ColumnView create(CreateColumnDto dto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating column {}", dto.getColumnName());
 
         UserView user = userService.getUser(authentication);
@@ -102,7 +105,8 @@ public class ColumnService {
      * @param authentication The authentication object representing the user.
      * @throws NotFoundException If the user or column is not found.
      */
-    public void delete(Long id, Authentication authentication) throws NotFoundException {
+    public void delete(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Deleting column {} for user {}", id, user.getEmail());
@@ -119,7 +123,8 @@ public class ColumnService {
      * @return The updated column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public ColumnView patch(Long id, PatchColumnDto patchColumnDto, Authentication authentication) throws NotFoundException {
+    public ColumnView patch(Long id, PatchColumnDto patchColumnDto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Patching column {} for user {}", id, user.getEmail());

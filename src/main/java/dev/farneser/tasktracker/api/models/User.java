@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.models;
 
 import dev.farneser.tasktracker.api.models.permissions.Role;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

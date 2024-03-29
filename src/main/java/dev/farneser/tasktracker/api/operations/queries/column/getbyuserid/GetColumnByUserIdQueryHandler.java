@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.column.getbyuserid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
+import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.operations.views.ColumnView;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class GetColumnByUserIdQueryHandler implements QueryHandler<GetColumnByUs
 
     @Override
     public List<ColumnView> handle(GetColumnByUserIdQuery query) throws NotFoundException {
-        List<KanbanColumn> columns = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
+        List<Status> columns = columnRepository.findByUserIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
         log.debug("Column found: {}", columns);
 

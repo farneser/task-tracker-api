@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.column.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
+import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +19,15 @@ public class DeleteColumnCommandHandler implements CommandHandler<DeleteColumnCo
 
     @Override
     public Void handle(DeleteColumnCommand command) throws NotFoundException {
-        KanbanColumn column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
+        Status column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
 
         log.debug("Column found: {}", column);
 
-        List<KanbanColumn> columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+        List<Status> columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
 
         log.debug("Columns found: {}", columns);
 
-        List<KanbanColumn> columnsToUpdate = columns.stream().filter(c -> c.getOrderNumber() > column.getOrderNumber()).toList();
+        List<Status> columnsToUpdate = columns.stream().filter(c -> c.getOrderNumber() > column.getOrderNumber()).toList();
 
         log.debug("Columns to update: {}", columnsToUpdate);
 
