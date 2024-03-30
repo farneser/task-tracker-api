@@ -1,7 +1,7 @@
-package dev.farneser.tasktracker.api.web.dto.column;
+package dev.farneser.tasktracker.api.web.dto.status;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
-import dev.farneser.tasktracker.api.operations.commands.column.create.CreateColumnCommand;
+import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.modelmapper.ModelMapper;
 @Data
 @Slf4j
 @Schema(name = "CreateColumnDto", description = "Create column DTO")
-public class CreateColumnDto implements ITypeMapper {
+public class CreateStatusDto implements ITypeMapper {
     @Length(min = 1, max = 255)
     @Schema(name = "columnName", description = "Column name", example = "To do")
     private String columnName;
@@ -24,9 +24,9 @@ public class CreateColumnDto implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         log.debug("Mapping CreateColumnDto");
 
-        modelMapper.createTypeMap(CreateColumnDto.class, CreateColumnCommand.class)
-                .addMapping(CreateColumnDto::getColumnName, CreateColumnCommand::setColumnName)
-                .addMapping(CreateColumnDto::getIsCompleted, CreateColumnCommand::setIsCompleted)
-                .addMapping(CreateColumnDto::getProjectId, CreateColumnCommand::setProjectId);
+        modelMapper.createTypeMap(CreateStatusDto.class, CreateStatusCommand.class)
+                .addMapping(CreateStatusDto::getColumnName, CreateStatusCommand::setStatusName)
+                .addMapping(CreateStatusDto::getIsCompleted, CreateStatusCommand::setIsCompleted)
+                .addMapping(CreateStatusDto::getProjectId, CreateStatusCommand::setProjectId);
     }
 }

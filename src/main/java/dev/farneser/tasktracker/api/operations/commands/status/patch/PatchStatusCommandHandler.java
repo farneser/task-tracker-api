@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.commands.column.patch;
+package dev.farneser.tasktracker.api.operations.commands.status.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
@@ -21,13 +21,13 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PatchColumnCommandHandler implements CommandHandler<PatchColumnCommand, Void> {
+public class PatchStatusCommandHandler implements CommandHandler<PatchStatusCommand, Void> {
     private final ColumnRepository columnRepository;
     private final Map<Long, Lock> userLocks = new ConcurrentHashMap<>();
 
     @Override
     @Transactional
-    public Void handle(PatchColumnCommand command) throws NotFoundException {
+    public Void handle(PatchStatusCommand command) throws NotFoundException {
         Long userId = command.getUserId();
         Lock userLock = userLocks.computeIfAbsent(userId, k -> new ReentrantLock());
 
@@ -36,10 +36,10 @@ public class PatchColumnCommandHandler implements CommandHandler<PatchColumnComm
         try {
             // FIXME 28.03.2024: change userid to project id
             List<Status> columns = columnRepository.findByProjectIdOrderByOrderNumber(userId).orElse(new ArrayList<>());
-            Status column = columns.stream().filter(c -> c.getId().equals(command.getColumnId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
+            Status column = columns.stream().filter(c -> c.getId().equals(command.getStatusId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
 
-            if (command.getColumnName() != null) {
-                column.setStatusName(command.getColumnName());
+            if (command.getStatusName() != null) {
+                column.setStatusName(command.getStatusName());
             }
 
             if (command.getOrderNumber() != null) {

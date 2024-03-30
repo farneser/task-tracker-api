@@ -3,17 +3,17 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.operations.commands.column.create.CreateColumnCommand;
-import dev.farneser.tasktracker.api.operations.commands.column.delete.DeleteColumnCommand;
-import dev.farneser.tasktracker.api.operations.commands.column.patch.PatchColumnCommand;
-import dev.farneser.tasktracker.api.operations.queries.column.getbyid.GetColumnByIdQuery;
-import dev.farneser.tasktracker.api.operations.queries.column.getbyuserid.GetColumnByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;
+import dev.farneser.tasktracker.api.operations.commands.status.delete.DeleteStatusCommand;
+import dev.farneser.tasktracker.api.operations.commands.status.patch.PatchStatusCommand;
+import dev.farneser.tasktracker.api.operations.queries.status.getbyid.GetStatusByIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.status.getbyuserid.GetStatusByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid.GetTaskByUserIdAndColumnIdQuery;
-import dev.farneser.tasktracker.api.operations.views.ColumnView;
+import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
-import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
-import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
+import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
+import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ColumnService {
+public class StatusService {
     private final Mediator mediator;
     private final ModelMapper modelMapper;
     private final UserService userService;
@@ -43,7 +43,7 @@ public class ColumnService {
      * @return The created column view.
      * @throws NotFoundException If the user is not found.
      */
-    public ColumnView create(CreateColumnDto dto, Authentication authentication)
+    public StatusView create(CreateStatusDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating column {}", dto.getColumnName());
 
@@ -51,7 +51,7 @@ public class ColumnService {
 
         log.debug("Creating column {}", dto.getColumnName());
 
-        CreateColumnCommand command = modelMapper.map(dto, CreateColumnCommand.class);
+        CreateStatusCommand command = modelMapper.map(dto, CreateStatusCommand.class);
 
         log.debug("Creating column {}", dto.getColumnName());
 
@@ -59,11 +59,11 @@ public class ColumnService {
 
         log.debug("Creating column {}", dto.getColumnName());
 
-        Long columnId = mediator.send(command);
+        Long statusId = mediator.send(command);
 
         log.debug("Created column {}", dto.getColumnName());
 
-        return get(columnId, authentication);
+        return get(statusId, authentication);
     }
 
     /**
@@ -74,12 +74,12 @@ public class ColumnService {
      * @return The list of column views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<ColumnView> get(Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
+    public List<StatusView> get(Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting columns for user {}", user.getEmail());
 
-        return mediator.send(new GetColumnByUserIdQuery(user.getId(), retrieveTasks));
+        return mediator.send(new GetStatusByUserIdQuery(user.getId(), retrieveTasks));
     }
 
     /**
@@ -90,12 +90,12 @@ public class ColumnService {
      * @return The column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public ColumnView get(Long id, Authentication authentication) throws NotFoundException {
+    public StatusView get(Long id, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting column {} for user {}", id, user.getEmail());
 
-        return mediator.send(new GetColumnByIdQuery(user.getId(), id));
+        return mediator.send(new GetStatusByIdQuery(user.getId(), id));
     }
 
     /**
@@ -111,29 +111,29 @@ public class ColumnService {
 
         log.debug("Deleting column {} for user {}", id, user.getEmail());
 
-        mediator.send(new DeleteColumnCommand(user.getId(), id));
+        mediator.send(new DeleteStatusCommand(user.getId(), id));
     }
 
     /**
      * Updates a specific column for the authenticated user.
      *
      * @param id             The ID of the column to update.
-     * @param patchColumnDto The DTO containing information for updating the column.
+     * @param patchStatusDto The DTO containing information for updating the column.
      * @param authentication The authentication object representing the user.
      * @return The updated column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public ColumnView patch(Long id, PatchColumnDto patchColumnDto, Authentication authentication)
+    public StatusView patch(Long id, PatchStatusDto patchStatusDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Patching column {} for user {}", id, user.getEmail());
 
-        PatchColumnCommand command = modelMapper.map(patchColumnDto, PatchColumnCommand.class);
+        PatchStatusCommand command = modelMapper.map(patchStatusDto, PatchStatusCommand.class);
 
         log.debug("Patching column {} for user {}", id, user.getEmail());
 
-        command.setColumnId(id);
+        command.setStatusId(id);
         command.setUserId(user.getId());
 
         log.debug("Patching column {} for user {}", id, user.getEmail());

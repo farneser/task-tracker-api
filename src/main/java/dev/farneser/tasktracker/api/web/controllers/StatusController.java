@@ -2,11 +2,12 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.operations.views.ColumnView;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
-import dev.farneser.tasktracker.api.service.ColumnService;
-import dev.farneser.tasktracker.api.web.dto.column.CreateColumnDto;
-import dev.farneser.tasktracker.api.web.dto.column.PatchColumnDto;
+import dev.farneser.tasktracker.api.service.StatusService;
+import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
+import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,10 +24,10 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/column")
+@RequestMapping("/api/v1/status")
 @RequiredArgsConstructor
-public class ColumnController {
-    private final ColumnService columnService;
+public class StatusController {
+    private final StatusService statusService;
 
     @GetMapping
     @Operation(summary = "Get columns", description = "Get columns by JWT token")
@@ -35,14 +36,14 @@ public class ColumnController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Columns not found")
     })
-    public ResponseEntity<List<ColumnView>> get(
+    public ResponseEntity<List<StatusView>> get(
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
             Authentication authentication
     ) throws NotFoundException {
         log.info("Getting columns for user {}", authentication.getName());
 
-        return ResponseEntity.ok(columnService.get(retrieveTasks, authentication));
+        return ResponseEntity.ok(statusService.get(retrieveTasks, authentication));
     }
 
     @PostMapping
@@ -51,13 +52,13 @@ public class ColumnController {
             @ApiResponse(responseCode = "201", description = "Successfully created column"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<ColumnView> create(
-            @RequestBody @Valid CreateColumnDto createColumnDto,
+    public ResponseEntity<StatusView> create(
+            @RequestBody @Valid CreateStatusDto createStatusDto,
             Authentication authentication
-    ) throws NotFoundException {
-        log.info("Creating column for user {}, column name: {}", authentication.getName(), createColumnDto.getColumnName());
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        log.info("Creating column for user {}, column name: {}", authentication.getName(), createStatusDto.getColumnName());
 
-        return ResponseEntity.status(201).body(columnService.create(createColumnDto, authentication));
+        return ResponseEntity.status(201).body(statusService.create(createStatusDto, authentication));
     }
 
     @GetMapping("{id}")
@@ -67,13 +68,13 @@ public class ColumnController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Column not found")
     })
-    public ResponseEntity<ColumnView> getById(
+    public ResponseEntity<StatusView> getById(
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException {
         log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
 
-        return ResponseEntity.ok(columnService.get(id, authentication));
+        return ResponseEntity.ok(statusService.get(id, authentication));
     }
 
     @GetMapping("{id}/tasks")
@@ -89,7 +90,7 @@ public class ColumnController {
     ) throws NotFoundException {
         log.info("Getting tasks for user {}, column id: {}", authentication.getName(), id);
 
-        return ResponseEntity.ok(columnService.getTasks(id, authentication));
+        return ResponseEntity.ok(statusService.getTasks(id, authentication));
     }
 
     @PatchMapping("{id}")
@@ -99,14 +100,14 @@ public class ColumnController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Column not found")
     })
-    public ResponseEntity<ColumnView> patchById(
+    public ResponseEntity<StatusView> patchById(
             @PathVariable Long id,
-            @RequestBody @Valid PatchColumnDto patchColumnDto,
+            @RequestBody @Valid PatchStatusDto patchStatusDto,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Patching column for user {}, column id: {}", authentication.getName(), id);
 
-        return ResponseEntity.ok(columnService.patch(id, patchColumnDto, authentication));
+        return ResponseEntity.ok(statusService.patch(id, patchStatusDto, authentication));
     }
 
     @DeleteMapping("{id}")
@@ -119,10 +120,10 @@ public class ColumnController {
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
 
-        columnService.delete(id, authentication);
+        statusService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
     }

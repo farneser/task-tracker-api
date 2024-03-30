@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.commands.column.delete;
+package dev.farneser.tasktracker.api.operations.commands.status.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
@@ -14,12 +14,12 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DeleteColumnCommandHandler implements CommandHandler<DeleteColumnCommand, Void> {
+public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCommand, Void> {
     private final ColumnRepository columnRepository;
 
     @Override
-    public Void handle(DeleteColumnCommand command) throws NotFoundException {
-        Status column = columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found"));
+    public Void handle(DeleteStatusCommand command) throws NotFoundException {
+        Status column = columnRepository.findByIdAndUserId(command.getStatusId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
 
         log.debug("Column found: {}", column);
 
@@ -41,7 +41,7 @@ public class DeleteColumnCommandHandler implements CommandHandler<DeleteColumnCo
 
         columnRepository.delete(column);
 
-        log.debug("Column deleted: {}", command.getColumnId());
+        log.debug("Column deleted: {}", command.getStatusId());
 
         return null;
     }

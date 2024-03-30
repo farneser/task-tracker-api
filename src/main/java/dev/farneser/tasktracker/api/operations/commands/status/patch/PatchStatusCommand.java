@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.commands.column.create;
+package dev.farneser.tasktracker.api.operations.commands.status.patch;
 
 import dev.farneser.tasktracker.api.mediator.Command;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateColumnCommand implements Command<Long> {
+public class PatchStatusCommand implements Command<Void> {
     private Long userId;
-    private String columnName;
+    private Long statusId;
+    private String statusName;
     private Boolean isCompleted;
-    private Long projectId;
+    private Long orderNumber;
 }

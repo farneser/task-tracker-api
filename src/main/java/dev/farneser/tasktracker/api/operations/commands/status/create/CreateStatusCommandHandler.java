@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.commands.column.create;
+package dev.farneser.tasktracker.api.operations.commands.status.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
@@ -19,12 +19,12 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCommand, Long> {
+public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCommand, Long> {
     private final ProjectMemberRepository projectMemberRepository;
     private final ColumnRepository columnRepository;
 
     @Override
-    public Long handle(CreateColumnCommand command) throws NotFoundException, OperationNotAuthorizedException {
+    public Long handle(CreateStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
         ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
 
@@ -48,7 +48,7 @@ public class CreateColumnCommandHandler implements CommandHandler<CreateColumnCo
 
         Status column = Status
                 .builder()
-                .statusName(command.getColumnName())
+                .statusName(command.getStatusName())
                 .isCompleted(command.getIsCompleted())
                 .project(member.getProject())
                 .orderNumber(orderNumber)

@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @Slf4j
 @Schema(name = "ColumnView", description = "Column view")
-public class ColumnView implements ITypeMapper {
+public class StatusView implements ITypeMapper {
     @Schema(name = "id", description = "Column id", example = "1")
     private Long id;
     @Schema(name = "columnName", description = "Column name", example = "To do")
@@ -37,13 +37,13 @@ public class ColumnView implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         log.debug("Mapping ColumnView");
 
-        modelMapper.createTypeMap(Status.class, ColumnView.class)
-                .addMapping(Status::getId, ColumnView::setId)
-                .addMapping(Status::getStatusName, ColumnView::setColumnName)
-                .addMapping(Status::getIsCompleted, ColumnView::setIsCompleted)
-                .addMapping(Status::getIsCompleted, ColumnView::setIsCompleted)
-                .addMapping(Status::getCreationDate, ColumnView::setCreationDate)
-                .addMapping(Status::getEditDate, ColumnView::setEditDate)
-                .addMapping(col -> col.getTasks().stream().map(source -> modelMapper.map(source, TaskView.class)).toList(), ColumnView::setTasks);
+        modelMapper.createTypeMap(Status.class, StatusView.class)
+                .addMapping(Status::getId, StatusView::setId)
+                .addMapping(Status::getStatusName, StatusView::setColumnName)
+                .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
+                .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
+                .addMapping(Status::getCreationDate, StatusView::setCreationDate)
+                .addMapping(Status::getEditDate, StatusView::setEditDate)
+                .addMapping(col -> col.getTasks().stream().map(source -> modelMapper.map(source, TaskView.class)).toList(), StatusView::setTasks);
     }
 }
