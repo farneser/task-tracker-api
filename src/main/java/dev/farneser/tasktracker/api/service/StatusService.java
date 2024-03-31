@@ -38,12 +38,13 @@ public class StatusService {
     /**
      * Creates a new column for the authenticated user.
      *
+     * @param projectId      The ID of project
      * @param dto            The DTO containing information for creating the column.
      * @param authentication The authentication object representing the user.
      * @return The created column view.
      * @throws NotFoundException If the user is not found.
      */
-    public StatusView create(CreateStatusDto dto, Authentication authentication)
+    public StatusView create(Long projectId, CreateStatusDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating column {}", dto.getStatusName());
 
@@ -52,6 +53,8 @@ public class StatusService {
         log.debug("Creating column {}", dto.getStatusName());
 
         CreateStatusCommand command = modelMapper.map(dto, CreateStatusCommand.class);
+
+        command.setProjectId(projectId);
 
         log.debug("Creating column {}", dto.getStatusName());
 

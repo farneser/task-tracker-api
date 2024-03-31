@@ -44,21 +44,6 @@ public class StatusController {
         return ResponseEntity.ok(statusService.get(retrieveTasks, authentication));
     }
 
-    @PostMapping
-    @Operation(summary = "Create column", description = "Create column")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successfully created column"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-    })
-    public ResponseEntity<StatusView> create(
-            @RequestBody @Valid CreateStatusDto createStatusDto,
-            Authentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Creating column for user {}, column name: {}", authentication.getName(), createStatusDto.getStatusName());
-
-        return ResponseEntity.status(201).body(statusService.create(createStatusDto, authentication));
-    }
-
     @GetMapping("{id}")
     @Operation(summary = "Get column", description = "Get column by id")
     @ApiResponses(value = {
