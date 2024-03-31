@@ -101,17 +101,18 @@ public class StatusService {
     /**
      * Deletes a specific column for the authenticated user.
      *
-     * @param id             The ID of the column to delete.
+     * @param projectId             The ID of the project.
+     * @param statusId       The ID of the status to delete.
      * @param authentication The authentication object representing the user.
      * @throws NotFoundException If the user or column is not found.
      */
-    public void delete(Long id, Authentication authentication)
+    public void delete(Long projectId, Long statusId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Deleting column {} for user {}", id, user.getEmail());
+        log.debug("Deleting column {} for user {}", projectId, user.getEmail());
 
-        mediator.send(new DeleteStatusCommand(user.getId(), id));
+        mediator.send(new DeleteStatusCommand(user.getId(), projectId, statusId));
     }
 
     /**

@@ -2,11 +2,8 @@ package dev.farneser.tasktracker.api.operations.queries.project.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
-import dev.farneser.tasktracker.api.operations.views.ColumnView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

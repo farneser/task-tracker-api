@@ -7,8 +7,6 @@ import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
-import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
-import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,5 +90,4 @@ public class StatusController {
 
         return ResponseEntity.ok(statusService.getTasks(id, authentication));
     }
-
 }

@@ -104,7 +104,7 @@ public class ProjectController {
             Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
 
-        statusService.delete(id, authentication);
+        statusService.delete(id, statusId, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
     }
