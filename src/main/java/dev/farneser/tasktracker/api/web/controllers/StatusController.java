@@ -27,38 +27,6 @@ import java.util.List;
 public class StatusController {
     private final StatusService statusService;
 
-    @GetMapping
-    @Operation(summary = "Get columns", description = "Get columns by JWT token")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got columns"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Columns not found")
-    })
-    public ResponseEntity<List<StatusView>> get(
-            @Parameter(description = "Toggles inclusion of current task details in the response")
-            @RequestParam(defaultValue = "true") Boolean retrieveTasks,
-            Authentication authentication
-    ) throws NotFoundException {
-        log.info("Getting columns for user {}", authentication.getName());
-
-        return ResponseEntity.ok(statusService.get(retrieveTasks, authentication));
-    }
-
-    @GetMapping("{id}")
-    @Operation(summary = "Get column", description = "Get column by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got column"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
-    })
-    public ResponseEntity<StatusView> getById(
-            @PathVariable Long id,
-            Authentication authentication
-    ) throws NotFoundException {
-        log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
-
-        return ResponseEntity.ok(statusService.get(id, authentication));
-    }
 
     @GetMapping("{id}/tasks")
     @Operation(summary = "Get tasks", description = "Get tasks by column id")

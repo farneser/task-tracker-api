@@ -13,6 +13,7 @@ import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
 import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -74,6 +75,42 @@ public class ProjectController {
         return ResponseEntity.ok(Message.body("Successfully deleted project"));
     }
 
+    @GetMapping("{id}/status")
+    @Operation(summary = "Get columns", description = "Get columns by JWT token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully got columns"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Columns not found")
+    })
+    public ResponseEntity<List<StatusView>> getStatuses(
+            @PathVariable Long id,
+            @Parameter(description = "Toggles inclusion of current task details in the response")
+            @RequestParam(defaultValue = "true") Boolean retrieveTasks,
+            Authentication authentication
+    ) throws NotFoundException {
+        log.info("Getting columns for user {}", authentication.getName());
+
+        return ResponseEntity.ok(statusService.get(id, retrieveTasks, authentication));
+    }
+
+    @GetMapping("{id}/status/{statusId}")
+    @Operation(summary = "Get column", description = "Get column by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully got column"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Column not found")
+    })
+    public ResponseEntity<StatusView> getStatusById(
+            @PathVariable Long id,
+            @PathVariable Long statusId,
+            Authentication authentication
+    ) throws NotFoundException {
+        log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
+
+        return ResponseEntity.ok(statusService.get(id, statusId, authentication));
+    }
+
+
     @PostMapping("{id}/status")
     @Operation(summary = "Create status", description = "Create status")
     @ApiResponses(value = {
@@ -124,5 +161,4 @@ public class ProjectController {
 
         return ResponseEntity.ok(Message.body("Successfully deleted column"));
     }
-
 }

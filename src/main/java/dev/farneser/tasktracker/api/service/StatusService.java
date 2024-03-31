@@ -66,7 +66,7 @@ public class StatusService {
 
         log.debug("Created column {}", dto.getStatusName());
 
-        return get(statusId, authentication);
+        return get(projectId, statusId, authentication);
     }
 
     /**
@@ -77,34 +77,34 @@ public class StatusService {
      * @return The list of column views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<StatusView> get(Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
+    public List<StatusView> get(Long projectId, Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting columns for user {}", user.getEmail());
 
-        return mediator.send(new GetStatusByUserIdQuery(user.getId(), retrieveTasks));
+        return mediator.send(new GetStatusByUserIdQuery(user.getId(), projectId, retrieveTasks));
     }
 
     /**
      * Retrieves a specific column for the authenticated user.
      *
-     * @param id             The ID of the column to retrieve.
+     * @param projectId      The ID of the column to retrieve.
      * @param authentication The authentication object representing the user.
      * @return The column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public StatusView get(Long id, Authentication authentication) throws NotFoundException {
+    public StatusView get(Long projectId, Long statusId, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Getting column {} for user {}", id, user.getEmail());
+        log.debug("Getting column {} for user {}", projectId, user.getEmail());
 
-        return mediator.send(new GetStatusByIdQuery(user.getId(), id));
+        return mediator.send(new GetStatusByIdQuery(user.getId(), projectId, statusId));
     }
 
     /**
      * Deletes a specific column for the authenticated user.
      *
-     * @param projectId             The ID of the project.
+     * @param projectId      The ID of the project.
      * @param statusId       The ID of the status to delete.
      * @param authentication The authentication object representing the user.
      * @throws NotFoundException If the user or column is not found.
@@ -140,7 +140,7 @@ public class StatusService {
 
         mediator.send(command);
 
-        return get(projectId, authentication);
+        return get(projectId, statusId, authentication);
     }
 
     /**

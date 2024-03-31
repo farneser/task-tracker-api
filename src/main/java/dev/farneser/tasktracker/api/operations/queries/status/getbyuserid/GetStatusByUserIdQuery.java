@@ -11,5 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class GetStatusByUserIdQuery implements Query<List<StatusView>> {
     private Long userId;
+    private Long projectId;
     private Boolean retrieveTasks;
 }

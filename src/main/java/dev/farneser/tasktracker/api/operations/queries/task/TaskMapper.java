@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.operations.queries.task;
 
-import dev.farneser.tasktracker.api.models.KanbanTask;
+import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,14 +14,14 @@ import java.util.List;
 public class TaskMapper {
     private final ModelMapper modelMapper;
 
-    public List<TaskLookupView> mapTaskToTaskLookupView(List<KanbanTask> tasks) {
+    public List<TaskLookupView> mapTaskToTaskLookupView(List<Task> tasks) {
         ArrayList<TaskLookupView> result = new ArrayList<>();
 
         tasks.forEach(task -> {
             TaskLookupView view = modelMapper.map(task, TaskLookupView.class);
 
-            if (task.getColumn() != null) {
-                view.setColumnId(task.getColumn().getId());
+            if (task.getStatus() != null) {
+                view.setColumnId(task.getStatus().getId());
             } else {
                 view.setColumnId(-1L);
             }

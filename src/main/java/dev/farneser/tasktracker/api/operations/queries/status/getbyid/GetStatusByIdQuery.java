@@ -9,5 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class GetStatusByIdQuery implements Query<StatusView> {
     private Long userId;
+    private Long projectId;
     private Long statusId;
 }

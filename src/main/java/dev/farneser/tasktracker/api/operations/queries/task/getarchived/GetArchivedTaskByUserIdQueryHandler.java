@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.task.getarchived;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.models.KanbanTask;
+import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.operations.queries.task.TaskMapper;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
@@ -24,11 +24,11 @@ public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArch
     public List<TaskLookupView> handle(GetArchivedTaskByUserIdQuery query) throws NotFoundException {
         log.debug("Query: {}", query);
 
-        List<KanbanTask> tasks = taskRepository
+        List<Task> tasks = taskRepository
                 .findByUserIdOrderByOrderNumber(query.getUserId())
                 .orElse(new ArrayList<>())
                 .stream()
-                .filter(task -> task.getColumn() == null)
+                .filter(task -> task.getStatus() == null)
                 .toList();
 
         log.debug("Tasks found: {}", tasks);
