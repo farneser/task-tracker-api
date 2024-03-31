@@ -10,12 +10,12 @@ import org.modelmapper.ModelMapper;
 
 @Data
 @Slf4j
-@Schema(name = "CreateColumnDto", description = "Create column DTO")
+@Schema(name = "CreateStatusDto", description = "Create status DTO")
 public class CreateStatusDto implements ITypeMapper {
     @Length(min = 1, max = 255)
-    @Schema(name = "columnName", description = "Column name", example = "To do")
-    private String columnName;
-    @Schema(name = "isCompleted", description = "Is column completed", example = "false")
+    @Schema(name = "statusName", description = "Status name", example = "To do")
+    private String statusName;
+    @Schema(name = "isCompleted", description = "Is status completed", example = "false")
     private Boolean isCompleted;
     @Schema(name = "projectId", description = "Project id", example = "12")
     private Long projectId;
@@ -25,7 +25,7 @@ public class CreateStatusDto implements ITypeMapper {
         log.debug("Mapping CreateColumnDto");
 
         modelMapper.createTypeMap(CreateStatusDto.class, CreateStatusCommand.class)
-                .addMapping(CreateStatusDto::getColumnName, CreateStatusCommand::setStatusName)
+                .addMapping(CreateStatusDto::getStatusName, CreateStatusCommand::setStatusName)
                 .addMapping(CreateStatusDto::getIsCompleted, CreateStatusCommand::setIsCompleted)
                 .addMapping(CreateStatusDto::getProjectId, CreateStatusCommand::setProjectId);
     }

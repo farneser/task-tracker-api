@@ -45,23 +45,23 @@ public class StatusService {
      */
     public StatusView create(CreateStatusDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
-        log.debug("Creating column {}", dto.getColumnName());
+        log.debug("Creating column {}", dto.getStatusName());
 
         UserView user = userService.getUser(authentication);
 
-        log.debug("Creating column {}", dto.getColumnName());
+        log.debug("Creating column {}", dto.getStatusName());
 
         CreateStatusCommand command = modelMapper.map(dto, CreateStatusCommand.class);
 
-        log.debug("Creating column {}", dto.getColumnName());
+        log.debug("Creating column {}", dto.getStatusName());
 
         command.setUserId(user.getId());
 
-        log.debug("Creating column {}", dto.getColumnName());
+        log.debug("Creating column {}", dto.getStatusName());
 
         Long statusId = mediator.send(command);
 
-        log.debug("Created column {}", dto.getColumnName());
+        log.debug("Created column {}", dto.getStatusName());
 
         return get(statusId, authentication);
     }
@@ -117,32 +117,26 @@ public class StatusService {
     /**
      * Updates a specific column for the authenticated user.
      *
-     * @param id             The ID of the column to update.
+     * @param projectId      The id of project
+     * @param statusId       The id of status
      * @param patchStatusDto The DTO containing information for updating the column.
      * @param authentication The authentication object representing the user.
      * @return The updated column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public StatusView patch(Long id, PatchStatusDto patchStatusDto, Authentication authentication)
+    public StatusView patch(Long projectId, Long statusId, PatchStatusDto patchStatusDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Patching column {} for user {}", id, user.getEmail());
-
         PatchStatusCommand command = modelMapper.map(patchStatusDto, PatchStatusCommand.class);
 
-        log.debug("Patching column {} for user {}", id, user.getEmail());
-
-        command.setStatusId(id);
+        command.setProjectId(projectId);
+        command.setStatusId(statusId);
         command.setUserId(user.getId());
-
-        log.debug("Patching column {} for user {}", id, user.getEmail());
 
         mediator.send(command);
 
-        log.debug("Patched column {} for user {}", id, user.getEmail());
-
-        return get(id, authentication);
+        return get(projectId, authentication);
     }
 
     /**

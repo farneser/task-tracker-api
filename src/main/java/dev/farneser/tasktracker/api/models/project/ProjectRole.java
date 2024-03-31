@@ -1,12 +1,10 @@
 package dev.farneser.tasktracker.api.models.project;
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@Getter
 @RequiredArgsConstructor
 public enum ProjectRole {
     MEMBER(

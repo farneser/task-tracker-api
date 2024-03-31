@@ -10,11 +10,11 @@ import org.modelmapper.ModelMapper;
 
 @Data
 @Slf4j
-@Schema(name = "PatchColumnDto", description = "Patch column DTO")
+@Schema(name = "PatchStatusDto", description = "Patch status DTO")
 public class PatchStatusDto implements ITypeMapper {
     @Length(min = 1, max = 255)
-    @Schema(name = "columnName", description = "Column name", example = "To do")
-    private String columnName;
+    @Schema(name = "statusName", description = "Status name", example = "To do")
+    private String statusName;
     @Schema(name = "isCompleted", description = "Is column completed", example = "false")
     private Boolean isCompleted;
     @Schema(name = "orderNumber", description = "Column order number", example = "1")
@@ -25,7 +25,7 @@ public class PatchStatusDto implements ITypeMapper {
         log.debug("Mapping PatchColumnDto");
 
         modelMapper.createTypeMap(PatchStatusDto.class, PatchStatusCommand.class)
-                .addMapping(PatchStatusDto::getColumnName, PatchStatusCommand::setStatusName)
+                .addMapping(PatchStatusDto::getStatusName, PatchStatusCommand::setStatusName)
                 .addMapping(PatchStatusDto::getIsCompleted, PatchStatusCommand::setIsCompleted)
                 .addMapping(PatchStatusDto::getOrderNumber, PatchStatusCommand::setOrderNumber);
     }

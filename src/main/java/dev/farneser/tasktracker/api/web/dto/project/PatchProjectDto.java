@@ -1,7 +1,6 @@
 package dev.farneser.tasktracker.api.web.dto.project;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
-import dev.farneser.tasktracker.api.operations.commands.column.patch.PatchColumnCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.patch.PatchProjectCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

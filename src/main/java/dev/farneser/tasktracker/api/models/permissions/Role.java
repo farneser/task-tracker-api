@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
-
 @RequiredArgsConstructor
 public enum Role {
 

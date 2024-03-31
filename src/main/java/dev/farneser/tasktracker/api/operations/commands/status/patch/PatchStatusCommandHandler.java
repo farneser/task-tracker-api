@@ -1,9 +1,13 @@
 package dev.farneser.tasktracker.api.operations.commands.status.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectPermission;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import dev.farneser.tasktracker.api.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,29 +26,39 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 @RequiredArgsConstructor
 public class PatchStatusCommandHandler implements CommandHandler<PatchStatusCommand, Void> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final Map<Long, Lock> userLocks = new ConcurrentHashMap<>();
 
     @Override
     @Transactional
-    public Void handle(PatchStatusCommand command) throws NotFoundException {
+    public Void handle(PatchStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
         Long userId = command.getUserId();
         Lock userLock = userLocks.computeIfAbsent(userId, k -> new ReentrantLock());
 
         userLock.lock();
 
         try {
-            // FIXME 28.03.2024: change userid to project id
-            List<Status> columns = columnRepository.findByProjectIdOrderByOrderNumber(userId).orElse(new ArrayList<>());
-            Status column = columns.stream().filter(c -> c.getId().equals(command.getStatusId())).findFirst().orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
+            ProjectMember member = projectMemberRepository
+                    .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                    .orElseThrow(() -> new NotFoundException(""));
+
+            if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {
+                throw new OperationNotAuthorizedException();
+            }
+
+            List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(command.getProjectId()).orElse(new ArrayList<>());
+            Status column = columns
+                    .stream()
+                    .filter(c -> c.getId().equals(command.getStatusId()))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
 
             if (command.getStatusName() != null) {
                 column.setStatusName(command.getStatusName());
             }
 
             if (command.getOrderNumber() != null) {
-                log.debug("Column order number changed from {} to {}", column.getOrderNumber(), command.getOrderNumber());
-
                 long oldOrder = column.getOrderNumber();
                 long newOrder = command.getOrderNumber();
 
@@ -56,14 +70,12 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
             }
 
             if (command.getIsCompleted() != null) {
-                log.debug("Column isCompleted changed from {} to {}", column.getIsCompleted(), command.getIsCompleted());
                 column.setIsCompleted(command.getIsCompleted());
             }
 
-            log.debug("Column edit date changed from {} to {}", column.getEditDate(), new Date(System.currentTimeMillis()));
             column.setEditDate(new Date(System.currentTimeMillis()));
 
-            columnRepository.save(column);
+            statusRepository.save(column);
         } finally {
             userLock.unlock();
         }

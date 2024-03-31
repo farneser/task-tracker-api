@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ColumnRepository extends JpaRepository<Status, Long> {
+public interface StatusRepository extends JpaRepository<Status, Long> {
     Optional<List<Status>> findByProjectIdOrderByOrderNumber(Long userid);
 
     Optional<Status> findByIdAndProjectId(Long id, Long userId);

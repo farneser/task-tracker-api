@@ -4,7 +4,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,12 +18,12 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUserIdQuery, List<StatusView>> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
     private final ModelMapper modelMapper;
 
     @Override
     public List<StatusView> handle(GetStatusByUserIdQuery query) throws NotFoundException {
-        List<Status> columns = columnRepository.findByProjectIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
+        List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(query.getUserId()).orElse(new ArrayList<>());
 
         log.debug("Column found: {}", columns);
 

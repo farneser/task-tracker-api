@@ -6,8 +6,8 @@ import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,18 +21,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCommand, Long> {
     private final ProjectMemberRepository projectMemberRepository;
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
 
     @Override
     public Long handle(CreateStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
-        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
+        ProjectMember member = projectMemberRepository
+                .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)){
+        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)) {
             throw new OperationNotAuthorizedException();
         }
 
-        List<Status> columns = columnRepository.findByProjectIdOrderByOrderNumber(command.getProjectId()).orElse(new ArrayList<>());
+        List<Status> columns = statusRepository
+                .findByProjectIdOrderByOrderNumber(command.getProjectId())
+                .orElse(new ArrayList<>());
 
         log.debug("Columns found: {}", columns);
 
@@ -58,7 +62,7 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
 
         log.debug("Column created: {}", column);
 
-        columnRepository.save(column);
+        statusRepository.save(column);
 
         log.debug("Column saved: {}", column);
 

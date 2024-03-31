@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/task")
+@RequestMapping(EndpointConstants.TASK_ENDPOINT)
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;

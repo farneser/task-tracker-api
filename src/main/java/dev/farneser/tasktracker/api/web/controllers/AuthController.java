@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(value = EndpointConstants.AUTH_ENDPOINT)
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;

@@ -4,10 +4,16 @@ package dev.farneser.tasktracker.api.web.controllers;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
+import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.service.ProjectService;
+import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
+import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import dev.farneser.tasktracker.api.web.models.Message;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +25,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/project")
+@RequestMapping(EndpointConstants.PROJECT_ENDPOINT)
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
+    private final StatusService statusService;
 
     @GetMapping
     public ResponseEntity<List<ProjectView>> get(
@@ -65,4 +72,41 @@ public class ProjectController {
 
         return ResponseEntity.ok(Message.body("Successfully deleted project"));
     }
+
+    @PatchMapping("{id}/{statusId}")
+    @Operation(summary = "Patch column", description = "Patch column data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully patched column"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Column not found")
+    })
+    public ResponseEntity<StatusView> patchStatusById(
+            @PathVariable Long id,
+            @PathVariable Long statusId,
+            @RequestBody @Valid PatchStatusDto patchStatusDto,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        log.info("Patching column for user {}, column id: {}", authentication.getName(), id);
+
+        return ResponseEntity.ok(statusService.patch(id, statusId, patchStatusDto, authentication));
+    }
+
+    @DeleteMapping("{id}/{statusId}")
+    @Operation(summary = "Delete column", description = "Delete column by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully deleted column"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Column not found")
+    })
+    public ResponseEntity<Message> deleteStatusById(
+            @PathVariable Long id,
+            @PathVariable Long statusId,
+            Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+        log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
+
+        statusService.delete(id, authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully deleted column"));
+    }
+
 }
