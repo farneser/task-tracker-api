@@ -25,19 +25,19 @@ public class GetStatusByIdQueryHandler implements QueryHandler<GetStatusByIdQuer
     @Override
     public StatusView handle(GetStatusByIdQuery query) throws NotFoundException, OperationNotAuthorizedException {
 
+        Status column = statusRepository
+                .findById(query.getStatusId())
+                .orElseThrow(() -> new NotFoundException("Status with id " + query.getStatusId() + " not found"));
+
+        log.debug("Column found: {}", column);
+
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
+                .findProjectMemberByProjectIdAndMemberId(column.getProject().getId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
             throw new OperationNotAuthorizedException();
         }
-
-        Status column = statusRepository
-                .findByIdAndProjectId(query.getStatusId(), query.getProjectId())
-                .orElseThrow(() -> new NotFoundException("Status with id " + query.getStatusId() + " not found"));
-
-        log.debug("Column found: {}", column);
 
         StatusView view = modelMapper.map(column, StatusView.class);
 

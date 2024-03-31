@@ -8,7 +8,7 @@ import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
-import dev.farneser.tasktracker.api.service.order.OrderService;
+import dev.farneser.tasktracker.api.service.order.OrderUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -39,15 +39,20 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
         userLock.lock();
 
         try {
+            Status status = statusRepository.findById(command.getStatusId()).orElseThrow(()->new NotFoundException(""));
+
             ProjectMember member = projectMemberRepository
-                    .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                    .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
                     .orElseThrow(() -> new NotFoundException(""));
 
             if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {
                 throw new OperationNotAuthorizedException();
             }
 
-            List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(command.getProjectId()).orElse(new ArrayList<>());
+            List<Status> columns = statusRepository
+                    .findByProjectIdOrderByOrderNumber(member.getProject().getId())
+                    .orElse(new ArrayList<>());
+
             Status column = columns
                     .stream()
                     .filter(c -> c.getId().equals(command.getStatusId()))
@@ -64,9 +69,12 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
 
                 column.setOrderNumber(newOrder);
 
-                List<Status> columnsToChange = columns.stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
+                List<Status> columnsToChange = columns
+                        .stream()
+                        .filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder))
+                        .toList();
 
-                OrderService.patchOrder(column.getId(), newOrder, oldOrder, columnsToChange);
+                OrderUtility.patchOrder(column.getId(), newOrder, oldOrder, columnsToChange);
             }
 
             if (command.getIsCompleted() != null) {

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class PatchStatusCommand implements Command<Void> {
     private Long userId;
     private Long statusId;
-    private Long projectId;
     private String statusName;
     private Boolean isCompleted;
     private Long orderNumber;

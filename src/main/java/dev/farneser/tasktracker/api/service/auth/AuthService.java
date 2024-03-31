@@ -103,7 +103,8 @@ public class AuthService {
             log.debug("Authenticating user {}", loginRequest.getEmail());
 
             return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
-        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException e) {
+        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException |
+                 OperationNotAuthorizedException e) {
             throw new BadCredentialsException("Invalid credentials");
         }
     }
@@ -117,7 +118,8 @@ public class AuthService {
      * @throws InvalidTokenException If the refresh token is invalid.
      * @throws NotFoundException     If the refresh token is not found.
      */
-    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
+    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException,
+            OperationNotAuthorizedException {
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
         RefreshToken refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
@@ -145,7 +147,7 @@ public class AuthService {
      * @return The newly generated refresh token.
      * @throws NotFoundException If the user is not found.
      */
-    private String updateRefreshToken(String email) throws NotFoundException {
+    private String updateRefreshToken(String email) throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Updating refresh token for user {}", email);
 
         UserView user = mediator.send(new GetUserByEmailQuery(email));
@@ -169,7 +171,7 @@ public class AuthService {
      * @param id The activation ID.
      * @throws NotFoundException If the activation ID is not found.
      */
-    public void activateAccount(UUID id) throws NotFoundException {
+    public void activateAccount(UUID id) throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Activating account {}", id);
 
         confirmEmailService.confirm(id);

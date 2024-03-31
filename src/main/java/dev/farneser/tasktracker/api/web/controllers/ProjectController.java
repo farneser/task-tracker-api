@@ -9,8 +9,6 @@ import dev.farneser.tasktracker.api.service.ProjectService;
 import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
-import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
-import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -75,8 +73,8 @@ public class ProjectController {
         return ResponseEntity.ok(Message.body("Successfully deleted project"));
     }
 
-    @GetMapping("{id}/status")
-    @Operation(summary = "Get columns", description = "Get columns by JWT token")
+    @GetMapping("{id}/statuses")
+    @Operation(summary = "Get statuses", description = "Get columns by JWT token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully got columns"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
@@ -91,74 +89,5 @@ public class ProjectController {
         log.info("Getting columns for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(id, retrieveTasks, authentication));
-    }
-
-    @GetMapping("{id}/status/{statusId}")
-    @Operation(summary = "Get column", description = "Get column by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got column"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
-    })
-    public ResponseEntity<StatusView> getStatusById(
-            @PathVariable Long id,
-            @PathVariable Long statusId,
-            Authentication authentication
-    ) throws NotFoundException {
-        log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
-
-        return ResponseEntity.ok(statusService.get(id, statusId, authentication));
-    }
-
-
-    @PostMapping("{id}/status")
-    @Operation(summary = "Create status", description = "Create status")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successfully created status"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-    })
-    public ResponseEntity<StatusView> createStatus(
-            @PathVariable Long id,
-            @RequestBody @Valid CreateStatusDto createStatusDto,
-            Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Creating column for user {}, column name: {}", authentication.getName(), createStatusDto.getStatusName());
-
-        return ResponseEntity.status(201).body(statusService.create(id, createStatusDto, authentication));
-    }
-
-    @PatchMapping("{id}/status/{statusId}")
-    @Operation(summary = "Patch column", description = "Patch column data")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully patched column"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
-    })
-    public ResponseEntity<StatusView> patchStatusById(
-            @PathVariable Long id,
-            @PathVariable Long statusId,
-            @RequestBody @Valid PatchStatusDto patchStatusDto,
-            Authentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Patching column for user {}, column id: {}", authentication.getName(), id);
-
-        return ResponseEntity.ok(statusService.patch(id, statusId, patchStatusDto, authentication));
-    }
-
-    @DeleteMapping("{id}/status/{statusId}")
-    @Operation(summary = "Delete column", description = "Delete column by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted column"),
-            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
-    })
-    public ResponseEntity<Message> deleteStatusById(
-            @PathVariable Long id,
-            @PathVariable Long statusId,
-            Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
-
-        statusService.delete(id, statusId, authentication);
-
-        return ResponseEntity.ok(Message.body("Successfully deleted column"));
     }
 }

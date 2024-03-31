@@ -17,6 +17,8 @@ public class CreateStatusDto implements ITypeMapper {
     private String statusName;
     @Schema(name = "isCompleted", description = "Is status completed", example = "false")
     private Boolean isCompleted;
+    @Schema(name = "projectId", description = "Project id", example = "12")
+    private Long projectId;
 
     @Override
     public void mapping(ModelMapper modelMapper) {
@@ -24,6 +26,7 @@ public class CreateStatusDto implements ITypeMapper {
 
         modelMapper.createTypeMap(CreateStatusDto.class, CreateStatusCommand.class)
                 .addMapping(CreateStatusDto::getStatusName, CreateStatusCommand::setStatusName)
-                .addMapping(CreateStatusDto::getIsCompleted, CreateStatusCommand::setIsCompleted);
+                .addMapping(CreateStatusDto::getIsCompleted, CreateStatusCommand::setIsCompleted)
+                .addMapping(CreateStatusDto::getProjectId, CreateStatusCommand::setProjectId);
     }
 }

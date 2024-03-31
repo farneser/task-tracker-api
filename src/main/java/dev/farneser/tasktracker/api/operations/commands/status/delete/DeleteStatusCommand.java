@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteStatusCommand implements Command<Void> {
     private Long userId;
-    private Long projectId;
     private Long statusId;
 }

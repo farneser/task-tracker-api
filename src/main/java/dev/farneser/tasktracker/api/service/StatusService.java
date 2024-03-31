@@ -38,13 +38,12 @@ public class StatusService {
     /**
      * Creates a new column for the authenticated user.
      *
-     * @param projectId      The ID of project
      * @param dto            The DTO containing information for creating the column.
      * @param authentication The authentication object representing the user.
      * @return The created column view.
      * @throws NotFoundException If the user is not found.
      */
-    public StatusView create(Long projectId, CreateStatusDto dto, Authentication authentication)
+    public StatusView create(CreateStatusDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating column {}", dto.getStatusName());
 
@@ -53,8 +52,6 @@ public class StatusService {
         log.debug("Creating column {}", dto.getStatusName());
 
         CreateStatusCommand command = modelMapper.map(dto, CreateStatusCommand.class);
-
-        command.setProjectId(projectId);
 
         log.debug("Creating column {}", dto.getStatusName());
 
@@ -66,12 +63,13 @@ public class StatusService {
 
         log.debug("Created column {}", dto.getStatusName());
 
-        return get(projectId, statusId, authentication);
+        return get(statusId, authentication);
     }
 
     /**
      * Retrieves a list of columns for the authenticated user.
      *
+     * @param projectId      The ID of project (-1 to get all)
      * @param retrieveTasks  Flag indicating whether to retrieve tasks along with columns.
      * @param authentication The authentication object representing the user.
      * @return The list of column views.
@@ -88,74 +86,71 @@ public class StatusService {
     /**
      * Retrieves a specific column for the authenticated user.
      *
-     * @param projectId      The ID of the column to retrieve.
      * @param authentication The authentication object representing the user.
      * @return The column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public StatusView get(Long projectId, Long statusId, Authentication authentication) throws NotFoundException {
+    public StatusView get(Long statusId, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Getting column {} for user {}", projectId, user.getEmail());
-
-        return mediator.send(new GetStatusByIdQuery(user.getId(), projectId, statusId));
+        return mediator.send(new GetStatusByIdQuery(user.getId(), statusId));
     }
 
     /**
      * Deletes a specific column for the authenticated user.
      *
-     * @param projectId      The ID of the project.
      * @param statusId       The ID of the status to delete.
      * @param authentication The authentication object representing the user.
      * @throws NotFoundException If the user or column is not found.
      */
-    public void delete(Long projectId, Long statusId, Authentication authentication)
+    public void delete(Long statusId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Deleting column {} for user {}", projectId, user.getEmail());
-
-        mediator.send(new DeleteStatusCommand(user.getId(), projectId, statusId));
+        mediator.send(new DeleteStatusCommand(user.getId(), statusId));
     }
 
     /**
      * Updates a specific column for the authenticated user.
      *
-     * @param projectId      The id of project
      * @param statusId       The id of status
      * @param patchStatusDto The DTO containing information for updating the column.
      * @param authentication The authentication object representing the user.
      * @return The updated column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public StatusView patch(Long projectId, Long statusId, PatchStatusDto patchStatusDto, Authentication authentication)
+    public StatusView patch(Long statusId, PatchStatusDto patchStatusDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         PatchStatusCommand command = modelMapper.map(patchStatusDto, PatchStatusCommand.class);
 
-        command.setProjectId(projectId);
         command.setStatusId(statusId);
         command.setUserId(user.getId());
 
         mediator.send(command);
 
-        return get(projectId, statusId, authentication);
+        return get(statusId, authentication);
     }
 
     /**
      * Retrieves tasks associated with a specific column for the authenticated user.
      *
-     * @param id             The ID of the column for which to retrieve tasks.
+     * @param statusId       The ID of the column for which to retrieve tasks.
      * @param authentication The authentication object representing the user.
      * @return The list of task lookup views.
      * @throws NotFoundException If the user or column is not found.
      */
-    public List<TaskLookupView> getTasks(Long id, Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getTasks(Long statusId, Authentication authentication) throws NotFoundException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Getting tasks for column {} for user {}", id, user.getEmail());
+        log.debug("Getting tasks for column {} for user {}", statusId, user.getEmail());
 
-        return mediator.send(new GetTaskByUserIdAndColumnIdQuery(user.getId(), id));
+        return mediator.send(new GetTaskByUserIdAndColumnIdQuery(user.getId(), statusId));
+    }
+
+    public List<StatusView> get(Boolean retrieveTasks, Authentication authentication)
+            throws NotFoundException {
+        return get(-1L, retrieveTasks, authentication);
     }
 }

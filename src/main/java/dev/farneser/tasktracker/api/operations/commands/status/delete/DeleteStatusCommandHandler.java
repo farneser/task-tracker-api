@@ -23,13 +23,18 @@ public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCo
     private final ProjectMemberRepository projectMemberRepository;
     @Override
     public Void handle(DeleteStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
-        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
+
+        Status column = statusRepository
+                .findById(command.getStatusId())
+                .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
+
+        ProjectMember member = projectMemberRepository
+                .findProjectMemberByProjectIdAndMemberId(column.getProject().getId(), command.getUserId())
+                .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)){
             throw new OperationNotAuthorizedException();
         }
-
-        Status column = statusRepository.findByIdAndProjectId(command.getStatusId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
 
         log.debug("Column found: {}", column);
 

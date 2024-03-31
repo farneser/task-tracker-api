@@ -14,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -29,26 +27,45 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
     @Override
     public List<StatusView> handle(GetStatusByUserIdQuery query)
             throws NotFoundException, OperationNotAuthorizedException {
-        ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
-            throw new OperationNotAuthorizedException();
+        Set<Long> projectIds = new HashSet<>();
+
+        if (query.getProjectId() == -1L) {
+            List<ProjectMember> projectMembers = projectMemberRepository
+                    .findProjectMemberByMemberId(query.getUserId())
+                    .orElse(new ArrayList<>());
+
+            projectIds.addAll(projectMembers.stream().map(p -> p.getProject().getId()).toList());
+
+        } else {
+            projectIds.add(query.getProjectId());
         }
 
-        List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(query.getProjectId()).orElse(new ArrayList<>());
+        List<StatusView> result = new ArrayList<>();
 
-        log.debug("Column found: {}", columns);
+        for (Long id : projectIds) {
+            ProjectMember member = projectMemberRepository
+                    .findProjectMemberByProjectIdAndMemberId(id, query.getUserId())
+                    .orElseThrow(() -> new NotFoundException(""));
 
-        List<StatusView> views = columns.stream().map(c -> modelMapper.map(c, StatusView.class)).toList();
+            if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
+                throw new OperationNotAuthorizedException();
+            }
 
-        log.debug("Column mapped: {}", Arrays.toString(views.toArray()));
+            List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(id).orElse(new ArrayList<>());
+
+            log.debug("Column found: {}", columns);
+
+            List<StatusView> views = columns.stream().map(c -> modelMapper.map(c, StatusView.class)).toList();
+            result.addAll(views);
+        }
+
+        log.debug("Column mapped: {}", Arrays.toString(result.toArray()));
 
         if (!query.getRetrieveTasks()) {
-            views.forEach(c -> c.setTasks(null));
+            result.forEach(c -> c.setTasks(null));
         }
 
-        return views;
+        return result;
     }
 }
