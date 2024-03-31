@@ -2,7 +2,7 @@ package dev.farneser.tasktracker.api.operations.views.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
-import dev.farneser.tasktracker.api.models.KanbanTask;
+import dev.farneser.tasktracker.api.models.Task;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +34,13 @@ public class TaskLookupView implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         log.debug("Mapping TaskView");
 
-        modelMapper.createTypeMap(KanbanTask.class, TaskLookupView.class)
-                .addMapping(KanbanTask::getId, TaskLookupView::setId)
-                .addMapping(KanbanTask::getTaskName, TaskLookupView::setTaskName)
-                .addMapping(KanbanTask::getDescription, TaskLookupView::setDescription)
-                .addMapping(KanbanTask::getOrderNumber, TaskLookupView::setOrderNumber)
-                .addMapping(KanbanTask::getCreationDate, TaskLookupView::setCreationDate)
-                .addMapping(KanbanTask::getEditDate, TaskLookupView::setEditDate)
-                .addMapping(task -> task.getColumn().getId(), TaskLookupView::setColumnId);
+        modelMapper.createTypeMap(Task.class, TaskLookupView.class)
+                .addMapping(Task::getId, TaskLookupView::setId)
+                .addMapping(Task::getTaskName, TaskLookupView::setTaskName)
+                .addMapping(Task::getDescription, TaskLookupView::setDescription)
+                .addMapping(Task::getOrderNumber, TaskLookupView::setOrderNumber)
+                .addMapping(Task::getCreationDate, TaskLookupView::setCreationDate)
+                .addMapping(Task::getEditDate, TaskLookupView::setEditDate)
+                .addMapping(task -> task.getStatus().getId(), TaskLookupView::setColumnId);
     }
 }

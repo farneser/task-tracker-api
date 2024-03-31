@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.service.TaskService;
@@ -124,7 +125,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<Message> archieTasks(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<Message> archieTasks(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Archiving tasks for user {}", authentication.getName());
 
         taskService.archiveTasks(authentication);

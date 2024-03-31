@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.ProjectService;
 import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
@@ -89,5 +90,20 @@ public class ProjectController {
         log.info("Getting columns for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(id, retrieveTasks, authentication));
+    }
+
+    @GetMapping("{id}/tasks")
+    @Operation(summary = "Get tasks", description = "Get tasks by column id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Tasks not found")
+    })
+    public ResponseEntity<List<TaskLookupView>> getArchivedTasksById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException {
+
+        return ResponseEntity.ok(projectService.getTasks(id, authentication));
     }
 }

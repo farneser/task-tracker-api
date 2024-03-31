@@ -8,8 +8,10 @@ import dev.farneser.tasktracker.api.operations.commands.project.delete.DeletePro
 import dev.farneser.tasktracker.api.operations.commands.project.patch.PatchProjectCommand;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjectByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyuserid.GetProjectByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandprojectid.GetTaskByUserIdAndProjectIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +73,11 @@ public class ProjectService {
         mediator.send(command);
 
         return get(id, authentication);
+    }
+
+    public List<TaskLookupView> getTasks(Long id, Authentication authentication) throws NotFoundException {
+        UserView user = userService.getUser(authentication);
+
+        return mediator.send(new GetTaskByUserIdAndProjectIdQuery(user.getId(), id));
     }
 }
