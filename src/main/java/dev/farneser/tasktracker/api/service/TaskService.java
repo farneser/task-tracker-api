@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.task.archive.ArchiveTasksCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCommand;
@@ -42,7 +43,8 @@ public class TaskService {
      * @return The created task view.
      * @throws NotFoundException If the user is not found.
      */
-    public TaskView create(CreateTaskDto dto, Authentication authentication) throws NotFoundException {
+    public TaskView create(CreateTaskDto dto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating task {}", dto.getTaskName());
 
         UserView user = userService.getUser(authentication);
@@ -100,7 +102,8 @@ public class TaskService {
      * @param authentication The authentication object representing the current user.
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
-    public void delete(Long id, Authentication authentication) throws NotFoundException {
+    public void delete(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Deleting task {} for user {}", id, user.getEmail());
@@ -117,7 +120,8 @@ public class TaskService {
      * @return The updated task view for the specified task ID.
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
-    public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication) throws NotFoundException {
+    public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Patching task {} for user {}", id, user.getEmail());
@@ -157,7 +161,8 @@ public class TaskService {
      * @param authentication The authentication object representing the current user.
      * @throws NotFoundException If the user is not found.
      */
-    public void archiveTasks(Authentication authentication) throws NotFoundException {
+    public void archiveTasks(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Archiving tasks for user {}", user.getEmail());

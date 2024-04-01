@@ -1,10 +1,14 @@
 package dev.farneser.tasktracker.api.operations.commands.task.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanColumn;
-import dev.farneser.tasktracker.api.models.KanbanTask;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.models.Status;
+import dev.farneser.tasktracker.api.models.Task;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectPermission;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,26 +20,35 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class CreateTaskCommandHandler implements CommandHandler<CreateTaskCommand, Long> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Override
-    public Long handle(CreateTaskCommand command) throws NotFoundException {
-        KanbanColumn column = columnRepository
-                .findByIdAndUserId(command.getColumnId(), command.getUserId())
+    public Long handle(CreateTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
+        Status status = statusRepository
+                .findById(command.getColumnId())
                 .orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
 
-        log.debug("Column found: {}", column);
+        log.debug("Column found: {}", status);
+
+        ProjectMember member = projectMemberRepository
+                .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
+                .orElseThrow(()->new NotFoundException(""));
+
+        if (!member.getRole().hasPermission(ProjectPermission.USER_POST)){
+            throw new OperationNotAuthorizedException();
+        }
 
         long orderNumber = 1L;
 
-        if (column.getTasks() != null) {
+        if (status.getTasks() != null) {
 
-            column.getTasks().sort(Comparator.comparing(KanbanTask::getOrderNumber));
+            status.getTasks().sort(Comparator.comparing(Task::getOrderNumber));
 
-            if (!column.getTasks().isEmpty()) {
-                log.debug("Tasks found: {}", column.getTasks());
+            if (!status.getTasks().isEmpty()) {
+                log.debug("Tasks found: {}", status.getTasks());
 
-                orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
+                orderNumber = status.getTasks().get(status.getTasks().size() - 1).getOrderNumber() + 1;
             }
         }
 
@@ -43,25 +56,25 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         log.debug("Order number: {}", orderNumber);
 
-        KanbanTask task = KanbanTask.builder()
+        Task task = Task.builder()
                 .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
-                .column(column)
-                .user(column.getUser())
+                .status(status)
+                .assignedFor(null)
                 .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
 
         log.debug("Task created: {}", task);
 
-        column.getTasks().add(task);
+        status.getTasks().add(task);
 
-        log.debug("Task added to column: {}", column);
+        log.debug("Task added to status: {}", status);
 
-        columnRepository.save(column);
+        statusRepository.save(status);
 
-        log.debug("Column saved: {}", column);
+        log.debug("Column saved: {}", status);
 
         return task.getId();
     }

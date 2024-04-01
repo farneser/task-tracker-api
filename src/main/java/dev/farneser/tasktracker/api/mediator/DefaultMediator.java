@@ -25,13 +25,22 @@ public class DefaultMediator implements Mediator {
     }
 
     @Override
-    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException, OperationNotAuthorizedException {
+    public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Send request: {}", request);
 
         if (request != null) {
-            CommandHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", CommandHandler.class);
+            CommandHandler handler = applicationContext.getBean(
+                    convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler",
+                    CommandHandler.class
+            );
 
-            log.debug("Handler for request: {}, {} found. Request data: {}", request.getClass().getSimpleName(), handler.getClass().getSimpleName(), request);
+            log.debug(
+                    "Handler for request: {}, {} found. Request data: {}",
+                    request.getClass().getSimpleName(),
+                    handler.getClass().getSimpleName(),
+                    request
+            );
 
             return (RESPONSE) handler.handle(request);
         } else {
@@ -42,13 +51,22 @@ public class DefaultMediator implements Mediator {
     }
 
     @Override
-    public <REQUEST extends Query<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request) throws NotFoundException {
+    public <REQUEST extends Query<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Send request: {}", request);
 
         if (request != null) {
-            QueryHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(request.getClass().getSimpleName()) + "Handler", QueryHandler.class);
+            QueryHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(
+                    request.getClass().getSimpleName()) + "Handler",
+                    QueryHandler.class
+            );
 
-            log.debug("Handler for request: {}, {} found. Request data: {}", request.getClass().getSimpleName(), handler.getClass().getSimpleName(), request);
+            log.debug(
+                    "Handler for request: {}, {} found. Request data: {}",
+                    request.getClass().getSimpleName(),
+                    handler.getClass().getSimpleName(),
+                    request
+            );
 
             return (RESPONSE) handler.handle(request);
         } else {
