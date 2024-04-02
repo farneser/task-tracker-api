@@ -8,5 +8,6 @@ public class CreateStatusCommand implements Command<Long> {
     private Long userId;
     private Long projectId;
     private String statusName;
+    private String statusColor;
     private Boolean isCompleted;
 }

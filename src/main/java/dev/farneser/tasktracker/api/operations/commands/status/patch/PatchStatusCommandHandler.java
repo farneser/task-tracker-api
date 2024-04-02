@@ -63,6 +63,10 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
                 column.setStatusName(command.getStatusName());
             }
 
+            if (command.getStatusColor() != null) {
+                column.setStatusColor(command.getStatusColor());
+            }
+
             if (command.getOrderNumber() != null) {
                 long oldOrder = column.getOrderNumber();
                 long newOrder = command.getOrderNumber();

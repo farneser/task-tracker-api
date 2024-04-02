@@ -15,6 +15,9 @@ public class PatchStatusDto implements ITypeMapper {
     @Length(min = 1, max = 255)
     @Schema(name = "statusName", description = "Status name", example = "To do")
     private String statusName;
+    @Length(min = 6, max = 6)
+    @Schema(name = "statusColor", description = "Status color in hex format", example = "ff00ff")
+    private String statusColor;
     @Schema(name = "isCompleted", description = "Is column completed", example = "false")
     private Boolean isCompleted;
     @Schema(name = "orderNumber", description = "Column order number", example = "1")
@@ -26,6 +29,7 @@ public class PatchStatusDto implements ITypeMapper {
 
         modelMapper.createTypeMap(PatchStatusDto.class, PatchStatusCommand.class)
                 .addMapping(PatchStatusDto::getStatusName, PatchStatusCommand::setStatusName)
+                .addMapping(PatchStatusDto::getStatusColor, PatchStatusCommand::setStatusColor)
                 .addMapping(PatchStatusDto::getIsCompleted, PatchStatusCommand::setIsCompleted)
                 .addMapping(PatchStatusDto::getOrderNumber, PatchStatusCommand::setOrderNumber);
     }

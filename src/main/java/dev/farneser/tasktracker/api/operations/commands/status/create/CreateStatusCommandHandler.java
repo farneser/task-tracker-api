@@ -53,6 +53,7 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
         Status column = Status
                 .builder()
                 .statusName(command.getStatusName())
+                .statusColor(command.getStatusColor())
                 .isCompleted(command.getIsCompleted())
                 .project(member.getProject())
                 .orderNumber(orderNumber)

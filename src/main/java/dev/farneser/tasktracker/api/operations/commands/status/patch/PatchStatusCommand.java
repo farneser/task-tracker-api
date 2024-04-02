@@ -12,6 +12,7 @@ public class PatchStatusCommand implements Command<Void> {
     private Long userId;
     private Long statusId;
     private String statusName;
+    private String statusColor;
     private Boolean isCompleted;
     private Long orderNumber;
 }
