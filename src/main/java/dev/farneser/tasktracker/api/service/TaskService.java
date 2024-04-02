@@ -71,7 +71,8 @@ public class TaskService {
      * @return The list of task lookup views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<TaskLookupView> get(Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> get(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting tasks for user {}", user.getEmail());
@@ -87,7 +88,8 @@ public class TaskService {
      * @return The task view for the specified task ID.
      * @throws NotFoundException If the user is not found or the task with the given ID is not found.
      */
-    public TaskView get(Long id, Authentication authentication) throws NotFoundException {
+    public TaskView get(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting task {} for user {}", id, user.getEmail());
@@ -147,7 +149,8 @@ public class TaskService {
      * @return The list of archived task lookup views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<TaskLookupView> getArchived(Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getArchived(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting archived tasks for user {}", user.getEmail());

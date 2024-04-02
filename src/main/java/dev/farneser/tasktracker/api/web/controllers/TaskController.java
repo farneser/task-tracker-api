@@ -34,7 +34,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> get(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.get(authentication));
@@ -46,7 +47,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> getArchived(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> getArchived(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting archived tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.getArchived(authentication));
@@ -62,7 +64,7 @@ public class TaskController {
     public ResponseEntity<TaskView> create(
             @RequestBody @Valid CreateTaskDto createTaskDto,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Creating task for user {}, task name: {}", authentication.getName(), createTaskDto.getTaskName());
 
         return ResponseEntity.status(201).body(taskService.create(createTaskDto, authentication));
@@ -78,7 +80,7 @@ public class TaskController {
     public ResponseEntity<TaskView> getById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting task for user {}, task id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(taskService.get(id, authentication));
@@ -95,7 +97,7 @@ public class TaskController {
             @PathVariable Long id,
             @RequestBody @Valid PatchTaskDto patchTaskDto,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Patching task for user {}, task id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(taskService.patch(id, patchTaskDto, authentication));
@@ -111,7 +113,7 @@ public class TaskController {
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Deleting task for user {}, task id: {}", authentication.getName(), id);
 
         taskService.delete(id, authentication);

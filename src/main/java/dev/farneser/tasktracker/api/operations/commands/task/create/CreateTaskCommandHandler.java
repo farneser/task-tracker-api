@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
+import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
@@ -26,8 +27,8 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
     @Override
     public Long handle(CreateTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
         Status status = statusRepository
-                .findById(command.getColumnId())
-                .orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
+                .findById(command.getStatusId())
+                .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " of user id " + command.getUserId() + " not found"));
 
         log.debug("Column found: {}", status);
 
@@ -56,12 +57,23 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         log.debug("Order number: {}", orderNumber);
 
+        User assignedFor = null;
+
+        if (command.getAssignedFor() != null){
+
+            ProjectMember assignedMember = projectMemberRepository
+                    .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getAssignedFor())
+                    .orElseThrow(()->new NotFoundException(""));
+
+            assignedFor = assignedMember.getMember();
+        }
+
         Task task = Task.builder()
                 .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
                 .status(status)
-                .assignedFor(null)
+                .assignedFor(assignedFor)
                 .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
