@@ -12,7 +12,7 @@ import org.modelmapper.ModelMapper;
 @Slf4j
 @Schema(name = "CreateTaskDto", description = "Create task DTO")
 public class CreateTaskDto implements ITypeMapper {
-    @Schema(name = "columnId", description = "Status id", example = "1")
+    @Schema(name = "statusId", description = "Status id", example = "1")
     private Long statusId;
     @Length(min = 1, max = 255)
     @Schema(name = "taskName", description = "Task name", example = "Do something")
