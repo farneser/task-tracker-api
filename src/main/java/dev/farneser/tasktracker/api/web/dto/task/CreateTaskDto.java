@@ -19,7 +19,7 @@ public class CreateTaskDto implements ITypeMapper {
     private String taskName;
     @Schema(name = "description", description = "Task description", example = "Do something with something")
     private String description;
-    @Schema(name ="assignedFor", description = "Project member id assigned for this task", nullable = true, example = "12")
+    @Schema(name = "assignedFor", description = "Project member id assigned for this task", nullable = true, example = "12")
     private Long assignedFor;
 
     @Override

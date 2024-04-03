@@ -31,9 +31,9 @@ public class DeleteTaskCommandHandler implements CommandHandler<DeleteTaskComman
 
         ProjectMember member = projectMemberRepository
                 .findProjectMemberByProjectIdAndMemberId(task.getStatus().getProject().getId(), command.getUserId())
-                .orElseThrow(()->new NotFoundException(""));
+                .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.USER_DELETE)){
+        if (!member.getRole().hasPermission(ProjectPermission.USER_DELETE)) {
             throw new OperationNotAuthorizedException();
         }
 

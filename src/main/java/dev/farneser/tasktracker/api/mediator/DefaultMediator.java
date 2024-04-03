@@ -57,7 +57,7 @@ public class DefaultMediator implements Mediator {
 
         if (request != null) {
             QueryHandler handler = applicationContext.getBean(convertFirstLetterToLowerCase(
-                    request.getClass().getSimpleName()) + "Handler",
+                            request.getClass().getSimpleName()) + "Handler",
                     QueryHandler.class
             );
 

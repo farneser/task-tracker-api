@@ -21,6 +21,7 @@ import java.util.List;
 public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCommand, Void> {
     private final StatusRepository statusRepository;
     private final ProjectMemberRepository projectMemberRepository;
+
     @Override
     public Void handle(DeleteStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
@@ -32,7 +33,7 @@ public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCo
                 .findProjectMemberByProjectIdAndMemberId(column.getProject().getId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)){
+        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {
             throw new OperationNotAuthorizedException();
         }
 

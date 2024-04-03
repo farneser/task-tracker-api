@@ -34,9 +34,9 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         ProjectMember member = projectMemberRepository
                 .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
-                .orElseThrow(()->new NotFoundException(""));
+                .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.USER_POST)){
+        if (!member.getRole().hasPermission(ProjectPermission.USER_POST)) {
             throw new OperationNotAuthorizedException();
         }
 
@@ -59,11 +59,11 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         User assignedFor = null;
 
-        if (command.getAssignedFor() != null){
+        if (command.getAssignedFor() != null) {
 
             ProjectMember assignedMember = projectMemberRepository
                     .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getAssignedFor())
-                    .orElseThrow(()->new NotFoundException(""));
+                    .orElseThrow(() -> new NotFoundException(""));
 
             assignedFor = assignedMember.getMember();
         }

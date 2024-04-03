@@ -3,7 +3,10 @@ package dev.farneser.tasktracker.api.models;
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

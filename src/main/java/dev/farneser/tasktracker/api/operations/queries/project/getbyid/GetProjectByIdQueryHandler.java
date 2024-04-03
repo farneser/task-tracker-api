@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQuery, ProjectView> {
     private final ProjectMemberRepository projectMemberRepository;
     private final ModelMapper mapper;
+
     @Override
     public ProjectView handle(GetProjectByIdQuery query) throws NotFoundException {
         // FIXME 27.03.2024 write exception

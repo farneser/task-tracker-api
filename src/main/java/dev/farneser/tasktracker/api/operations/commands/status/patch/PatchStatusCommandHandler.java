@@ -39,7 +39,7 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
         userLock.lock();
 
         try {
-            Status status = statusRepository.findById(command.getStatusId()).orElseThrow(()->new NotFoundException(""));
+            Status status = statusRepository.findById(command.getStatusId()).orElseThrow(() -> new NotFoundException(""));
 
             ProjectMember member = projectMemberRepository
                     .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
