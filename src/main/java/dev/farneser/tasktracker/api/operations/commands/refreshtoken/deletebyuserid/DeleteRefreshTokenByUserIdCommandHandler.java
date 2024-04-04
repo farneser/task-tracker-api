@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.operations.commands.refreshtoken.deletebyuserid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.models.RefreshToken;
@@ -28,6 +29,9 @@ public class DeleteRefreshTokenByUserIdCommandHandler implements CommandHandler<
 
         } catch (NotFoundException e) {
             log.debug("Refresh token not found for user with id: {}", command.getUserId());
+        } catch (OperationNotAuthorizedException e) {
+            // TODO 04.04.2024: write exception
+            log.debug("");
         }
 
         return null;

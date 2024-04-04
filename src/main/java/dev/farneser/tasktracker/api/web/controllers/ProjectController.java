@@ -86,7 +86,7 @@ public class ProjectController {
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting columns for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(id, retrieveTasks, authentication));

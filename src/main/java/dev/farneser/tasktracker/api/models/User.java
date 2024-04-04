@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +36,6 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Setter
     @Column(name = "is_subscribed", nullable = false)
     private boolean isSubscribed;
 
@@ -43,11 +43,9 @@ public class User implements UserDetails {
     @Column(name = "register_date", nullable = false)
     private Date registerDate;
 
-    @Setter
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
-    @Setter
     @Column(name = "is_locked")
     private boolean isLocked;
 

@@ -40,7 +40,7 @@ public class StatusController {
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting columns for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(retrieveTasks, authentication));
@@ -56,7 +56,7 @@ public class StatusController {
     public ResponseEntity<StatusView> getById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.get(id, authentication));
@@ -120,7 +120,7 @@ public class StatusController {
     public ResponseEntity<List<TaskLookupView>> getTasksById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}, column id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.getTasks(id, authentication));

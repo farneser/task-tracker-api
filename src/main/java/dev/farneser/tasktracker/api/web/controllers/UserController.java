@@ -30,7 +30,8 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<UserView> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<UserView> get(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting user {}", authentication.getName());
 
         return ResponseEntity.ok(userService.getUser(authentication));
