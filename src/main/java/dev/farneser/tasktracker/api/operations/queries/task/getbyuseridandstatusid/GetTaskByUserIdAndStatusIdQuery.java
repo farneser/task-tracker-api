@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.task.getarchived;
+package dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandstatusid;
 
 import dev.farneser.tasktracker.api.mediator.Query;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class GetArchivedTaskByUserIdQuery implements Query<List<TaskLookupView>> {
+public class GetTaskByUserIdAndStatusIdQuery implements Query<List<TaskLookupView>> {
     private Long userId;
+    private Long statusId;
 }

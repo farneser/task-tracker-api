@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid;
+package dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandstatusid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
@@ -22,14 +22,14 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GetTaskByUserIdAndColumnIdQueryHandler implements QueryHandler<GetTaskByUserIdAndColumnIdQuery, List<TaskLookupView>> {
+public class GetTaskByUserIdAndStatusIdQueryHandler implements QueryHandler<GetTaskByUserIdAndStatusIdQuery, List<TaskLookupView>> {
     private final TaskRepository taskRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final StatusRepository statusRepository;
     private final TaskMapper taskMapper;
 
     @Override
-    public List<TaskLookupView> handle(GetTaskByUserIdAndColumnIdQuery query) throws NotFoundException, OperationNotAuthorizedException {
+    public List<TaskLookupView> handle(GetTaskByUserIdAndStatusIdQuery query) throws NotFoundException, OperationNotAuthorizedException {
 
         List<Task> tasks = taskRepository
                 .findByStatusIdOrderByOrderNumber(query.getStatusId())

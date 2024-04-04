@@ -8,7 +8,7 @@ import dev.farneser.tasktracker.api.operations.commands.status.delete.DeleteStat
 import dev.farneser.tasktracker.api.operations.commands.status.patch.PatchStatusCommand;
 import dev.farneser.tasktracker.api.operations.queries.status.getbyid.GetStatusByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.status.getbyuserid.GetStatusByUserIdQuery;
-import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandcolumnid.GetTaskByUserIdAndColumnIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandstatusid.GetTaskByUserIdAndStatusIdQuery;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
@@ -75,7 +75,8 @@ public class StatusService {
      * @return The list of column views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<StatusView> get(Long projectId, Boolean retrieveTasks, Authentication authentication) throws NotFoundException {
+    public List<StatusView> get(Long projectId, Boolean retrieveTasks, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting columns for user {}", user.getEmail());
@@ -90,7 +91,8 @@ public class StatusService {
      * @return The column view.
      * @throws NotFoundException If the user or column is not found.
      */
-    public StatusView get(Long statusId, Authentication authentication) throws NotFoundException {
+    public StatusView get(Long statusId, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetStatusByIdQuery(user.getId(), statusId));
@@ -141,16 +143,17 @@ public class StatusService {
      * @return The list of task lookup views.
      * @throws NotFoundException If the user or column is not found.
      */
-    public List<TaskLookupView> getTasks(Long statusId, Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getTasks(Long statusId, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Getting tasks for column {} for user {}", statusId, user.getEmail());
 
-        return mediator.send(new GetTaskByUserIdAndColumnIdQuery(user.getId(), statusId));
+        return mediator.send(new GetTaskByUserIdAndStatusIdQuery(user.getId(), statusId));
     }
 
     public List<StatusView> get(Boolean retrieveTasks, Authentication authentication)
-            throws NotFoundException {
+            throws NotFoundException, OperationNotAuthorizedException {
         return get(-1L, retrieveTasks, authentication);
     }
 }
