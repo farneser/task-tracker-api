@@ -98,13 +98,16 @@ public class AuthService {
 
             log.debug("Authenticating user {}", loginRequest.getEmail());
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword())
+            );
 
             log.debug("Authenticating user {}", loginRequest.getEmail());
 
             return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
-        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException |
-                 OperationNotAuthorizedException e) {
+        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException
+                 | OperationNotAuthorizedException e) {
             throw new BadCredentialsException("Invalid credentials");
         }
     }

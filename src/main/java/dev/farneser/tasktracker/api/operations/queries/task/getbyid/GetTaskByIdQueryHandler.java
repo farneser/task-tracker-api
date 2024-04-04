@@ -32,7 +32,7 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
                 .findProjectMemberByProjectIdAndMemberId(task.getStatus().getProject().getId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
-        if (!member.getRole().hasPermission(ProjectPermission.USER_GET)){
+        if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
             throw new OperationNotAuthorizedException();
         }
 

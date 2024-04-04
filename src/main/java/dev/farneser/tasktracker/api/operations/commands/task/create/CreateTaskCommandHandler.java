@@ -78,15 +78,9 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
                 .editDate(creationDate)
                 .build();
 
-        log.debug("Task created: {}", task);
-
         status.getTasks().add(task);
 
-        log.debug("Task added to status: {}", status);
-
         statusRepository.save(status);
-
-        log.debug("Column saved: {}", status);
 
         return task.getId();
     }

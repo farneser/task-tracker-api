@@ -17,6 +17,7 @@ public class UserRepositoryTest {
     void userSaveTest() {
         User user = new User();
 
+        user.setUsername("test");
         user.setEmail("test@email.com");
         user.setPassword("password");
         user.setRegisterDate(new Date(System.currentTimeMillis()));

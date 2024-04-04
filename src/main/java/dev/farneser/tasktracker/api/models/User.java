@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<ProjectMember> projects;
 
     @Override

@@ -30,6 +30,21 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
     private final ProjectMemberRepository projectMemberRepository;
     private final Map<Long, Lock> userLocks = new ConcurrentHashMap<>();
 
+    private void patchOrder(Long orderNumber, Status status, List<Status> statuses) {
+        if (orderNumber != null) {
+            long oldOrder = status.getOrderNumber();
+            long newOrder = orderNumber;
+
+            status.setOrderNumber(newOrder);
+
+            List<Status> columnsToChange = statuses.stream()
+                    .filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder))
+                    .toList();
+
+            OrderUtility.patchOrder(status.getId(), newOrder, oldOrder, columnsToChange);
+        }
+    }
+
     @Override
     @Transactional
     public Void handle(PatchStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
@@ -49,45 +64,27 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
                 throw new OperationNotAuthorizedException();
             }
 
-            List<Status> columns = statusRepository
+            List<Status> statuses = statusRepository
                     .findByProjectIdOrderByOrderNumber(member.getProject().getId())
                     .orElse(new ArrayList<>());
 
-            Status column = columns
-                    .stream()
-                    .filter(c -> c.getId().equals(command.getStatusId()))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
-
             if (command.getStatusName() != null) {
-                column.setStatusName(command.getStatusName());
+                status.setStatusName(command.getStatusName());
             }
+
+            patchOrder(command.getOrderNumber(), status, statuses);
 
             if (command.getStatusColor() != null) {
-                column.setStatusColor(command.getStatusColor());
-            }
-
-            if (command.getOrderNumber() != null) {
-                long oldOrder = column.getOrderNumber();
-                long newOrder = command.getOrderNumber();
-
-                column.setOrderNumber(newOrder);
-
-                List<Status> columnsToChange = columns
-                        .stream()
-                        .filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder))
-                        .toList();
-
-                OrderUtility.patchOrder(column.getId(), newOrder, oldOrder, columnsToChange);
+                status.setStatusColor(command.getStatusColor());
             }
 
             if (command.getIsCompleted() != null) {
-                column.setIsCompleted(command.getIsCompleted());
+                status.setIsCompleted(command.getIsCompleted());
             }
 
-            column.setEditDate(new Date(System.currentTimeMillis()));
+            status.setEditDate(new Date(System.currentTimeMillis()));
 
-            statusRepository.save(column);
+            statusRepository.save(status);
         } finally {
             userLock.unlock();
         }
