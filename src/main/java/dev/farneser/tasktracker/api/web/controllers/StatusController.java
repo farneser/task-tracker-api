@@ -30,34 +30,34 @@ public class StatusController {
     private final StatusService statusService;
 
     @GetMapping
-    @Operation(summary = "Get statuses", description = "Get columns by JWT token")
+    @Operation(summary = "Get statuses", description = "Get statuses by JWT token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got columns"),
+            @ApiResponse(responseCode = "200", description = "Successfully got statuses"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Columns not found")
+            @ApiResponse(responseCode = "404", description = "Statuses not found")
     })
     public ResponseEntity<List<StatusView>> get(
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Getting columns for user {}", authentication.getName());
+        log.info("Getting statuses for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(retrieveTasks, authentication));
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Get column", description = "Get column by id")
+    @Operation(summary = "Get status", description = "Get status by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got column"),
+            @ApiResponse(responseCode = "200", description = "Successfully got status"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
+            @ApiResponse(responseCode = "404", description = "Status not found")
     })
     public ResponseEntity<StatusView> getById(
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Getting column for user {}, column id: {}", authentication.getName(), id);
+        log.info("Getting status for user {}, status id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.get(id, authentication));
     }
@@ -71,47 +71,47 @@ public class StatusController {
     public ResponseEntity<StatusView> create(
             @RequestBody @Valid CreateStatusDto createStatusDto,
             Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Creating column for user {}, column name: {}", authentication.getName(), createStatusDto.getStatusName());
+        log.info("Creating status for user {}, status name: {}", authentication.getName(), createStatusDto.getStatusName());
 
         return ResponseEntity.status(201).body(statusService.create(createStatusDto, authentication));
     }
 
     @PatchMapping("{id}")
-    @Operation(summary = "Patch column", description = "Patch column data")
+    @Operation(summary = "Patch status", description = "Patch status data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully patched column"),
+            @ApiResponse(responseCode = "200", description = "Successfully patched status"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
+            @ApiResponse(responseCode = "404", description = "Status not found")
     })
     public ResponseEntity<StatusView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchStatusDto patchStatusDto,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Patching column for user {}, column id: {}", authentication.getName(), id);
+        log.info("Patching status for user {}, status id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.patch(id, patchStatusDto, authentication));
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Delete column", description = "Delete column by id")
+    @Operation(summary = "Delete status", description = "Delete status by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully deleted column"),
+            @ApiResponse(responseCode = "200", description = "Successfully deleted status"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
+            @ApiResponse(responseCode = "404", description = "status not found")
     })
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Deleting column for user {}, column id: {}", authentication.getName(), id);
+        log.info("Deleting status for user {}, status id: {}", authentication.getName(), id);
 
         statusService.delete(id, authentication);
 
-        return ResponseEntity.ok(Message.body("Successfully deleted column"));
+        return ResponseEntity.ok(Message.body("Successfully deleted status"));
     }
 
     @GetMapping("{id}/tasks")
-    @Operation(summary = "Get tasks", description = "Get tasks by column id")
+    @Operation(summary = "Get tasks", description = "Get tasks by status id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
@@ -121,7 +121,7 @@ public class StatusController {
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Getting tasks for user {}, column id: {}", authentication.getName(), id);
+        log.info("Getting tasks for user {}, status id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.getTasks(id, authentication));
     }

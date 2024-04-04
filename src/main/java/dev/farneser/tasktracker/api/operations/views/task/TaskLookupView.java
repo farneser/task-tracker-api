@@ -22,8 +22,8 @@ public class TaskLookupView implements ITypeMapper {
     private String description;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")
     private Long orderNumber;
-    @Schema(name = "columnId", description = "Task column id")
-    private Long columnId;
+    @Schema(name = "statusId", description = "Task status id")
+    private Long statusId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Schema(name = "creationDate", description = "Task creation date", example = "2021-01-01T00:00:00.000Z")
     private Date creationDate;
@@ -41,6 +41,6 @@ public class TaskLookupView implements ITypeMapper {
                 .addMapping(Task::getOrderNumber, TaskLookupView::setOrderNumber)
                 .addMapping(Task::getCreationDate, TaskLookupView::setCreationDate)
                 .addMapping(Task::getEditDate, TaskLookupView::setEditDate)
-                .addMapping(task -> task.getStatus().getId(), TaskLookupView::setColumnId);
+                .addMapping(task -> task.getStatus().getId(), TaskLookupView::setStatusId);
     }
 }

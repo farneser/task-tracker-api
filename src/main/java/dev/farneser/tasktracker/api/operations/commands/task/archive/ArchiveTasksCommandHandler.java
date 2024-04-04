@@ -30,13 +30,13 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
 
         projects.forEach(p -> statuses.addAll(p.getProject().getStatuses()));
 
-        log.debug("Columns found: {}", statuses);
+        log.debug("Statuses found: {}", statuses);
 
-        statuses.forEach(column -> {
-            log.debug("Column found: {}", column);
+        statuses.forEach(status -> {
+            log.debug("Status found: {}", status);
 
-            if (column.getIsCompleted() && column.getTasks() != null) {
-                column.getTasks().forEach(task -> {
+            if (status.getIsCompleted() && status.getTasks() != null) {
+                status.getTasks().forEach(task -> {
                     log.debug("Task found: {}", task);
 
                     task.setStatus(null);

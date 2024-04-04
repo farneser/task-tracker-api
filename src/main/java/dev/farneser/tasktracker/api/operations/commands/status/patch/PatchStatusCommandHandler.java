@@ -37,11 +37,11 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
 
             status.setOrderNumber(newOrder);
 
-            List<Status> columnsToChange = statuses.stream()
+            List<Status> statusesToChange = statuses.stream()
                     .filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder))
                     .toList();
 
-            OrderUtility.patchOrder(status.getId(), newOrder, oldOrder, columnsToChange);
+            OrderUtility.patchOrder(status.getId(), newOrder, oldOrder, statusesToChange);
         }
     }
 

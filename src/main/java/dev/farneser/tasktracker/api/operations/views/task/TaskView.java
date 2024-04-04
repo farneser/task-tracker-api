@@ -23,8 +23,8 @@ public class TaskView implements ITypeMapper {
     private String description;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")
     private Long orderNumber;
-    @Schema(name = "column", description = "Task column")
-    private StatusView column;
+    @Schema(name = "status", description = "Task status")
+    private StatusView status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @Schema(name = "creationDate", description = "Task creation date", example = "2021-01-01T00:00:00.000Z")
     private Date creationDate;
@@ -42,6 +42,6 @@ public class TaskView implements ITypeMapper {
                 .addMapping(Task::getOrderNumber, TaskView::setOrderNumber)
                 .addMapping(Task::getCreationDate, TaskView::setCreationDate)
                 .addMapping(Task::getEditDate, TaskView::setEditDate)
-                .addMapping(task -> modelMapper.map(task.getStatus(), StatusView.class), TaskView::setColumn);
+                .addMapping(task -> modelMapper.map(task.getStatus(), StatusView.class), TaskView::setStatus);
     }
 }

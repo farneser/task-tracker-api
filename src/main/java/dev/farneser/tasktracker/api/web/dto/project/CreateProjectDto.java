@@ -18,7 +18,7 @@ public class CreateProjectDto implements ITypeMapper {
 
     @Override
     public void mapping(ModelMapper modelMapper) {
-        log.debug("Mapping CreateColumnDto");
+        log.debug("Mapping CreateStatusDto");
 
         modelMapper.createTypeMap(CreateProjectDto.class, CreateProjectCommand.class)
                 .addMapping(CreateProjectDto::getProjectName, CreateProjectCommand::setProjectName);

@@ -15,31 +15,31 @@ import java.util.List;
 
 @Data
 @Slf4j
-@Schema(name = "ColumnView", description = "Column view")
+@Schema(name = "StatusView", description = "Status view")
 public class StatusView implements ITypeMapper {
-    @Schema(name = "id", description = "Column id", example = "1")
+    @Schema(name = "id", description = "Status id", example = "1")
     private Long id;
-    @Schema(name = "columnName", description = "Column name", example = "To do")
-    private String columnName;
-    @Schema(name = "isCompleted", description = "Is column completed", example = "false")
+    @Schema(name = "statusName", description = "Status name", example = "To do")
+    private String statusView;
+    @Schema(name = "isCompleted", description = "Is status completed", example = "false")
     private Boolean isCompleted;
-    @Schema(name = "orderNumber", description = "Column order number", example = "1")
+    @Schema(name = "orderNumber", description = "Status order number", example = "1")
     private Long orderNumber;
-    @Schema(name = "tasks", description = "Column tasks")
+    @Schema(name = "tasks", description = "Status tasks")
     private List<TaskLookupView> tasks;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-    @Schema(name = "creationDate", description = "Column creation date", example = "2021-01-01T00:00:00.000Z")
+    @Schema(name = "creationDate", description = "Status creation date", example = "2021-01-01T00:00:00.000Z")
     private Date creationDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-    @Schema(name = "editDate", description = "Column edit date", example = "2021-01-01T00:00:00.000Z")
+    @Schema(name = "editDate", description = "Status edit date", example = "2021-01-01T00:00:00.000Z")
     private Date editDate;
 
     public void mapping(ModelMapper modelMapper) {
-        log.debug("Mapping ColumnView");
+        log.debug("Mapping StatusView");
 
         modelMapper.createTypeMap(Status.class, StatusView.class)
                 .addMapping(Status::getId, StatusView::setId)
-                .addMapping(Status::getStatusName, StatusView::setColumnName)
+                .addMapping(Status::getStatusName, StatusView::setStatusView)
                 .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
                 .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
                 .addMapping(Status::getCreationDate, StatusView::setCreationDate)

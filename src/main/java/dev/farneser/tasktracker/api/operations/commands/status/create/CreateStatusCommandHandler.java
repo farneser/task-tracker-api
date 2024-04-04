@@ -34,23 +34,23 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
             throw new OperationNotAuthorizedException();
         }
 
-        List<Status> columns = statusRepository
+        List<Status> statuses = statusRepository
                 .findByProjectIdOrderByOrderNumber(command.getProjectId())
                 .orElse(new ArrayList<>());
 
-        log.debug("Columns found: {}", columns);
+        log.debug("Statuses found: {}", statuses);
 
         long orderNumber = 1L;
 
-        if (!columns.isEmpty()) {
-            orderNumber = columns.get(columns.size() - 1).getOrderNumber() + 1;
+        if (!statuses.isEmpty()) {
+            orderNumber = statuses.get(statuses.size() - 1).getOrderNumber() + 1;
         }
 
         log.debug("Order number: {}", orderNumber);
 
         Date creationDate = new Date(System.currentTimeMillis());
 
-        Status column = Status
+        Status status = Status
                 .builder()
                 .statusName(command.getStatusName())
                 .statusColor(command.getStatusColor())
@@ -61,12 +61,12 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
                 .editDate(creationDate)
                 .build();
 
-        log.debug("Column created: {}", column);
+        log.debug("Status created: {}", status);
 
-        statusRepository.save(column);
+        statusRepository.save(status);
 
-        log.debug("Column saved: {}", column);
+        log.debug("Status saved: {}", status);
 
-        return column.getId();
+        return status.getId();
     }
 }

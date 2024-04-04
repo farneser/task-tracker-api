@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.patch;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
+import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
@@ -68,7 +69,11 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
             } else {
                 log.debug("Status set to {}", command.getStatusId());
 
-                task.setStatus(statusRepository.findByIdAndProjectId(command.getStatusId(), member.getProject().getId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found")));
+                Status status = statusRepository
+                        .findByIdAndProjectId(command.getStatusId(), member.getProject().getId())
+                        .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
+
+                task.setStatus(status);
             }
         }
 

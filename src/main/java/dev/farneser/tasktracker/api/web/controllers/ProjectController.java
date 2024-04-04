@@ -75,11 +75,11 @@ public class ProjectController {
     }
 
     @GetMapping("{id}/statuses")
-    @Operation(summary = "Get statuses", description = "Get columns by JWT token")
+    @Operation(summary = "Get statuses", description = "Get statuses by JWT token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully got columns"),
+            @ApiResponse(responseCode = "200", description = "Successfully got statuses"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Columns not found")
+            @ApiResponse(responseCode = "404", description = "Statuses not found")
     })
     public ResponseEntity<List<StatusView>> getStatuses(
             @PathVariable Long id,
@@ -87,13 +87,13 @@ public class ProjectController {
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Getting columns for user {}", authentication.getName());
+        log.info("Getting statuses for user {}", authentication.getName());
 
         return ResponseEntity.ok(statusService.get(id, retrieveTasks, authentication));
     }
 
     @GetMapping("{id}/tasks")
-    @Operation(summary = "Get tasks", description = "Get tasks by column id")
+    @Operation(summary = "Get tasks", description = "Get tasks by status id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),

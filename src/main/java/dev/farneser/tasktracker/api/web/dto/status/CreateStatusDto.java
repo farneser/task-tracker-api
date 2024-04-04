@@ -25,7 +25,7 @@ public class CreateStatusDto implements ITypeMapper {
 
     @Override
     public void mapping(ModelMapper modelMapper) {
-        log.debug("Mapping CreateColumnDto");
+        log.debug("Mapping CreateStatusDto");
 
         modelMapper.createTypeMap(CreateStatusDto.class, CreateStatusCommand.class)
                 .addMapping(CreateStatusDto::getStatusName, CreateStatusCommand::setStatusName)

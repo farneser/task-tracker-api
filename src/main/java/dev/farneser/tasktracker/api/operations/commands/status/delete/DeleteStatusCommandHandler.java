@@ -25,39 +25,39 @@ public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCo
     @Override
     public Void handle(DeleteStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
-        Status column = statusRepository
+        Status status = statusRepository
                 .findById(command.getStatusId())
-                .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(column.getProject().getId(), command.getUserId())
+                .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {
             throw new OperationNotAuthorizedException();
         }
 
-        log.debug("Column found: {}", column);
+        log.debug("Status found: {}", status);
 
-        List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
+        List<Status> statuses = statusRepository.findByProjectIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
 
-        log.debug("Columns found: {}", columns);
+        log.debug("Statuses found: {}", statuses);
 
-        List<Status> columnsToUpdate = columns.stream().filter(c -> c.getOrderNumber() > column.getOrderNumber()).toList();
+        List<Status> statusesToUpdate = statuses.stream().filter(c -> c.getOrderNumber() > status.getOrderNumber()).toList();
 
-        log.debug("Columns to update: {}", columnsToUpdate);
+        log.debug("Statuses to update: {}", statusesToUpdate);
 
-        columnsToUpdate.forEach(c -> c.setOrderNumber(c.getOrderNumber() - 1));
+        statusesToUpdate.forEach(c -> c.setOrderNumber(c.getOrderNumber() - 1));
 
-        log.debug("Columns to update after: {}", columnsToUpdate);
+        log.debug("Statuses to update after: {}", statusesToUpdate);
 
-        statusRepository.saveAll(columnsToUpdate);
+        statusRepository.saveAll(statusesToUpdate);
 
-        log.debug("Columns updated");
+        log.debug("Statuses updated");
 
-        statusRepository.delete(column);
+        statusRepository.delete(status);
 
-        log.debug("Column deleted: {}", command.getStatusId());
+        log.debug("Status deleted: {}", command.getStatusId());
 
         return null;
     }

@@ -52,15 +52,15 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
                 throw new OperationNotAuthorizedException();
             }
 
-            List<Status> columns = statusRepository.findByProjectIdOrderByOrderNumber(id).orElse(new ArrayList<>());
+            List<Status> statuses = statusRepository.findByProjectIdOrderByOrderNumber(id).orElse(new ArrayList<>());
 
-            log.debug("Column found: {}", columns);
+            log.debug("Status found: {}", statuses);
 
-            List<StatusView> views = columns.stream().map(c -> modelMapper.map(c, StatusView.class)).toList();
+            List<StatusView> views = statuses.stream().map(c -> modelMapper.map(c, StatusView.class)).toList();
             result.addAll(views);
         }
 
-        log.debug("Column mapped: {}", Arrays.toString(result.toArray()));
+        log.debug("Status mapped: {}", Arrays.toString(result.toArray()));
 
         if (!query.getRetrieveTasks()) {
             result.forEach(c -> c.setTasks(null));

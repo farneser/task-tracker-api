@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * The `ColumnService` class provides operations related to columns, including creation, retrieval,
+ * The `StatusService` class provides operations related to statuses, including creation, retrieval,
  * updating, and deletion.
- * It interacts with the mediator to send commands and queries for column-related operations.
+ * It interacts with the mediator to send commands and queries for status-related operations.
  */
 @Slf4j
 @Service
@@ -36,60 +36,60 @@ public class StatusService {
     private final UserService userService;
 
     /**
-     * Creates a new column for the authenticated user.
+     * Creates a new status for the authenticated user.
      *
-     * @param dto            The DTO containing information for creating the column.
+     * @param dto            The DTO containing information for creating the status.
      * @param authentication The authentication object representing the user.
-     * @return The created column view.
+     * @return The created status view.
      * @throws NotFoundException If the user is not found.
      */
     public StatusView create(CreateStatusDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
-        log.debug("Creating column {}", dto.getStatusName());
+        log.debug("Creating status {}", dto.getStatusName());
 
         UserView user = userService.getUser(authentication);
 
-        log.debug("Creating column {}", dto.getStatusName());
+        log.debug("Creating status {}", dto.getStatusName());
 
         CreateStatusCommand command = modelMapper.map(dto, CreateStatusCommand.class);
 
-        log.debug("Creating column {}", dto.getStatusName());
+        log.debug("Creating status {}", dto.getStatusName());
 
         command.setUserId(user.getId());
 
-        log.debug("Creating column {}", dto.getStatusName());
+        log.debug("Creating status {}", dto.getStatusName());
 
         Long statusId = mediator.send(command);
 
-        log.debug("Created column {}", dto.getStatusName());
+        log.debug("Created status {}", dto.getStatusName());
 
         return get(statusId, authentication);
     }
 
     /**
-     * Retrieves a list of columns for the authenticated user.
+     * Retrieves a list of statuses for the authenticated user.
      *
      * @param projectId      The ID of project (-1 to get all)
-     * @param retrieveTasks  Flag indicating whether to retrieve tasks along with columns.
+     * @param retrieveTasks  Flag indicating whether to retrieve tasks along with statuses.
      * @param authentication The authentication object representing the user.
-     * @return The list of column views.
+     * @return The list of status views.
      * @throws NotFoundException If the user is not found.
      */
     public List<StatusView> get(Long projectId, Boolean retrieveTasks, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Getting columns for user {}", user.getEmail());
+        log.debug("Getting statuses for user {}", user.getEmail());
 
         return mediator.send(new GetStatusByUserIdQuery(user.getId(), projectId, retrieveTasks));
     }
 
     /**
-     * Retrieves a specific column for the authenticated user.
+     * Retrieves a specific status for the authenticated user.
      *
      * @param authentication The authentication object representing the user.
-     * @return The column view.
-     * @throws NotFoundException If the user or column is not found.
+     * @return The status view.
+     * @throws NotFoundException If the user or status is not found.
      */
     public StatusView get(Long statusId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -99,11 +99,11 @@ public class StatusService {
     }
 
     /**
-     * Deletes a specific column for the authenticated user.
+     * Deletes a specific status for the authenticated user.
      *
      * @param statusId       The ID of the status to delete.
      * @param authentication The authentication object representing the user.
-     * @throws NotFoundException If the user or column is not found.
+     * @throws NotFoundException If the user or status is not found.
      */
     public void delete(Long statusId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -113,13 +113,13 @@ public class StatusService {
     }
 
     /**
-     * Updates a specific column for the authenticated user.
+     * Updates a specific status for the authenticated user.
      *
      * @param statusId       The id of status
-     * @param patchStatusDto The DTO containing information for updating the column.
+     * @param patchStatusDto The DTO containing information for updating the status.
      * @param authentication The authentication object representing the user.
-     * @return The updated column view.
-     * @throws NotFoundException If the user or column is not found.
+     * @return The updated status view.
+     * @throws NotFoundException If the user or status is not found.
      */
     public StatusView patch(Long statusId, PatchStatusDto patchStatusDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -136,18 +136,18 @@ public class StatusService {
     }
 
     /**
-     * Retrieves tasks associated with a specific column for the authenticated user.
+     * Retrieves tasks associated with a specific status for the authenticated user.
      *
-     * @param statusId       The ID of the column for which to retrieve tasks.
+     * @param statusId       The ID of the status for which to retrieve tasks.
      * @param authentication The authentication object representing the user.
      * @return The list of task lookup views.
-     * @throws NotFoundException If the user or column is not found.
+     * @throws NotFoundException If the user or status is not found.
      */
     public List<TaskLookupView> getTasks(Long statusId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        log.debug("Getting tasks for column {} for user {}", statusId, user.getEmail());
+        log.debug("Getting tasks for status {} for user {}", statusId, user.getEmail());
 
         return mediator.send(new GetTaskByUserIdAndStatusIdQuery(user.getId(), statusId));
     }

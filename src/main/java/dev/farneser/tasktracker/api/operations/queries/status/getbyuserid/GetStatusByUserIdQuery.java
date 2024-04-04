@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * This query returns a list of statuses by project id and when project id is -1 returns all user columns
+ * This query returns a list of statuses by project id and when project id is -1 returns all user statuses
  */
 @Data
 @AllArgsConstructor

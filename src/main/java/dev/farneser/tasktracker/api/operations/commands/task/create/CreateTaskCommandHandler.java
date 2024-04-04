@@ -28,9 +28,9 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
     public Long handle(CreateTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
         Status status = statusRepository
                 .findById(command.getStatusId())
-                .orElseThrow(() -> new NotFoundException("Column with id " + command.getStatusId() + " of user id " + command.getUserId() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " of user id " + command.getUserId() + " not found"));
 
-        log.debug("Column found: {}", status);
+        log.debug("Status found: {}", status);
 
         ProjectMember member = projectMemberRepository
                 .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())

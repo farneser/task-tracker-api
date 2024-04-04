@@ -59,7 +59,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully created task"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
+            @ApiResponse(responseCode = "404", description = "Status not found")
     })
     public ResponseEntity<TaskView> create(
             @RequestBody @Valid CreateTaskDto createTaskDto,
@@ -91,7 +91,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully patched task"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Task not found or Column not found")
+            @ApiResponse(responseCode = "404", description = "Task not found or status not found")
     })
     public ResponseEntity<TaskView> patchById(
             @PathVariable Long id,
@@ -118,7 +118,7 @@ public class TaskController {
 
         taskService.delete(id, authentication);
 
-        return ResponseEntity.ok(Message.body("Successfully deleted column"));
+        return ResponseEntity.ok(Message.body("Successfully deleted status"));
     }
 
     @PutMapping("/archive")
