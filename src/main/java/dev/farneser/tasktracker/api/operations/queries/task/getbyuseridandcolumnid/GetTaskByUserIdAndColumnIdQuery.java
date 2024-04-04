@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class GetTaskByUserIdAndColumnIdQuery implements Query<List<TaskLookupView>> {
     private Long userId;
-    private Long columnId;
+    private Long statusId;
 }

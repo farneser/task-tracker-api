@@ -51,7 +51,8 @@ public class UserService implements UserDetailsService {
      * @return UserView representing the authenticated user.
      * @throws NotFoundException If the user is not found.
      */
-    public UserView getUser(Authentication authentication) throws NotFoundException {
+    public UserView getUser(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         String username = authentication.getName();
 
         log.debug("Getting user {}", username);

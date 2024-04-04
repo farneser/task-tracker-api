@@ -3,10 +3,7 @@ package dev.farneser.tasktracker.api.models;
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -38,6 +35,7 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Setter
     @Column(name = "is_subscribed", nullable = false)
     private boolean isSubscribed;
 
@@ -45,10 +43,14 @@ public class User implements UserDetails {
     @Column(name = "register_date", nullable = false)
     private Date registerDate;
 
+    @Setter
     @Column(name = "is_enabled")
     private boolean isEnabled;
+
+    @Setter
     @Column(name = "is_locked")
     private boolean isLocked;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;

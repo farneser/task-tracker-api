@@ -44,25 +44,29 @@ public class ProjectService {
         return get(projectId, authentication);
     }
 
-    public List<ProjectView> get(Authentication authentication) throws NotFoundException {
+    public List<ProjectView> get(Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetProjectByUserIdQuery(user.getId()));
     }
 
-    public ProjectView get(Long id, Authentication authentication) throws NotFoundException {
+    public ProjectView get(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetProjectByIdQuery(id, user.getId()));
     }
 
-    public void delete(Long id, Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+    public void delete(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         mediator.send(new DeleteProjectCommand(user.getId(), id));
     }
 
-    public ProjectView patch(Long id, PatchProjectDto patchProjectDto, Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+    public ProjectView patch(Long id, PatchProjectDto patchProjectDto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         PatchProjectCommand command = modelMapper.map(patchProjectDto, PatchProjectCommand.class);
@@ -75,7 +79,8 @@ public class ProjectService {
         return get(id, authentication);
     }
 
-    public List<TaskLookupView> getTasks(Long id, Authentication authentication) throws NotFoundException {
+    public List<TaskLookupView> getTasks(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetTaskByUserIdAndProjectIdQuery(user.getId(), id));

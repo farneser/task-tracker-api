@@ -20,11 +20,7 @@ public class TaskMapper {
         tasks.forEach(task -> {
             TaskLookupView view = modelMapper.map(task, TaskLookupView.class);
 
-            if (task.getStatus() != null) {
-                view.setColumnId(task.getStatus().getId());
-            } else {
-                view.setColumnId(-1L);
-            }
+            view.setColumnId(task.getStatus() != null ? task.getStatus().getId() : -1L);
 
             result.add(view);
         });

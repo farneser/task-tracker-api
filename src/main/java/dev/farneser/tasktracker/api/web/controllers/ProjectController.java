@@ -35,7 +35,7 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<ProjectView>> get(
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(authentication));
     }
 
@@ -51,7 +51,7 @@ public class ProjectController {
     public ResponseEntity<ProjectView> getById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
 
@@ -102,7 +102,7 @@ public class ProjectController {
     public ResponseEntity<List<TaskLookupView>> getArchivedTasksById(
             @PathVariable Long id,
             Authentication authentication
-    ) throws NotFoundException {
+    ) throws NotFoundException, OperationNotAuthorizedException {
 
         return ResponseEntity.ok(projectService.getTasks(id, authentication));
     }
