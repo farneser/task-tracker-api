@@ -18,11 +18,7 @@ public class TestContainerConfig {
         PostgreSQLContainer pgContainer = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("task-tracker")
                 .withUsername("postgres")
-                .withPassword("postgres")
-                .withExposedPorts(5432)
-                .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig()
-                        .withPortBindings(new PortBinding(Ports.Binding.bindPort(15433), new ExposedPort(5432))))
-                );
+                .withPassword("postgres");
 
         pgContainer.start();
 
