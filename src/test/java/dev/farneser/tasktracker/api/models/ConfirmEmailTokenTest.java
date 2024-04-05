@@ -1,11 +1,13 @@
 package dev.farneser.tasktracker.api.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class ConfirmEmailTokenTest {
 
     @Test

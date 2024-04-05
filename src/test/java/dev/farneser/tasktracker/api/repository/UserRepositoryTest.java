@@ -14,7 +14,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void userSaveTest() {
+    public void testUserSave() {
         User user = new User();
 
         user.setUsername("test");

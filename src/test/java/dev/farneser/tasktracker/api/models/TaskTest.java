@@ -1,17 +1,17 @@
 package dev.farneser.tasktracker.api.models;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class TaskTest {
 
     @Mock
@@ -23,7 +23,7 @@ public class TaskTest {
     @InjectMocks
     private Task task;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         task = Task.builder()
                 .id(1L)

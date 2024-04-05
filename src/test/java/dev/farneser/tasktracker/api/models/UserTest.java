@@ -3,21 +3,19 @@ package dev.farneser.tasktracker.api.models;
 
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class UserTest {
 
     @Mock
@@ -29,7 +27,7 @@ public class UserTest {
     @InjectMocks
     private User user;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         user = User.builder()
                 .id(1L)
@@ -47,86 +45,86 @@ public class UserTest {
 
     @Test
     public void testIsAccountNonExpired() {
-        assertTrue(user.isAccountNonExpired());
+        Assertions.assertTrue(user.isAccountNonExpired());
     }
 
     @Test
     public void testIsAccountNonLocked() {
-        assertTrue(user.isAccountNonLocked());
+        Assertions.assertTrue(user.isAccountNonLocked());
     }
 
     @Test
     public void testIsCredentialsNonExpired() {
-        assertTrue(user.isCredentialsNonExpired());
+        Assertions.assertTrue(user.isCredentialsNonExpired());
     }
 
     @Test
     public void testIdGetterAndSetter() {
         Long id = 10L;
         user.setId(id);
-        assertEquals(id, user.getId());
+        Assertions.assertEquals(id, user.getId());
     }
 
     @Test
     public void testUsernameGetterAndSetter() {
         String username = "newUsername";
         user.setUsername(username);
-        assertEquals(username, user.getUsername());
+        Assertions.assertEquals(username, user.getUsername());
     }
 
     @Test
     public void testEmailGetterAndSetter() {
         String email = "newemail@example.com";
         user.setEmail(email);
-        assertEquals(email, user.getEmail());
+        Assertions.assertEquals(email, user.getEmail());
     }
 
     @Test
     public void testPasswordGetterAndSetter() {
         String password = "newPassword";
         user.setPassword(password);
-        assertEquals(password, user.getPassword());
+        Assertions.assertEquals(password, user.getPassword());
     }
 
     @Test
     public void testIsSubscribedGetterAndSetter() {
         boolean isSubscribed = false;
         user.setSubscribed(isSubscribed);
-        assertEquals(isSubscribed, user.isSubscribed());
+        Assertions.assertEquals(isSubscribed, user.isSubscribed());
     }
 
     @Test
     public void testRegisterDateGetterAndSetter() {
         Date registerDate = new Date();
         user.setRegisterDate(registerDate);
-        assertEquals(registerDate, user.getRegisterDate());
+        Assertions.assertEquals(registerDate, user.getRegisterDate());
     }
 
     @Test
     public void testIsEnabledGetterAndSetter() {
         boolean isEnabled = false;
         user.setEnabled(isEnabled);
-        assertEquals(isEnabled, user.isEnabled());
+        Assertions.assertEquals(isEnabled, user.isEnabled());
     }
 
     @Test
     public void testIsLockedGetterAndSetter() {
         boolean isLocked = true;
         user.setLocked(isLocked);
-        assertEquals(isLocked, user.isLocked());
+        Assertions.assertEquals(isLocked, user.isLocked());
     }
 
     @Test
     public void testRoleGetterAndSetter() {
         Role newRole = Role.ADMIN;
         user.setRole(newRole);
-        assertEquals(newRole, user.getRole());
+        Assertions.assertEquals(newRole, user.getRole());
     }
 
     @Test
     public void testProjectsGetterAndSetter() {
         List<ProjectMember> projects = Collections.emptyList();
         user.setProjects(projects);
-        assertEquals(projects, user.getProjects());
+        Assertions.assertEquals(projects, user.getProjects());
     }
 }

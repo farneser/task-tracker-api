@@ -1,10 +1,11 @@
 package dev.farneser.tasktracker.api.models.project;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class ProjectRoleTest {
 
     @Test
@@ -52,6 +53,7 @@ public class ProjectRoleTest {
         };
 
         ProjectRole adminRole = ProjectRole.ADMIN;
+
         for (ProjectPermission permission : adminPermissions) {
             assertTrue(adminRole.hasPermission(permission));
         }
@@ -84,6 +86,7 @@ public class ProjectRoleTest {
         };
 
         ProjectRole creatorRole = ProjectRole.CREATOR;
+
         for (ProjectPermission permission : creatorPermissions) {
             assertTrue(creatorRole.hasPermission(permission));
         }
