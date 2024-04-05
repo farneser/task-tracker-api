@@ -43,4 +43,18 @@ public class Task implements OrderIdentifier {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "edit_date", nullable = false)
     private Date editDate;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", taskName='" + taskName + '\'' +
+                ", description='" + description + '\'' +
+                ", assignedFor=" + (assignedFor != null ? assignedFor.getId() : "null") +
+                ", status=" + (status != null ? status.getId() : "null") +
+                ", orderNumber=" + orderNumber +
+                ", creationDate='" + creationDate + '\'' +
+                ", editDate='" + editDate + '\'' +
+                '}';
+    }
 }
