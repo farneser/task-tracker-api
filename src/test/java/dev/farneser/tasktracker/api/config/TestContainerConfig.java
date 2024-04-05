@@ -1,9 +1,6 @@
 package dev.farneser.tasktracker.api.config;
 
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
+import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -13,9 +10,11 @@ import javax.sql.DataSource;
 
 @Configuration
 public class TestContainerConfig {
+    private PostgreSQLContainer<?> pgContainer;
+
     @Bean
     public DataSource dataSource() {
-        PostgreSQLContainer pgContainer = new PostgreSQLContainer<>("postgres:latest")
+        pgContainer = new PostgreSQLContainer<>("postgres:latest")
                 .withDatabaseName("task-tracker")
                 .withUsername("postgres")
                 .withPassword("postgres");
@@ -30,6 +29,12 @@ public class TestContainerConfig {
         dataSource.setPassword(pgContainer.getPassword());
 
         return dataSource;
+    }
+
+
+    @PreDestroy
+    public void cleanUp() {
+        pgContainer.close();
     }
 }
 
