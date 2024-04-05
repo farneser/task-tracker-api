@@ -25,7 +25,7 @@ public class Status implements OrderIdentifier {
     @Column(name = "status_name")
     private String statusName;
 
-    @Column(name = "status_color")
+    @Column(name = "status_color", length = 7)
     private String statusColor;
 
     @Column(name = "is_completed")
