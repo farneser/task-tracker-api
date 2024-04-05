@@ -11,4 +11,10 @@ ALTER TABLE statuses
     ADD COLUMN project_id BIGINT;
 
 ALTER TABLE statuses
-    ADD FOREIGN KEY (project_id) REFERENCES projects (id)
+    ADD FOREIGN KEY (project_id) REFERENCES projects (id);
+
+ALTER TABLE tasks
+    ADD COLUMN status_id BIGINT;
+
+ALTER TABLE tasks
+    ADD FOREIGN KEY (status_id) REFERENCES statuses (id)
