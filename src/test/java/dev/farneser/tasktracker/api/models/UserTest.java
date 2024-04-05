@@ -60,7 +60,6 @@ public class UserTest {
         assertTrue(user.isCredentialsNonExpired());
     }
 
-
     @Test
     public void testIdGetterAndSetter() {
         Long id = 10L;
