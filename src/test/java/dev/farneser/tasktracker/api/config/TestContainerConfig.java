@@ -21,7 +21,7 @@ public class TestContainerConfig {
                 .withPassword("postgres")
                 .withExposedPorts(5432)
                 .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig()
-                        .withPortBindings(new PortBinding(Ports.Binding.bindPort(15432), new ExposedPort(5432))))
+                        .withPortBindings(new PortBinding(Ports.Binding.bindPort(15433), new ExposedPort(5432))))
                 );
 
         pgContainer.start();
