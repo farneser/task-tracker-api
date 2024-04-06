@@ -1,8 +1,10 @@
 package dev.farneser.tasktracker.api.repository;
 
+import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ExtendWith(DatabaseInitializationExtension.class)
 public class TaskRepositoryTest {
 
     @Autowired
