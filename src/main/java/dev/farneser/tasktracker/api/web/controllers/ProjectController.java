@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
@@ -55,23 +56,12 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
 
-    @PatchMapping("{id}")
-    public ResponseEntity<ProjectView> patchById(
-            @PathVariable Long id,
-            @RequestBody @Valid PatchProjectDto patchProjectDto,
-            Authentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
-        return ResponseEntity.ok(projectService.patch(id, patchProjectDto, authentication));
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<Message> deleteById(
+    @GetMapping("{id}/members")
+    public ResponseEntity<List<ProjectMemberView>> getMembers(
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        projectService.delete(id, authentication);
-
-        return ResponseEntity.ok(Message.body("Successfully deleted project"));
+        return ResponseEntity.ok(projectService.getMembers(id, authentication));
     }
 
     @GetMapping("{id}/statuses")
@@ -105,5 +95,24 @@ public class ProjectController {
     ) throws NotFoundException, OperationNotAuthorizedException {
 
         return ResponseEntity.ok(projectService.getTasks(id, authentication));
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<ProjectView> patchById(
+            @PathVariable Long id,
+            @RequestBody @Valid PatchProjectDto patchProjectDto,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        return ResponseEntity.ok(projectService.patch(id, patchProjectDto, authentication));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Message> deleteById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        projectService.delete(id, authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully deleted project"));
     }
 }
