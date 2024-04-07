@@ -37,7 +37,7 @@ public class MessageService {
     public void sendConfirmEmail(ConfirmEmailToken confirmationToken) {
         log.debug("Sending confirm email message for email {}", confirmationToken.getEmail());
 
-        rabbitTemplate.convertAndSend(QueueType.CONFIRM_EMAIL.toString(), new Gson().toJson(confirmationToken));
+        convertAndSendMessage(QueueType.CONFIRM_EMAIL, confirmationToken);
     }
 
     /**
@@ -48,6 +48,26 @@ public class MessageService {
     public void sendRegisterMessage(ConfirmEmailToken confirmationToken) {
         log.debug("Sending register message for email {}", confirmationToken.getEmail());
 
-        rabbitTemplate.convertAndSend(QueueType.NEW_REGISTER.toString(), new Gson().toJson(confirmationToken));
+        convertAndSendMessage(QueueType.NEW_REGISTER, confirmationToken);
+    }
+
+    /**
+     * Converts data to JSON format and sends it to the specified queue.
+     *
+     * @param queue The queue to which the message will be sent.
+     * @param data  The data to be sent.
+     */
+    private void convertAndSendMessage(QueueType queue, String data) {
+        rabbitTemplate.convertAndSend(queue.toString(), data);
+    }
+
+    /**
+     * Converts object data to JSON format and sends it to the specified queue.
+     *
+     * @param queue The queue to which the message will be sent.
+     * @param data  The object data to be converted to JSON and sent (just new Gson().toJson(data)).
+     */
+    private void convertAndSendMessage(QueueType queue, Object data) {
+        convertAndSendMessage(queue, new Gson().toJson(data));
     }
 }
