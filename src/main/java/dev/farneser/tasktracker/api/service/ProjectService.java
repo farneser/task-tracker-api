@@ -8,7 +8,9 @@ import dev.farneser.tasktracker.api.operations.commands.project.delete.DeletePro
 import dev.farneser.tasktracker.api.operations.commands.project.patch.PatchProjectCommand;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjectByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyuserid.GetProjectByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.project.getmembers.GetProjectMembersQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandprojectid.GetTaskByUserIdAndProjectIdQuery;
+import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
@@ -30,7 +32,8 @@ public class ProjectService {
     private final ModelMapper modelMapper;
     private final UserService userService;
 
-    public ProjectView create(CreateProjectDto dto, Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+    public ProjectView create(CreateProjectDto dto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
 
         UserView user = userService.getUser(authentication);
 
@@ -83,5 +86,14 @@ public class ProjectService {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetTaskByUserIdAndProjectIdQuery(user.getId(), id));
+    }
+
+    public List<ProjectMemberView> getMembers(Long id, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
+        UserView user = userService.getUser(authentication);
+
+        GetProjectMembersQuery query = new GetProjectMembersQuery(user.getId(), id);
+
+        return mediator.send(query);
     }
 }
