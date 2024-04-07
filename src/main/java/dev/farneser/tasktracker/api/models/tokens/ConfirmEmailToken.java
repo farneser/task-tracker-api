@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.models;
+package dev.farneser.tasktracker.api.models.tokens;
 
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

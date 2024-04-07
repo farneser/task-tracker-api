@@ -4,7 +4,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.RefreshToken;
+import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;

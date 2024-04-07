@@ -3,7 +3,7 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.ConfirmEmailToken;
+import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import dev.farneser.tasktracker.api.operations.commands.user.activate.ActivateUserCommand;
 import dev.farneser.tasktracker.api.repository.ConfirmEmailTokenRepository;
 import dev.farneser.tasktracker.api.service.messages.MessageService;

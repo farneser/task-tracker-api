@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.models;
 
+import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

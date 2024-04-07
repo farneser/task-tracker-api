@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.repository;
 
-import dev.farneser.tasktracker.api.models.ConfirmEmailToken;
+import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

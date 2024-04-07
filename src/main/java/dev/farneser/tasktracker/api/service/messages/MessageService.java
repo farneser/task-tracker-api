@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.service.messages;
 
 import com.google.gson.Gson;
-import dev.farneser.tasktracker.api.models.ConfirmEmailToken;
+import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

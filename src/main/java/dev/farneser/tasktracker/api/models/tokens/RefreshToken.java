@@ -1,6 +1,7 @@
-package dev.farneser.tasktracker.api.models;
+package dev.farneser.tasktracker.api.models.tokens;
 
 
+import dev.farneser.tasktracker.api.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 
