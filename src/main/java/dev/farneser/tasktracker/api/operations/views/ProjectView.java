@@ -13,7 +13,7 @@ import org.modelmapper.ModelMapper;
 public class ProjectView implements ITypeMapper {
     @Schema(name = "id", description = "Project id", example = "1")
     private Long id;
-    @Schema(name = "columnName", description = "Project name", example = "Best project name")
+    @Schema(name = "projectName", description = "Project name", example = "Best project name")
     private String projectName;
 
     public void mapping(ModelMapper modelMapper) {
