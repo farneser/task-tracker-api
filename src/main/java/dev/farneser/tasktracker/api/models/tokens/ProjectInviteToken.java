@@ -5,6 +5,8 @@ import dev.farneser.tasktracker.api.models.project.Project;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -27,4 +29,11 @@ public class ProjectInviteToken {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    public ProjectInviteToken(User user, Project project) {
+        this.user = user;
+        this.project = project;
+
+        token = UUID.randomUUID().toString();
+    }
 }
