@@ -40,7 +40,6 @@ public class AcceptProjectInviteTokenCommandHandler implements CommandHandler<Ac
                     .findById(existingToken.getProject().getId())
                     .orElseThrow(() -> new NotFoundException(""));
 
-
             Optional<ProjectMember> projectMember = projectMemberRepository
                     .findProjectMemberByProjectIdAndMemberId(project.getId(), command.getUserId());
 

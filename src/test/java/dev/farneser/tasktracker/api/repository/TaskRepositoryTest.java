@@ -77,9 +77,10 @@ public class TaskRepositoryTest {
 
         taskRepository.save(task3);
 
-        Optional<List<Task>> tasksByStatusId = taskRepository.findByStatusIdOrderByOrderNumber(1L);
-        Optional<Task> task1ById = taskRepository.findById(1L);
-        Optional<Task> task2ById = taskRepository.findById(2L);
+        Optional<List<Task>> tasksByStatusId = taskRepository.findByStatusIdOrderByOrderNumber(status1.getId());
+
+        Optional<Task> task1ById = taskRepository.findById(task1.getId());
+        Optional<Task> task2ById = taskRepository.findById(task2.getId());
 
         assertTrue(tasksByStatusId.isPresent());
         assertTrue(task1ById.isPresent());

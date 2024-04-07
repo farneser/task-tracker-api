@@ -22,6 +22,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
     private static ProjectRepository projectRepository;
     private static StatusRepository statusRepository;
     private static TaskRepository taskRepository;
+    private static Boolean isStarts = false;
 
     @Override
     public void setApplicationContext(@NotNull ApplicationContext context) {
@@ -35,7 +36,11 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
         statusRepository = applicationContext.getBean(StatusRepository.class);
         taskRepository = applicationContext.getBean(TaskRepository.class);
 
-        initUsers();
+        if (!isStarts) {
+            initUsers();
+        }
+
+        isStarts = true;
     }
 
     private void initUsers() {

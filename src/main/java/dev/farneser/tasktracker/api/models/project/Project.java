@@ -2,13 +2,15 @@ package dev.farneser.tasktracker.api.models.project;
 
 import dev.farneser.tasktracker.api.models.Status;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "projects")
 public class Project {

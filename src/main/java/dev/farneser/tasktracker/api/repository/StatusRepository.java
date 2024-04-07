@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface StatusRepository extends JpaRepository<Status, Long> {
     Optional<List<Status>> findByProjectIdOrderByOrderNumber(Long userid);
 
-    Optional<Status> findByIdAndProjectId(Long id, Long userId);
+    Optional<Status> findByIdAndProjectId(Long id, Long projectId);
 }
