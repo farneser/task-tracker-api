@@ -5,8 +5,6 @@ import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 public class GetProjectInviteTokenByProjectIdQuery implements Query<ProjectInviteTokenView> {
