@@ -41,7 +41,8 @@ public class TaskService {
      * @param dto            The data to create the task.
      * @param authentication The authentication object representing the current user.
      * @return The created task view.
-     * @throws NotFoundException If the user is not found.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public TaskView create(CreateTaskDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -49,11 +50,7 @@ public class TaskService {
 
         UserView user = userService.getUser(authentication);
 
-        log.debug("Creating task {}", dto.getTaskName());
-
         CreateTaskCommand command = modelMapper.map(dto, CreateTaskCommand.class);
-
-        log.debug("Creating task {}", dto.getTaskName());
 
         command.setUserId(user.getId());
 
@@ -69,7 +66,8 @@ public class TaskService {
      *
      * @param authentication The authentication object representing the current user.
      * @return The list of task lookup views.
-     * @throws NotFoundException If the user is not found.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public List<TaskLookupView> get(Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -86,7 +84,8 @@ public class TaskService {
      * @param id             The ID of the task to retrieve.
      * @param authentication The authentication object representing the current user.
      * @return The task view for the specified task ID.
-     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public TaskView get(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -102,7 +101,8 @@ public class TaskService {
      *
      * @param id             The ID of the task to delete.
      * @param authentication The authentication object representing the current user.
-     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void delete(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -120,7 +120,8 @@ public class TaskService {
      * @param patchTaskDto   The data to patch the task.
      * @param authentication The authentication object representing the current user.
      * @return The updated task view for the specified task ID.
-     * @throws NotFoundException If the user is not found or the task with the given ID is not found.
+     * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -132,8 +133,6 @@ public class TaskService {
 
         command.setTaskId(id);
         command.setUserId(user.getId());
-
-        log.debug("Patching task {} for user {}", id, user.getEmail());
 
         mediator.send(command);
 
@@ -147,7 +146,8 @@ public class TaskService {
      *
      * @param authentication The authentication object representing the current user.
      * @return The list of archived task lookup views.
-     * @throws NotFoundException If the user is not found.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public List<TaskLookupView> getArchived(Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
@@ -162,7 +162,8 @@ public class TaskService {
      * Archives all tasks for the authenticated user.
      *
      * @param authentication The authentication object representing the current user.
-     * @throws NotFoundException If the user is not found.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void archiveTasks(Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
