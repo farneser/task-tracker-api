@@ -18,6 +18,24 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectInvitesController {
     private final ProjectInviteTokenService projectInviteTokenService;
 
+    @PostMapping("accept-invite/{token}")
+    public ResponseEntity<Message> acceptInvite(
+            @PathVariable String token,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        projectInviteTokenService.accept(token, authentication);
+
+        return ResponseEntity.ok(Message.body("Invite successfully accepted"));
+    }
+
+    @GetMapping("{id}/invite-token")
+    public ResponseEntity<ProjectInviteTokenView> getInvite(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        return ResponseEntity.ok(projectInviteTokenService.get(id, authentication));
+    }
+
     @PostMapping("{id}/invite-token")
     public ResponseEntity<ProjectInviteTokenView> createInvite(
             @PathVariable Long id,

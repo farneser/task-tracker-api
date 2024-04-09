@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.service;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.create.CreateProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.delete.DeleteProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyid.GetProjectInviteTokenByIdQuery;
@@ -50,6 +51,14 @@ public class ProjectInviteTokenService {
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        new DeleteProjectInviteTokenCommand(user.getId(), projectId);
+        mediator.send(new DeleteProjectInviteTokenCommand(user.getId(), projectId));
+    }
+
+    public void accept(String token, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
+
+        UserView user = userService.getUser(authentication);
+
+        mediator.send(new AcceptProjectInviteTokenCommand(user.getId(), token));
     }
 }
