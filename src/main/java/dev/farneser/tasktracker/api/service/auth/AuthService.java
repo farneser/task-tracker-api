@@ -88,24 +88,24 @@ public class AuthService {
      */
     public JwtDto authenticate(LoginRequest loginRequest) {
         try {
-            UserView user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
+            UserView user = mediator.send(new GetUserByEmailQuery(loginRequest.getLogin()));
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
             if (!user.isEnabled()) {
-                log.debug("User {} is not enabled", loginRequest.getEmail());
+                log.debug("User {} is not enabled", loginRequest.getLogin());
 
                 confirmEmailService.requireConfirm(user.getEmail());
             }
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getEmail(),
+                    loginRequest.getLogin(),
                     loginRequest.getPassword())
             );
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
             return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
         } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException

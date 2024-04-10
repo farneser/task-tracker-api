@@ -34,7 +34,7 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) {
-        log.info("Authenticating user {}", loginDto.getEmail());
+        log.info("Authenticating user {}", loginDto.getLogin());
 
         return ResponseEntity.ok(authService.authenticate(loginDto));
     }
