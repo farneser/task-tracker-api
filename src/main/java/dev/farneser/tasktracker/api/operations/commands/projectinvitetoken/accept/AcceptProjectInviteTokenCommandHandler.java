@@ -7,6 +7,7 @@ import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectRole;
 import dev.farneser.tasktracker.api.models.tokens.ProjectInviteToken;
 import dev.farneser.tasktracker.api.repository.ProjectInviteTokenRepository;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
@@ -55,6 +56,7 @@ public class AcceptProjectInviteTokenCommandHandler implements CommandHandler<Ac
 
             member.setProject(project);
             member.setMember(user);
+            member.setRole(ProjectRole.MEMBER);
 
             projectMemberRepository.save(member);
 

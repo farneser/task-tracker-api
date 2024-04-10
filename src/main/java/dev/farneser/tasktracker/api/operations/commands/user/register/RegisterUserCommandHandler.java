@@ -22,8 +22,8 @@ public class RegisterUserCommandHandler implements CommandHandler<RegisterUserCo
     public Long handle(RegisterUserCommand command) {
         log.debug("Registering user: {}", command);
 
-        if (!command.getPassword().equals(command.getConfirmPassword())){
-            // TODO: throw exception
+        if (!command.getPassword().equals(command.getConfirmPassword())) {
+            // FIXME: throw exception
             log.info("");
         }
 

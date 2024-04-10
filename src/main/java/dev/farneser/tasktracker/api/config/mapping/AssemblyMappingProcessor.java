@@ -21,8 +21,11 @@ public class AssemblyMappingProcessor implements CommandLineRunner {
 
         for (ITypeMapper type : types) {
             log.debug("Mapping type {}", type.getClass().getSimpleName());
-
-            type.mapping(modelMapper);
+            try {
+                type.mapping(modelMapper);
+            } catch (IllegalStateException e) {
+                log.error("Failed to map model for type \"" + type.getClass() + "\".\n" + e);
+            }
         }
 
         log.debug("Types mapped");
