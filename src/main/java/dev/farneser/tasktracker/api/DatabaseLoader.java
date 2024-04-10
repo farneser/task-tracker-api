@@ -36,6 +36,12 @@ public class DatabaseLoader implements ApplicationRunner {
     private final TaskRepository taskRepository;
     private final Mediator mediator;
 
+    /**
+     * Checks if the repositories are empty and initializes the database if needed.
+     *
+     * @param args The application arguments
+     * @throws Exception if an error occurs during database initialization
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
         boolean isReposEmpty = isRepositoryEmpty(
@@ -51,11 +57,19 @@ public class DatabaseLoader implements ApplicationRunner {
             log.info("Database is already populated with data and does not require additional row additions. Adding operations are rejected in development mode.");
 
             return;
+        } else {
+            log.info("Database is empty. Initializing...");
         }
 
         initDatabase();
     }
 
+    /**
+     * Checks if the given repositories are empty.
+     *
+     * @param repos Array of CrudRepositories to check
+     * @return true if all repositories are empty, otherwise false
+     */
     private static boolean isRepositoryEmpty(CrudRepository<?, ?>... repos) {
 
         for (CrudRepository<?, ?> repo : repos) {
@@ -102,23 +116,46 @@ public class DatabaseLoader implements ApplicationRunner {
         mediator.send(new AcceptProjectInviteTokenCommand(userId, token));
     }
 
+    /**
+     * Initializes the database with sample users, projects, and invite tokens.
+     *
+     * @throws NotFoundException               if a requested resource is not found
+     * @throws OperationNotAuthorizedException if an operation is not authorized
+     */
     private void initDatabase() throws NotFoundException, OperationNotAuthorizedException {
+        log.info("Initializing sample users...");
+
         UserView user1 = createUser("user1");
         UserView user2 = createUser("user2");
         UserView user3 = createUser("user3");
+
+        log.info("Sample users created.");
+
+        log.info("Initializing sample projects...");
 
         ProjectView project1 = createProject(user1.getId());
         ProjectView project2 = createProject(user2.getId());
         ProjectView project3 = createProject(user3.getId());
 
+        log.info("Sample projects created.");
+
+        log.info("Initializing sample invite tokens...");
+
         ProjectInviteTokenView pitView1 = createInviteToken(user1.getId(), project1.getId());
         ProjectInviteTokenView pitView2 = createInviteToken(user2.getId(), project2.getId());
         ProjectInviteTokenView pitView3 = createInviteToken(user3.getId(), project3.getId());
 
-        addUserToProject(user2.getId(), pitView1.getToken());
+        log.info("Sample invite tokens created.");
 
+        log.info("Adding users to projects...");
+
+        addUserToProject(user2.getId(), pitView1.getToken());
         addUserToProject(user1.getId(), pitView3.getToken());
         addUserToProject(user2.getId(), pitView3.getToken());
+
+        log.info("Users added to projects.");
+
+        log.info("Database initialization complete.");
     }
 }
 
