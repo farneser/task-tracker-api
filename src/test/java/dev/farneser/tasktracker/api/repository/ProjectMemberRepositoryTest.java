@@ -40,9 +40,11 @@ public class ProjectMemberRepositoryTest {
                 .isLocked(false)
                 .role(Role.USER)
                 .build();
+
         userRepository.save(user);
 
         Project project = Project.builder().projectName("Test Project").build();
+
         projectRepository.save(project);
 
         ProjectMember projectMember = ProjectMember.builder()
@@ -50,6 +52,7 @@ public class ProjectMemberRepositoryTest {
                 .project(project)
                 .role(ProjectRole.MEMBER)
                 .build();
+
         projectMemberRepository.save(projectMember);
 
         Optional<ProjectMember> retrievedProjectMember = projectMemberRepository
@@ -78,6 +81,7 @@ public class ProjectMemberRepositoryTest {
                 .member(user)
                 .role(ProjectRole.MEMBER)
                 .build();
+
         projectMemberRepository.save(projectMember);
 
         Optional<List<ProjectMember>> projectMembers = projectMemberRepository.findProjectMemberByMemberId(user.getId());

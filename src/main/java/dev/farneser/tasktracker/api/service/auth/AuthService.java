@@ -59,6 +59,8 @@ public class AuthService {
 
             log.debug("Registering user {}", registerDto.getEmail());
 
+            command.setSubscribed(false);
+
             mediator.send(command);
 
             log.debug("Registering user {}", registerDto.getEmail());

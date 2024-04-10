@@ -7,6 +7,7 @@ import dev.farneser.tasktracker.api.operations.commands.user.register.PasswordMa
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
@@ -18,6 +19,9 @@ import org.modelmapper.ModelMapper;
 @PasswordMatches
 @Schema(name = "RegisterDto", description = "Register DTO")
 public class RegisterDto implements ITypeMapper {
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers, and underscores")
+    @Schema(name = "username", description = "User name", example = "example_user")
+    private String username;
     @Email(message = "You should enter email like 'example@email.com'")
     @Schema(name = "email", description = "User email", example = "example@email.com")
     private String email;
