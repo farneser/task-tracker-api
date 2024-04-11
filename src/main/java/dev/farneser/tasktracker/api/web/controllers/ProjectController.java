@@ -56,6 +56,14 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
 
+    @PostMapping("{id}/leave")
+    public ResponseEntity<Message> leaveProject(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        return ResponseEntity.ok(projectService.leaveProject(id, authentication));
+    }
+
     @GetMapping("{id}/members")
     public ResponseEntity<List<ProjectMemberView>> getMembers(
             @PathVariable Long id,
