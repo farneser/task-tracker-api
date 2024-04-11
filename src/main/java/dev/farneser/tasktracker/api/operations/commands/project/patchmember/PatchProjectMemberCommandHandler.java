@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PatchProjectMemberCommandHandler implements CommandHandler<PatchProjectMemberCommand, ProjectMember> {
+public class PatchProjectMemberCommandHandler implements CommandHandler<PatchProjectMemberCommand, Long> {
     private final ProjectMemberRepository projectMemberRepository;
 
     @Override
-    public ProjectMember handle(PatchProjectMemberCommand command) throws NotFoundException, OperationNotAuthorizedException {
+    public Long handle(PatchProjectMemberCommand command) throws NotFoundException, OperationNotAuthorizedException {
         Long projectId = command.getProjectId();
         Long adminId = command.getUserId();
         Long memberId = command.getMemberId();
@@ -46,7 +46,7 @@ public class PatchProjectMemberCommandHandler implements CommandHandler<PatchPro
         projectMemberRepository.save(admin);
         projectMemberRepository.save(member);
 
-        return null;
+        return member.getId();
     }
 
     private ProjectMember findProjectMember(Long projectId, Long memberId) throws NotFoundException {

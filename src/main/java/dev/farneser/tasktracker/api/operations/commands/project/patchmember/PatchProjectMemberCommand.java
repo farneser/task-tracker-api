@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatchProjectMemberCommand implements Command<ProjectMember> {
+public class PatchProjectMemberCommand implements Command<Long> {
     private Long userId;
     private Long memberId;
     private Long projectId;
