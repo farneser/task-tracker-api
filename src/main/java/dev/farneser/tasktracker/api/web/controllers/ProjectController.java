@@ -82,6 +82,17 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.leaveProject(id, authentication));
     }
 
+    @DeleteMapping("{id}/members/{memberId}")
+    public ResponseEntity<Message> deleteProjectMember(
+            @PathVariable Long id,
+            @PathVariable Long memberId,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        projectService.deleteMember(id, memberId, authentication);
+
+        return ResponseEntity.ok(Message.body("User deleted successfully"));
+    }
+
     @GetMapping("{id}/statuses")
     @Operation(summary = "Get statuses", description = "Get statuses by JWT token")
     @ApiResponses(value = {

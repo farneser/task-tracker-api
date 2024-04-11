@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.project.create.CreateProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.delete.DeleteProjectCommand;
+import dev.farneser.tasktracker.api.operations.commands.project.deletemember.DeleteProjectMemberCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.leave.LeaveProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.patch.PatchProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.patchmember.PatchProjectMemberCommand;
@@ -207,5 +208,12 @@ public class ProjectService {
         Long projectMemberId = mediator.send(command);
 
         return mediator.send(new GetProjectMemberByIdQuery(projectMemberId, user.getId(), id));
+    }
+
+    public void deleteMember(Long id, Long memberId, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
+        UserView user = userService.getUser(authentication);
+
+        mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
     }
 }
