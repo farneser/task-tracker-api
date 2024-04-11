@@ -29,6 +29,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service for performing operations with projects.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,15 @@ public class ProjectService {
     private final ModelMapper modelMapper;
     private final UserService userService;
 
+    /**
+     * Creates a new project.
+     *
+     * @param dto            Data for creating the project.
+     * @param authentication Authentication data of the user.
+     * @return View of the created project.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public ProjectView create(CreateProjectDto dto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
 
@@ -51,6 +63,14 @@ public class ProjectService {
         return get(projectId, authentication);
     }
 
+    /**
+     * Gets a list of user's projects.
+     *
+     * @param authentication Authentication data of the user.
+     * @return List of user's project views.
+     * @throws NotFoundException               If the user is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public List<ProjectView> get(Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -58,6 +78,15 @@ public class ProjectService {
         return mediator.send(new GetProjectByUserIdQuery(user.getId()));
     }
 
+    /**
+     * Gets a project by its identifier.
+     *
+     * @param id             Project identifier.
+     * @param authentication Authentication data of the user.
+     * @return Project view.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public ProjectView get(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -65,6 +94,14 @@ public class ProjectService {
         return mediator.send(new GetProjectByIdQuery(id, user.getId()));
     }
 
+    /**
+     * Deletes a project by its identifier.
+     *
+     * @param id             Project identifier.
+     * @param authentication Authentication data of the user.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public void delete(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -72,6 +109,16 @@ public class ProjectService {
         mediator.send(new DeleteProjectCommand(user.getId(), id));
     }
 
+    /**
+     * Modifies project data.
+     *
+     * @param id              Project identifier.
+     * @param patchProjectDto Data for modifying the project.
+     * @param authentication  Authentication data of the user.
+     * @return View of the modified project.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public ProjectView patch(Long id, PatchProjectDto patchProjectDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -86,6 +133,15 @@ public class ProjectService {
         return get(id, authentication);
     }
 
+    /**
+     * Gets tasks for a project.
+     *
+     * @param id             Project identifier.
+     * @param authentication Authentication data of the user.
+     * @return List of task views.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public List<TaskLookupView> getTasks(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -93,15 +149,31 @@ public class ProjectService {
         return mediator.send(new GetTaskByUserIdAndProjectIdQuery(user.getId(), id));
     }
 
+    /**
+     * Gets members of a project.
+     *
+     * @param id             Project identifier.
+     * @param authentication Authentication data of the user.
+     * @return List of project member views.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public List<ProjectMemberView> getMembers(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        GetProjectMembersQuery query = new GetProjectMembersQuery(user.getId(), id);
-
-        return mediator.send(query);
+        return mediator.send(new GetProjectMembersQuery(user.getId(), id));
     }
 
+    /**
+     * Allows a user to leave a project.
+     *
+     * @param id             Project identifier.
+     * @param authentication Authentication data of the user.
+     * @return Success message.
+     * @throws NotFoundException               If the project is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public Message leaveProject(Long id, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
@@ -113,6 +185,16 @@ public class ProjectService {
         return null;
     }
 
+    /**
+     * Modifies a project member's role.
+     *
+     * @param id                    Project identifier.
+     * @param patchProjectMemberDto Data for modifying the project member.
+     * @param authentication        Authentication data of the user.
+     * @return View of the modified project member.
+     * @throws NotFoundException               If the project member is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);

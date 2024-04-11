@@ -11,6 +11,7 @@ import dev.farneser.tasktracker.api.service.ProjectService;
 import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
+import dev.farneser.tasktracker.api.web.dto.project.PatchProjectMemberDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,20 +57,29 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
 
-    @PostMapping("{id}/leave")
-    public ResponseEntity<Message> leaveProject(
-            @PathVariable Long id,
-            Authentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
-        return ResponseEntity.ok(projectService.leaveProject(id, authentication));
-    }
-
     @GetMapping("{id}/members")
     public ResponseEntity<List<ProjectMemberView>> getMembers(
             @PathVariable Long id,
             Authentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.getMembers(id, authentication));
+    }
+
+    @PatchMapping("{id}/members")
+    public ResponseEntity<ProjectMemberView> patchMember(
+            @PathVariable Long id,
+            @RequestBody PatchProjectMemberDto patchProjectMemberDto,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        return ResponseEntity.ok(projectService.patchMember(id, patchProjectMemberDto, authentication));
+    }
+
+    @PostMapping("{id}/members/leave")
+    public ResponseEntity<Message> leaveProject(
+            @PathVariable Long id,
+            Authentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        return ResponseEntity.ok(projectService.leaveProject(id, authentication));
     }
 
     @GetMapping("{id}/statuses")
