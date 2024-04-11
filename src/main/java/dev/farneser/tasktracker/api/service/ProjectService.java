@@ -7,8 +7,10 @@ import dev.farneser.tasktracker.api.operations.commands.project.create.CreatePro
 import dev.farneser.tasktracker.api.operations.commands.project.delete.DeleteProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.leave.LeaveProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.patch.PatchProjectCommand;
+import dev.farneser.tasktracker.api.operations.commands.project.patchmember.PatchProjectMemberCommand;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjectByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyuserid.GetProjectByUserIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.project.getmemberbyid.GetProjectMemberByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getmembers.GetProjectMembersQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandprojectid.GetTaskByUserIdAndProjectIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
@@ -17,6 +19,7 @@ import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
+import dev.farneser.tasktracker.api.web.dto.project.PatchProjectMemberDto;
 import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,5 +111,19 @@ public class ProjectService {
         mediator.send(command);
 
         return null;
+    }
+
+    public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, Authentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
+        UserView user = userService.getUser(authentication);
+
+        PatchProjectMemberCommand command = modelMapper.map(patchProjectMemberDto, PatchProjectMemberCommand.class);
+
+        command.setUserId(user.getId());
+        command.setProjectId(id);
+
+        Long projectMemberId = mediator.send(command);
+
+        return mediator.send(new GetProjectMemberByIdQuery(projectMemberId, user.getId(), id));
     }
 }
