@@ -1,6 +1,5 @@
 package dev.farneser.tasktracker.api.service;
 
-import dev.farneser.tasktracker.api.exceptions.InternalServerException;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;

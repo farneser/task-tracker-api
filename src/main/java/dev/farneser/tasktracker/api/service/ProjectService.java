@@ -210,10 +210,18 @@ public class ProjectService {
         return mediator.send(new GetProjectMemberByIdQuery(projectMemberId, user.getId(), id));
     }
 
+    /**
+     * Deletes a member from a project.
+     *
+     * @param id             Project identifier.
+     * @param memberId       Member identifier.
+     * @param authentication Authentication data of the user.
+     * @throws NotFoundException               If the project or member is not found.
+     * @throws OperationNotAuthorizedException If the operation is not authorized.
+     */
     public void deleteMember(Long id, Long memberId, Authentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
-
         mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
     }
 }

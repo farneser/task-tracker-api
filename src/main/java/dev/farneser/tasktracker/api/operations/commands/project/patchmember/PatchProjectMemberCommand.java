@@ -1,7 +1,6 @@
 package dev.farneser.tasktracker.api.operations.commands.project.patchmember;
 
 import dev.farneser.tasktracker.api.mediator.Command;
-import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
