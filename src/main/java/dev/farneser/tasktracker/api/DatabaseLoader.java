@@ -6,12 +6,15 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.project.create.CreateProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.create.CreateProjectInviteTokenCommand;
+import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjectByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyid.GetProjectInviteTokenByIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.status.getbyid.GetStatusByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.user.getbyid.GetUserByIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
+import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -114,6 +117,13 @@ public class DatabaseLoader implements ApplicationRunner {
     private void addUserToProject(Long userId, String token)
             throws NotFoundException, OperationNotAuthorizedException {
         mediator.send(new AcceptProjectInviteTokenCommand(userId, token));
+    }
+
+    private StatusView createStatus(Long userId, Long projectId, String statusName, Boolean isCompleted)
+            throws NotFoundException, OperationNotAuthorizedException {
+        Long id = mediator.send(new CreateStatusCommand(userId, projectId, statusName, "#ffffff", isCompleted));
+
+        return mediator.send(new GetStatusByIdQuery(userId, id));
     }
 
     /**
