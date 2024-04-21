@@ -51,7 +51,7 @@ public class DefaultMediator implements Mediator {
             Set<ConstraintViolation<REQUEST>> violations = validator.validate(request);
 
             if (!violations.isEmpty()) {
-                throw new ValidationException("Validation error: " + violations.iterator().next().getMessage());
+                throw new ValidationException(violations.stream().map(ConstraintViolation::getMessage).toList());
             }
 
             return (RESPONSE) handler.handle(request);

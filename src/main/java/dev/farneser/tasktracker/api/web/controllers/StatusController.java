@@ -14,6 +14,7 @@ import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -41,7 +42,7 @@ public class StatusController {
     public ResponseEntity<List<StatusView>> get(
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting statuses for user {}", authentication.getName());
 
@@ -57,7 +58,7 @@ public class StatusController {
     })
     public ResponseEntity<StatusView> getById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting status for user {}, status id: {}", authentication.getName(), id);
 
@@ -72,7 +73,7 @@ public class StatusController {
     })
     public ResponseEntity<StatusView> create(
             @RequestBody @Valid CreateStatusDto createStatusDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Creating status for user {}, status name: {}", authentication.getName(), createStatusDto.getStatusName());
 
@@ -89,7 +90,7 @@ public class StatusController {
     public ResponseEntity<StatusView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchStatusDto patchStatusDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching status for user {}, status id: {}", authentication.getName(), id);
 
@@ -105,7 +106,7 @@ public class StatusController {
     })
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Deleting status for user {}, status id: {}", authentication.getName(), id);
 
@@ -123,7 +124,7 @@ public class StatusController {
     })
     public ResponseEntity<List<TaskLookupView>> getTasksById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}, status id: {}", authentication.getName(), id);
 

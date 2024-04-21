@@ -10,6 +10,7 @@ import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -33,7 +34,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<UserView> get(
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting user {}", authentication.getName());
 
@@ -49,7 +50,7 @@ public class UserController {
     })
     public ResponseEntity<UserView> patchBy(
             @RequestBody @Valid PatchUserDto patchUserDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching user {}", authentication.getName());
 

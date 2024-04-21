@@ -18,6 +18,7 @@ import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -38,7 +39,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectView>> get(
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(authentication));
     }
@@ -46,15 +47,15 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectView> create(
             @RequestBody @Valid CreateProjectDto createProjectDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.status(201).body(projectService.create(createProjectDto, authentication));
     }
-
+    
     @GetMapping("{id}")
     public ResponseEntity<ProjectView> getById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
@@ -62,7 +63,7 @@ public class ProjectController {
     @GetMapping("{id}/members")
     public ResponseEntity<List<ProjectMemberView>> getMembers(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.getMembers(id, authentication));
     }
@@ -71,7 +72,7 @@ public class ProjectController {
     public ResponseEntity<ProjectMemberView> patchMember(
             @PathVariable Long id,
             @RequestBody PatchProjectMemberDto patchProjectMemberDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.patchMember(id, patchProjectMemberDto, authentication));
     }
@@ -79,7 +80,7 @@ public class ProjectController {
     @PostMapping("{id}/members/leave")
     public ResponseEntity<Message> leaveProject(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.leaveProject(id, authentication));
     }
@@ -88,7 +89,7 @@ public class ProjectController {
     public ResponseEntity<Message> deleteProjectMember(
             @PathVariable Long id,
             @PathVariable Long memberId,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectService.deleteMember(id, memberId, authentication);
 
@@ -106,7 +107,7 @@ public class ProjectController {
             @PathVariable Long id,
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting statuses for user {}", authentication.getName());
 
@@ -122,7 +123,7 @@ public class ProjectController {
     })
     public ResponseEntity<List<TaskLookupView>> getArchivedTasksById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
 
         return ResponseEntity.ok(projectService.getTasks(id, authentication));
@@ -132,7 +133,7 @@ public class ProjectController {
     public ResponseEntity<ProjectView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchProjectDto patchProjectDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.patch(id, patchProjectDto, authentication));
     }
@@ -140,7 +141,7 @@ public class ProjectController {
     @DeleteMapping("{id}")
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectService.delete(id, authentication);
 

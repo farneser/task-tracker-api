@@ -8,10 +8,10 @@ import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class ProjectInvitesController {
     @PostMapping("accept-invite/{token}")
     public ResponseEntity<Message> acceptInvite(
             @PathVariable String token,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectInviteTokenService.accept(token, authentication);
 
@@ -34,7 +34,7 @@ public class ProjectInvitesController {
     @GetMapping("{id}/invite-token")
     public ResponseEntity<ProjectInviteTokenView> getInvite(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectInviteTokenService.get(id, authentication));
     }
@@ -42,7 +42,7 @@ public class ProjectInvitesController {
     @PostMapping("{id}/invite-token")
     public ResponseEntity<ProjectInviteTokenView> createInvite(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.status(201).body(projectInviteTokenService.create(id, authentication));
     }
@@ -50,7 +50,7 @@ public class ProjectInvitesController {
     @DeleteMapping("{id}/invite-token")
     public ResponseEntity<Message> deleteInvite(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectInviteTokenService.delete(id, authentication);
 

@@ -13,6 +13,7 @@ import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -36,8 +37,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> get(UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+    public ResponseEntity<List<TaskLookupView>> get(
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.get(authentication));
@@ -49,8 +51,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> getArchived(UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+    public ResponseEntity<List<TaskLookupView>> getArchived(
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting archived tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.getArchived(authentication));
@@ -65,7 +68,7 @@ public class TaskController {
     })
     public ResponseEntity<TaskView> create(
             @RequestBody @Valid CreateTaskDto createTaskDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Creating task for user {}, task name: {}", authentication.getName(), createTaskDto.getTaskName());
 
@@ -81,7 +84,7 @@ public class TaskController {
     })
     public ResponseEntity<TaskView> getById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting task for user {}, task id: {}", authentication.getName(), id);
 
@@ -98,7 +101,7 @@ public class TaskController {
     public ResponseEntity<TaskView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchTaskDto patchTaskDto,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching task for user {}, task id: {}", authentication.getName(), id);
 
@@ -114,7 +117,7 @@ public class TaskController {
     })
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Deleting task for user {}, task id: {}", authentication.getName(), id);
 
@@ -130,7 +133,7 @@ public class TaskController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
     public ResponseEntity<Message> archieTasks(
-            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Archiving tasks for user {}", authentication.getName());
 
