@@ -6,8 +6,10 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.StatusService;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
 import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
+import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,7 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class StatusController {
     public ResponseEntity<List<StatusView>> get(
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting statuses for user {}", authentication.getName());
 
@@ -55,7 +56,7 @@ public class StatusController {
     })
     public ResponseEntity<StatusView> getById(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting status for user {}, status id: {}", authentication.getName(), id);
 
@@ -70,7 +71,8 @@ public class StatusController {
     })
     public ResponseEntity<StatusView> create(
             @RequestBody @Valid CreateStatusDto createStatusDto,
-            Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Creating status for user {}, status name: {}", authentication.getName(), createStatusDto.getStatusName());
 
         return ResponseEntity.status(201).body(statusService.create(createStatusDto, authentication));
@@ -86,7 +88,7 @@ public class StatusController {
     public ResponseEntity<StatusView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchStatusDto patchStatusDto,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Patching status for user {}, status id: {}", authentication.getName(), id);
 
@@ -102,7 +104,8 @@ public class StatusController {
     })
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Deleting status for user {}, status id: {}", authentication.getName(), id);
 
         statusService.delete(id, authentication);
@@ -119,7 +122,7 @@ public class StatusController {
     })
     public ResponseEntity<List<TaskLookupView>> getTasksById(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}, status id: {}", authentication.getName(), id);
 

@@ -7,7 +7,7 @@ import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
-import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
+import dev.farneser.tasktracker.api.operations.queries.user.getbylogin.GetUserByLoginQuery;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
@@ -88,7 +88,7 @@ public class AuthService {
      */
     public JwtDto authenticate(LoginRequest loginRequest) {
         try {
-            UserView user = mediator.send(new GetUserByEmailQuery(loginRequest.getLogin()));
+            UserView user = mediator.send(new GetUserByLoginQuery(loginRequest.getLogin()));
 
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
@@ -101,13 +101,13 @@ public class AuthService {
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getLogin(),
+                    user.getUsername(),
                     loginRequest.getPassword())
             );
 
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
-            return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
+            return new JwtDto(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()));
         } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException
                  | OperationNotAuthorizedException e) {
             throw new BadCredentialsException("Invalid credentials");
@@ -155,7 +155,7 @@ public class AuthService {
     private String updateRefreshToken(String email) throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Updating refresh token for user {}", email);
 
-        UserView user = mediator.send(new GetUserByEmailQuery(email));
+        UserView user = mediator.send(new GetUserByLoginQuery(email));
 
         log.debug("User {} found", user.getEmail());
 

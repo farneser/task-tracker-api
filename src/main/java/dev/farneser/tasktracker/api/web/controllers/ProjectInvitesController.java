@@ -4,6 +4,8 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
+import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ public class ProjectInvitesController {
     @PostMapping("accept-invite/{token}")
     public ResponseEntity<Message> acceptInvite(
             @PathVariable String token,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         projectInviteTokenService.accept(token, authentication);
 
@@ -31,7 +33,7 @@ public class ProjectInvitesController {
     @GetMapping("{id}/invite-token")
     public ResponseEntity<ProjectInviteTokenView> getInvite(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectInviteTokenService.get(id, authentication));
     }
@@ -39,7 +41,7 @@ public class ProjectInvitesController {
     @PostMapping("{id}/invite-token")
     public ResponseEntity<ProjectInviteTokenView> createInvite(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.status(201).body(projectInviteTokenService.create(id, authentication));
     }
@@ -47,7 +49,7 @@ public class ProjectInvitesController {
     @DeleteMapping("{id}/invite-token")
     public ResponseEntity<Message> deleteInvite(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         projectInviteTokenService.delete(id, authentication);
 

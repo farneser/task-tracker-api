@@ -5,7 +5,7 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.commands.user.patch.PatchUserCommand;
-import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
+import dev.farneser.tasktracker.api.operations.queries.user.getbylogin.GetUserByLoginQuery;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
@@ -13,7 +13,6 @@ import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -69,7 +68,7 @@ public class UserService implements UserDetailsService {
 
         log.debug("Getting user {}", username);
 
-        return mediator.send(new GetUserByEmailQuery(username));
+        return mediator.send(new GetUserByLoginQuery(username));
     }
 
     /**

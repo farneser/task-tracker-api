@@ -22,6 +22,8 @@ import java.util.Date;
 public class UserView implements ITypeMapper {
     @Schema(name = "id", description = "User id", example = "1")
     private Long id;
+    @Schema(name = "username", description = "Username", example = "example_user")
+    private String username;
     @Schema(name = "email", description = "User email", example = "example@email.com")
     private String email;
     @Schema(name = "isSubscribed", description = "Is user subscribed for the email notification", example = "false")

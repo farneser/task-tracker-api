@@ -9,9 +9,11 @@ import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.ProjectService;
 import dev.farneser.tasktracker.api.service.StatusService;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectMemberDto;
+import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +23,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectView>> get(
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(authentication));
     }
@@ -44,7 +45,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectView> create(
             @RequestBody @Valid CreateProjectDto createProjectDto,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.status(201).body(projectService.create(createProjectDto, authentication));
     }
@@ -52,7 +53,7 @@ public class ProjectController {
     @GetMapping("{id}")
     public ResponseEntity<ProjectView> getById(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.get(id, authentication));
     }
@@ -60,7 +61,7 @@ public class ProjectController {
     @GetMapping("{id}/members")
     public ResponseEntity<List<ProjectMemberView>> getMembers(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.getMembers(id, authentication));
     }
@@ -69,7 +70,7 @@ public class ProjectController {
     public ResponseEntity<ProjectMemberView> patchMember(
             @PathVariable Long id,
             @RequestBody PatchProjectMemberDto patchProjectMemberDto,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.patchMember(id, patchProjectMemberDto, authentication));
     }
@@ -77,7 +78,7 @@ public class ProjectController {
     @PostMapping("{id}/members/leave")
     public ResponseEntity<Message> leaveProject(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.leaveProject(id, authentication));
     }
@@ -86,7 +87,7 @@ public class ProjectController {
     public ResponseEntity<Message> deleteProjectMember(
             @PathVariable Long id,
             @PathVariable Long memberId,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         projectService.deleteMember(id, memberId, authentication);
 
@@ -104,7 +105,7 @@ public class ProjectController {
             @PathVariable Long id,
             @Parameter(description = "Toggles inclusion of current task details in the response")
             @RequestParam(defaultValue = "true") Boolean retrieveTasks,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting statuses for user {}", authentication.getName());
 
@@ -120,7 +121,7 @@ public class ProjectController {
     })
     public ResponseEntity<List<TaskLookupView>> getArchivedTasksById(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
 
         return ResponseEntity.ok(projectService.getTasks(id, authentication));
@@ -130,7 +131,7 @@ public class ProjectController {
     public ResponseEntity<ProjectView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchProjectDto patchProjectDto,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectService.patch(id, patchProjectDto, authentication));
     }
@@ -138,7 +139,7 @@ public class ProjectController {
     @DeleteMapping("{id}")
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            Authentication authentication
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
         projectService.delete(id, authentication);
 

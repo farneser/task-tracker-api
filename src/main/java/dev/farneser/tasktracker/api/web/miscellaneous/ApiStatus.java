@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web;
+package dev.farneser.tasktracker.api.web.miscellaneous;
 
 import lombok.Getter;
 

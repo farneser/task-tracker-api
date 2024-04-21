@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web;
+package dev.farneser.tasktracker.api.web.miscellaneous;
 
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;

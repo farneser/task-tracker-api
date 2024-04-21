@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.user.getbyemail;
+package dev.farneser.tasktracker.api.operations.queries.user.getbylogin;
 
 import dev.farneser.tasktracker.api.mediator.Query;
 import dev.farneser.tasktracker.api.operations.views.UserView;
@@ -7,6 +7,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GetUserByEmailQuery implements Query<UserView> {
-    private String email;
+public class GetUserByLoginQuery implements Query<UserView> {
+    private String login;
 }

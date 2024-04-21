@@ -1,18 +1,21 @@
 package dev.farneser.tasktracker.api.web.miscellaneous;
 
-import org.springframework.core.annotation.AliasFor;
+import dev.farneser.tasktracker.api.service.auth.CustomUserAuthentication;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+@ControllerAdvice
+public class AuthModel {
+    public static final String NAME = "authentication";
 
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface AuthModel {
-    @AliasFor(annotation = ModelAttribute.class)
-    String value() default AUTH_MODEL_NAME;
-
-    String AUTH_MODEL_NAME = "authentication";
+    @ModelAttribute(AuthModel.NAME)
+    public UserAuthentication customAuthentication(Authentication authentication) {
+        if (authentication != null) {
+            return new CustomUserAuthentication(authentication.getName());
+        } else {
+            return null;
+        }
+    }
 }
