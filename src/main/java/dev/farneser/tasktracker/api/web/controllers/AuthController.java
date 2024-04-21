@@ -47,7 +47,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "User already exists")
     })
     public ResponseEntity<JwtDto> register(@RequestBody @Valid RegisterDto registerDto)
-            throws InternalServerException, UniqueDataException, NotFoundException {
+            throws InternalServerException, UniqueDataException, NotFoundException, ValidationException, OperationNotAuthorizedException {
         log.info("Registering user {}", registerDto.getEmail());
 
         return ResponseEntity.status(201).body(authService.register(registerDto));

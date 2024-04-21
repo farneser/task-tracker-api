@@ -1,15 +1,19 @@
 package dev.farneser.tasktracker.api.operations.commands.user.register;
 
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import dev.farneser.tasktracker.api.repository.UserRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -19,13 +23,14 @@ public class RegisterUserCommandHandler implements CommandHandler<RegisterUserCo
     private final UserRepository userRepository;
 
     @Override
-    public Long handle(RegisterUserCommand command) {
+    public Long handle(RegisterUserCommand command) throws ValidationException {
         log.debug("Registering user: {}", command);
 
-        if (!command.getPassword().equals(command.getConfirmPassword())) {
-            // FIXME: throw exception
-            log.info("");
-        }
+//        Set<ConstraintViolation<RegisterUserCommand>> violations = validator.validate(command);
+//
+//        if (!violations.isEmpty()) {
+//            throw new ValidationException("Validation error: " + violations.iterator().next().getMessage());
+//        }
 
         User user = User
                 .builder()

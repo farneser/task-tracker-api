@@ -51,7 +51,7 @@ public class AuthService {
      * @throws InternalServerException If an unexpected internal server error occurs.
      * @throws UniqueDataException     If the provided email is already taken.
      */
-    public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
+    public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
         log.debug("Registering user {}", registerDto.getEmail());
 
         try {
@@ -72,10 +72,8 @@ public class AuthService {
             return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
-        } catch (DisabledException | BadCredentialsException e) {
+        } catch (DisabledException | BadCredentialsException | NotFoundException | OperationNotAuthorizedException e) {
             throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
         }
     }
 
