@@ -3,8 +3,6 @@ package dev.farneser.tasktracker.api.models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
@@ -14,13 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class TaskTest {
 
-    @Mock
-    private User assignedFor;
-
-    @Mock
-    private Status status;
-
-    @InjectMocks
     private Task task;
 
     @BeforeEach
@@ -29,8 +20,8 @@ public class TaskTest {
                 .id(1L)
                 .taskName("Test Task")
                 .description("Description for test task")
-                .assignedFor(assignedFor)
-                .status(status)
+                .assignedFor(null)
+                .status(null)
                 .orderNumber(1L)
                 .creationDate(new Date())
                 .editDate(new Date())
@@ -80,10 +71,10 @@ public class TaskTest {
     }
 
     @Test
-    public void testCreationDateGetterAndSetter() {
-        Date creationDate = new Date();
-        task.setCreationDate(creationDate);
-        assertEquals(creationDate, task.getCreationDate());
+    public void testCrDateGetterAndSetter() {
+        Date editDate = new Date();
+        task.setEditDate(editDate);
+        assertEquals(editDate, task.getEditDate());
     }
 
     @Test

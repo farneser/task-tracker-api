@@ -16,13 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class StatusTest {
 
-    @Mock
-    private Project project;
-
-    @Mock
     private Task task;
 
-    @InjectMocks
     private Status status;
 
     @BeforeEach
@@ -32,7 +27,7 @@ public class StatusTest {
                 .statusName("Test Status")
                 .statusColor("#FFFFFF")
                 .isCompleted(false)
-                .project(project)
+                .project(null)
                 .orderNumber(1L)
                 .tasks(new ArrayList<>())
                 .creationDate(new Date())

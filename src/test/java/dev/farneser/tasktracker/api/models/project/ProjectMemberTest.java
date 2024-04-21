@@ -3,8 +3,6 @@ package dev.farneser.tasktracker.api.models.project;
 import dev.farneser.tasktracker.api.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,21 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ProjectMemberTest {
 
-    @Mock
-    private User user;
-
-    @Mock
-    private Project project;
-
-    @InjectMocks
     private ProjectMember projectMember;
 
     @BeforeEach
     public void setUp() {
         projectMember = new ProjectMember();
         projectMember.setId(1L);
-        projectMember.setMember(user);
-        projectMember.setProject(project);
+        projectMember.setMember(null);
+        projectMember.setProject(null);
         projectMember.setRole(ProjectRole.MEMBER);
     }
 

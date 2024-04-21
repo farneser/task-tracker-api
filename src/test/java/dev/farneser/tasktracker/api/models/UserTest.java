@@ -18,12 +18,6 @@ import java.util.List;
 @SpringBootTest
 public class UserTest {
 
-    @Mock
-    private Role role;
-
-    @Mock
-    private ProjectMember projectMember;
-
     @InjectMocks
     private User user;
 
@@ -38,8 +32,7 @@ public class UserTest {
                 .registerDate(new Date())
                 .isEnabled(true)
                 .isLocked(false)
-                .role(role)
-                .projects(Collections.singletonList(projectMember))
+                .role(Role.USER)
                 .build();
     }
 

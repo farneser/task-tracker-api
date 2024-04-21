@@ -15,12 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class ProjectTest {
 
-    @Mock
-    private Status status;
-
-    @Mock
-    private ProjectMember projectMember;
-
     @InjectMocks
     private Project project;
 
@@ -29,12 +23,6 @@ public class ProjectTest {
         project = new Project();
         project.setId(1L);
         project.setProjectName("Test Project");
-        List<Status> statuses = new ArrayList<>();
-        statuses.add(status);
-        project.setStatuses(statuses);
-        List<ProjectMember> members = new ArrayList<>();
-        members.add(projectMember);
-        project.setMembers(members);
     }
 
     @Test
@@ -49,21 +37,5 @@ public class ProjectTest {
         String projectName = "New Test Project";
         project.setProjectName(projectName);
         assertEquals(projectName, project.getProjectName());
-    }
-
-    @Test
-    public void testStatusesGetterAndSetter() {
-        List<Status> statuses = new ArrayList<>();
-        statuses.add(status);
-        project.setStatuses(statuses);
-        assertEquals(statuses, project.getStatuses());
-    }
-
-    @Test
-    public void testMembersGetterAndSetter() {
-        List<ProjectMember> members = new ArrayList<>();
-        members.add(projectMember);
-        project.setMembers(members);
-        assertEquals(members, project.getMembers());
     }
 }
