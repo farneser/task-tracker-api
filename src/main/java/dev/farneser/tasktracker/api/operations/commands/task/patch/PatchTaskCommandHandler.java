@@ -1,78 +1,87 @@
 package dev.farneser.tasktracker.api.operations.commands.task.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanTask;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.models.Status;
+import dev.farneser.tasktracker.api.models.Task;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectPermission;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
+import dev.farneser.tasktracker.api.service.order.OrderUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand, Void> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final TaskRepository taskRepository;
 
-    private static void patchOrder(PatchTaskCommand command, KanbanTask task) {
-        if (command.getOrderNumber() != null) {
-            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
+    private static void patchOrder(long orderNumber, Task task) {
+        if (task.getStatus() != null) {
+            long oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
 
-            if (task.getColumn() != null) {
-                var oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
-                long newOrder = command.getOrderNumber();
+            log.debug("Old order: {}", oldOrder);
 
-                log.debug("Old order: {}", oldOrder);
+            task.setOrderNumber(orderNumber);
 
-                task.setOrderNumber(newOrder);
+            List<Task> tasksToChange = task.getStatus().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, orderNumber) && c.getOrderNumber() <= Math.max(oldOrder, orderNumber)).toList();
 
-                var tasksToChange = task.getColumn().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder)).toList();
+            log.debug("Tasks to change: {}", tasksToChange);
 
-                log.debug("Tasks to change: {}", tasksToChange);
+            OrderUtility.patchOrder(task.getId(), orderNumber, oldOrder, tasksToChange);
+        } else {
+            log.debug("Status is null");
 
-                // FIXME: 11/22/23 fix duplicate code with patch column command handler
-                tasksToChange.forEach(t -> {
-                    if (t.getId().equals(task.getId())) {
-                        return;
-                    }
-
-                    if (oldOrder < newOrder) {
-                        t.setOrderNumber(t.getOrderNumber() - 1);
-                    } else {
-                        t.setOrderNumber(t.getOrderNumber() + 1);
-                    }
-                });
-            } else {
-                log.debug("Column is null");
-                task.setOrderNumber(null);
-            }
+            task.setOrderNumber(null);
         }
     }
 
     @Override
-    public Void handle(PatchTaskCommand command) throws NotFoundException {
-        var task = taskRepository.findByIdAndUserId(command.getTaskId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
+    public Void handle(PatchTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
+        Task task = taskRepository.findById(command.getTaskId()).orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
         log.debug("Task found: {}", task);
 
-        if (command.getColumnId() != null) {
-            log.debug("Column id: {}", command.getColumnId());
+        ProjectMember member = projectMemberRepository
+                .findProjectMemberByProjectIdAndMemberId(task.getStatus().getProject().getId(), command.getUserId())
+                .orElseThrow(() -> new NotFoundException(""));
 
-            if (command.getColumnId() == -1) {
-                log.debug("Column set to null");
-                task.setColumn(null);
+        if (!member.getRole().hasPermission(ProjectPermission.USER_PATCH)) {
+            throw new OperationNotAuthorizedException();
+        }
+
+        if (command.getStatusId() != null) {
+            log.debug("Status id: {}", command.getStatusId());
+
+            if (command.getStatusId() == -1) {
+                log.debug("Status set to null");
+                task.setStatus(null);
             } else {
-                log.debug("Column set to {}", command.getColumnId());
+                log.debug("Status set to {}", command.getStatusId());
 
-                task.setColumn(columnRepository.findByIdAndUserId(command.getColumnId(), command.getUserId()).orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " not found")));
+                Status status = statusRepository
+                        .findByIdAndProjectId(command.getStatusId(), member.getProject().getId())
+                        .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
+
+                task.setStatus(status);
             }
         }
 
-        patchOrder(command, task);
+        if (command.getOrderNumber() != null) {
+            log.debug("Order number changed from {} to {}", task.getOrderNumber(), command.getOrderNumber());
+
+            patchOrder(command.getOrderNumber(), task);
+        }
 
         if (command.getTaskName() != null) {
             log.debug("Task name changed from {} to {}", task.getTaskName(), command.getTaskName());

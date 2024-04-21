@@ -1,6 +1,8 @@
 package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.delete.DeleteRefreshTokenCommand;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +40,7 @@ public class LogoutService implements LogoutHandler {
     ) {
         log.debug("Logging out user {}", authentication.getName());
 
-        var authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
         log.debug("Auth header: {}", authHeader);
 
@@ -48,13 +50,13 @@ public class LogoutService implements LogoutHandler {
 
         log.debug("Auth header: {}", authHeader);
 
-        var jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7);
 
         try {
             log.debug("Deleting refresh token {}", jwt);
 
             mediator.send(new DeleteRefreshTokenCommand(jwt));
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | OperationNotAuthorizedException | ValidationException e) {
             log.debug(e.getMessage());
         }
 

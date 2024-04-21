@@ -2,11 +2,15 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.service.TaskService;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
+import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import dev.farneser.tasktracker.api.web.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,14 +19,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/task")
+@RequestMapping(EndpointConstants.TASK_ENDPOINT)
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
@@ -33,7 +36,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> get(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> get(UserAuthentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.get(authentication));
@@ -45,7 +49,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully got archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<List<TaskLookupView>> getArchived(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<List<TaskLookupView>> getArchived(UserAuthentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting archived tasks for user {}", authentication.getName());
 
         return ResponseEntity.ok(taskService.getArchived(authentication));
@@ -56,12 +61,12 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully created task"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Column not found")
+            @ApiResponse(responseCode = "404", description = "Status not found")
     })
     public ResponseEntity<TaskView> create(
             @RequestBody @Valid CreateTaskDto createTaskDto,
-            Authentication authentication
-    ) throws NotFoundException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Creating task for user {}, task name: {}", authentication.getName(), createTaskDto.getTaskName());
 
         return ResponseEntity.status(201).body(taskService.create(createTaskDto, authentication));
@@ -76,8 +81,8 @@ public class TaskController {
     })
     public ResponseEntity<TaskView> getById(
             @PathVariable Long id,
-            Authentication authentication
-    ) throws NotFoundException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
         log.info("Getting task for user {}, task id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(taskService.get(id, authentication));
@@ -88,13 +93,13 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully patched task"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
-            @ApiResponse(responseCode = "404", description = "Task not found or Column not found")
+            @ApiResponse(responseCode = "404", description = "Task not found or status not found")
     })
     public ResponseEntity<TaskView> patchById(
             @PathVariable Long id,
             @RequestBody @Valid PatchTaskDto patchTaskDto,
-            Authentication authentication
-    ) throws NotFoundException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching task for user {}, task id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(taskService.patch(id, patchTaskDto, authentication));
@@ -109,13 +114,13 @@ public class TaskController {
     })
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
-            Authentication authentication
-    ) throws NotFoundException {
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Deleting task for user {}, task id: {}", authentication.getName(), id);
 
         taskService.delete(id, authentication);
 
-        return ResponseEntity.ok(Message.body("Successfully deleted column"));
+        return ResponseEntity.ok(Message.body("Successfully deleted status"));
     }
 
     @PutMapping("/archive")
@@ -124,7 +129,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Successfully archived tasks"),
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
     })
-    public ResponseEntity<Message> archieTasks(Authentication authentication) throws NotFoundException {
+    public ResponseEntity<Message> archieTasks(
+            @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Archiving tasks for user {}", authentication.getName());
 
         taskService.archiveTasks(authentication);

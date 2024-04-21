@@ -1,33 +1,45 @@
 package dev.farneser.tasktracker.api.operations.commands.task.archive;
 
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.models.Status;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCommand, Void> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Override
     public Void handle(ArchiveTasksCommand command) {
-        var columns = columnRepository.findByUserIdOrderByOrderNumber(command.getUserId()).orElse(new ArrayList<>());
 
-        log.debug("Columns found: {}", columns);
+        List<ProjectMember> projects = projectMemberRepository
+                .findProjectMemberByMemberId(command.getUserId())
+                .orElse(new ArrayList<>());
 
-        columns.forEach(column -> {
-            log.debug("Column found: {}", column);
+        List<Status> statuses = new ArrayList<>();
 
-            if (column.getIsCompleted() && column.getTasks() != null) {
-                column.getTasks().forEach(task -> {
+        projects.forEach(p -> statuses.addAll(p.getProject().getStatuses()));
+
+        log.debug("Statuses found: {}", statuses);
+
+        statuses.forEach(status -> {
+            log.debug("Status found: {}", status);
+
+            if (status.getIsCompleted() && status.getTasks() != null) {
+                status.getTasks().forEach(task -> {
                     log.debug("Task found: {}", task);
 
-                    task.setColumn(null);
+                    task.setStatus(null);
                     task.setOrderNumber(-1L);
                 });
             }
@@ -35,7 +47,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
 
         log.debug("Tasks archived");
 
-        columnRepository.saveAll(columns);
+        statusRepository.saveAll(statuses);
 
         return null;
     }

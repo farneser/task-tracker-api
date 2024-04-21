@@ -7,10 +7,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 @Slf4j
@@ -20,24 +22,24 @@ public class AppStartupRunner implements ApplicationRunner {
     private Integer port;
 
     public List<String> getNetworkInfo(int port) {
-        var result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         try {
-            var networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-            var interfaceList = Collections.list(networkInterfaces);
+            List<NetworkInterface> interfaceList = Collections.list(networkInterfaces);
 
             interfaceList.sort((ni1, ni2) -> ni1.getName().compareToIgnoreCase(ni2.getName()));
 
-            for (var networkInterface : interfaceList) {
+            for (NetworkInterface networkInterface : interfaceList) {
                 if (!networkInterface.isUp() || networkInterface.isLoopback() || networkInterface.isVirtual()) {
                     continue;
                 }
 
-                var addresses = networkInterface.getInetAddresses();
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
 
                 while (addresses.hasMoreElements()) {
-                    var address = addresses.nextElement();
+                    InetAddress address = addresses.nextElement();
 
                     if (address instanceof Inet4Address) {
                         result.add("http://" + address.getHostAddress() + ":" + port + "/");
@@ -53,15 +55,15 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        var remoteAddresses = getNetworkInfo(port);
+        List<String> remoteAddresses = getNetworkInfo(port);
 
-        var localMessage = "Server running local:\thttp://localhost:" + port;
+        String localMessage = "Server running local:\thttp://localhost:" + port;
 
-        var remoteMessages = new ArrayList<String>();
+        List<String> remoteMessages = new ArrayList<>();
         remoteAddresses.forEach(address -> remoteMessages.add("Server running remote:\t" + address));
 
-        var servers = 1 + remoteAddresses.size();
-        var maxLength = Math.max(localMessage.length(), remoteMessages.stream().mapToInt(String::length).max().orElse(0));
+        int servers = 1 + remoteAddresses.size();
+        int maxLength = Math.max(localMessage.length(), remoteMessages.stream().mapToInt(String::length).max().orElse(0));
 
         log.info("=".repeat(maxLength / 2 - 1) + " STATUS " + "=".repeat(maxLength / 2 - 1));
         log.info("Available: " + servers + " urls");

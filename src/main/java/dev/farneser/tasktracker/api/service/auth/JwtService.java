@@ -2,10 +2,7 @@ package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +51,7 @@ public class JwtService {
      * @return A Refresh token as a String.
      */
     public String generateRefreshToken(String email) {
-        var headers = new HashMap<String, Object>();
+        HashMap<String, Object> headers = new HashMap<>();
 
         headers.put(REFRESH_TOKEN_HEADER, true);
 
@@ -101,7 +98,8 @@ public class JwtService {
      * @return True if the token is valid for the provided user, false otherwise.
      */
     public boolean isRefreshTokenValid(String token, String email) throws TokenExpiredException, InvalidTokenException {
-        var username = extractUsername(token);
+        String username = extractUsername(token);
+
         return username.equals(email) && !isTokenExpired(token);
     }
 
@@ -112,7 +110,7 @@ public class JwtService {
      * @return True if the token is a refresh token, false otherwise.
      */
     public boolean isTokenRefresh(String token) {
-        var header = getHeader(token, REFRESH_TOKEN_HEADER, Boolean.class);
+        Boolean header = getHeader(token, REFRESH_TOKEN_HEADER, Boolean.class);
 
         return header != null && header;
     }
@@ -147,9 +145,9 @@ public class JwtService {
      * @return The value of the specified header if present and of the expected type, otherwise null.
      */
     public <T> T getHeader(String token, String headerKey, Class<T> headerValueType) {
-        var claimsJws = Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
 
-        var header = claimsJws.getHeader().get(headerKey);
+        Object header = claimsJws.getHeader().get(headerKey);
 
         if (headerValueType.isInstance(header)) {
             return headerValueType.cast(header);
@@ -180,7 +178,7 @@ public class JwtService {
      * @return All claims present in the JWT
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws TokenExpiredException, InvalidTokenException {
-        var claims = extractClaims(token);
+        Claims claims = extractClaims(token);
 
         return claimsResolver.apply(claims);
     }
@@ -209,7 +207,7 @@ public class JwtService {
      * @return The signing key derived from the provided secret key
      */
     private Key getSignInKey() {
-        var keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 
         return Keys.hmacShaKeyFor(keyBytes);
     }

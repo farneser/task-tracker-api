@@ -69,12 +69,12 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        var apiDocs = new OpenAPI();
+        OpenAPI apiDocs = new OpenAPI();
 
-        var defaultServerUrl = getDefaultServer(serverScheme, serverHost, serverPort, contextPath);
+        String defaultServerUrl = getDefaultServer(serverScheme, serverHost, serverPort, contextPath);
 
         if (enableSsl) {
-            var sslServerUrl = getDefaultServer("https", serverHost, serverPort, contextPath);
+            String sslServerUrl = getDefaultServer("https", serverHost, serverPort, contextPath);
 
             if (!sslServerUrl.equals(defaultServerUrl)) {
                 apiDocs.addServersItem(new Server().url(sslServerUrl));
