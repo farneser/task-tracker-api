@@ -13,12 +13,12 @@ import dev.farneser.tasktracker.api.operations.queries.task.getbyuserid.GetTaskB
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.web.dto.task.PatchTaskDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public TaskView create(CreateTaskDto dto, Authentication authentication)
+    public TaskView create(CreateTaskDto dto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating task {}", dto.getTaskName());
 
@@ -69,7 +69,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public List<TaskLookupView> get(Authentication authentication)
+    public List<TaskLookupView> get(UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -87,7 +87,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public TaskView get(Long id, Authentication authentication)
+    public TaskView get(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -104,7 +104,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void delete(Long id, Authentication authentication)
+    public void delete(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -123,7 +123,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found or the task with the given ID is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public TaskView patch(Long id, PatchTaskDto patchTaskDto, Authentication authentication)
+    public TaskView patch(Long id, PatchTaskDto patchTaskDto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -149,7 +149,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public List<TaskLookupView> getArchived(Authentication authentication)
+    public List<TaskLookupView> getArchived(UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -165,7 +165,7 @@ public class TaskService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void archiveTasks(Authentication authentication)
+    public void archiveTasks(UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 

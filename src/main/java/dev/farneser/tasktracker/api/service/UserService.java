@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.operations.commands.user.patch.PatchUserComm
 import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.UserRepository;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class UserService implements UserDetailsService {
      * @return UserView representing the authenticated user.
      * @throws NotFoundException If the user is not found.
      */
-    public UserView getUser(Authentication authentication)
+    public UserView getUser(UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         String username = authentication.getName();
 
@@ -79,7 +80,7 @@ public class UserService implements UserDetailsService {
      * @return UserView representing the patched user.
      * @throws NotFoundException If the user is not found.
      */
-    public UserView patch(PatchUserDto patchUserDto, Authentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+    public UserView patch(PatchUserDto patchUserDto, UserAuthentication authentication) throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
 
         UserView user = getUser(authentication);

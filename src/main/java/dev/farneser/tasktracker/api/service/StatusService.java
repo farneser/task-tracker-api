@@ -12,6 +12,7 @@ import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandstatus
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.status.CreateStatusDto;
 import dev.farneser.tasktracker.api.web.dto.status.PatchStatusDto;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class StatusService {
      * @return The created status view.
      * @throws NotFoundException If the user is not found.
      */
-    public StatusView create(CreateStatusDto dto, Authentication authentication)
+    public StatusView create(CreateStatusDto dto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         log.debug("Creating status {}", dto.getStatusName());
 
@@ -75,7 +76,7 @@ public class StatusService {
      * @return The list of status views.
      * @throws NotFoundException If the user is not found.
      */
-    public List<StatusView> get(Long projectId, Boolean retrieveTasks, Authentication authentication)
+    public List<StatusView> get(Long projectId, Boolean retrieveTasks, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -91,7 +92,7 @@ public class StatusService {
      * @return The status view.
      * @throws NotFoundException If the user or status is not found.
      */
-    public StatusView get(Long statusId, Authentication authentication)
+    public StatusView get(Long statusId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -105,7 +106,7 @@ public class StatusService {
      * @param authentication The authentication object representing the user.
      * @throws NotFoundException If the user or status is not found.
      */
-    public void delete(Long statusId, Authentication authentication)
+    public void delete(Long statusId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -121,7 +122,7 @@ public class StatusService {
      * @return The updated status view.
      * @throws NotFoundException If the user or status is not found.
      */
-    public StatusView patch(Long statusId, PatchStatusDto patchStatusDto, Authentication authentication)
+    public StatusView patch(Long statusId, PatchStatusDto patchStatusDto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -143,7 +144,7 @@ public class StatusService {
      * @return The list of task lookup views.
      * @throws NotFoundException If the user or status is not found.
      */
-    public List<TaskLookupView> getTasks(Long statusId, Authentication authentication)
+    public List<TaskLookupView> getTasks(Long statusId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -152,7 +153,7 @@ public class StatusService {
         return mediator.send(new GetTaskByUserIdAndStatusIdQuery(user.getId(), statusId));
     }
 
-    public List<StatusView> get(Boolean retrieveTasks, Authentication authentication)
+    public List<StatusView> get(Boolean retrieveTasks, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         return get(-1L, retrieveTasks, authentication);
     }

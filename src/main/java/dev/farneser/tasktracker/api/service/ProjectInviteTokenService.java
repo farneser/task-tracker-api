@@ -10,6 +10,7 @@ import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyi
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyprojectid.GetProjectInviteTokenByProjectIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    private ProjectInviteTokenView getById(Long id, Authentication authentication)
+    private ProjectInviteTokenView getById(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -52,7 +53,7 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectInviteTokenView get(Long projectId, Authentication authentication)
+    public ProjectInviteTokenView get(Long projectId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -68,7 +69,7 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectInviteTokenView create(Long projectId, Authentication authentication)
+    public ProjectInviteTokenView create(Long projectId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -87,7 +88,7 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void delete(Long projectId, Authentication authentication)
+    public void delete(Long projectId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -102,7 +103,7 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void accept(String token, Authentication authentication)
+    public void accept(String token, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
 
         UserView user = userService.getUser(authentication);

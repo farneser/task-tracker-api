@@ -18,6 +18,7 @@ import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
+import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectMemberDto;
@@ -25,7 +26,6 @@ import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class ProjectService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectView create(CreateProjectDto dto, Authentication authentication)
+    public ProjectView create(CreateProjectDto dto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
 
         UserView user = userService.getUser(authentication);
@@ -72,7 +72,7 @@ public class ProjectService {
      * @throws NotFoundException               If the user is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public List<ProjectView> get(Authentication authentication)
+    public List<ProjectView> get(UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -88,7 +88,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectView get(Long id, Authentication authentication)
+    public ProjectView get(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -103,7 +103,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void delete(Long id, Authentication authentication)
+    public void delete(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -120,7 +120,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectView patch(Long id, PatchProjectDto patchProjectDto, Authentication authentication)
+    public ProjectView patch(Long id, PatchProjectDto patchProjectDto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -143,7 +143,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public List<TaskLookupView> getTasks(Long id, Authentication authentication)
+    public List<TaskLookupView> getTasks(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -159,7 +159,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public List<ProjectMemberView> getMembers(Long id, Authentication authentication)
+    public List<ProjectMemberView> getMembers(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -175,7 +175,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public Message leaveProject(Long id, Authentication authentication)
+    public Message leaveProject(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -196,7 +196,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project member is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, Authentication authentication)
+    public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
@@ -219,7 +219,7 @@ public class ProjectService {
      * @throws NotFoundException               If the project or member is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void deleteMember(Long id, Long memberId, Authentication authentication)
+    public void deleteMember(Long id, Long memberId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
         mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
