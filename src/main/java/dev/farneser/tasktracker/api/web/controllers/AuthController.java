@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping
     @Operation(summary = "Authenticate user", description = "Authenticate user and return JWT token")
@@ -36,7 +39,11 @@ public class AuthController {
     public ResponseEntity<JwtDto> authenticate(@RequestBody @Valid LoginRequest loginDto) {
         log.info("Authenticating user {}", loginDto.getLogin());
 
-        return ResponseEntity.ok(authService.authenticate(loginDto));
+        return ResponseEntity.ok(authService.authenticate(this::authenticate, loginDto));
+    }
+
+    private void authenticate(String username, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
     @PostMapping("/register")
@@ -50,7 +57,7 @@ public class AuthController {
             throws InternalServerException, UniqueDataException, NotFoundException, ValidationException, OperationNotAuthorizedException {
         log.info("Registering user {}", registerDto.getEmail());
 
-        return ResponseEntity.status(201).body(authService.register(registerDto));
+        return ResponseEntity.status(201).body(authService.register(this::authenticate, registerDto));
     }
 
     @PostMapping("/refresh")

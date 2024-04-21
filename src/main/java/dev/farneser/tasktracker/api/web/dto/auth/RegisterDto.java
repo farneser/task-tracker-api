@@ -16,7 +16,6 @@ import org.modelmapper.ModelMapper;
 @Data
 @Slf4j
 @JsonNaming
-@PasswordMatches
 @Schema(name = "RegisterDto", description = "Register DTO")
 public class RegisterDto implements ITypeMapper {
     @Length(min = 4, max = 64)

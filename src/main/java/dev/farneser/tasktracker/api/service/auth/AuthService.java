@@ -18,10 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final ConfirmEmailService confirmEmailService;
     private final Mediator mediator;
@@ -51,7 +48,7 @@ public class AuthService {
      * @throws InternalServerException If an unexpected internal server error occurs.
      * @throws UniqueDataException     If the provided email is already taken.
      */
-    public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
+    public JwtDto register(AuthenticationManager authenticationManager, @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
         log.debug("Registering user {}", registerDto.getEmail());
 
         try {
@@ -69,7 +66,7 @@ public class AuthService {
 
             log.debug("Registering user {}", registerDto.getEmail());
 
-            return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
+            return authenticate(authenticationManager, new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
         } catch (DisabledException | BadCredentialsException | NotFoundException | OperationNotAuthorizedException e) {
@@ -84,7 +81,7 @@ public class AuthService {
      * @return A JWT containing an access token and a refresh token upon successful authentication.
      * @throws BadCredentialsException If the provided credentials are invalid.
      */
-    public JwtDto authenticate(LoginRequest loginRequest) {
+    public JwtDto authenticate(AuthenticationManager authenticationManager, LoginRequest loginRequest) {
         try {
             UserView user = mediator.send(new GetUserByLoginQuery(loginRequest.getLogin()));
 
@@ -98,10 +95,9 @@ public class AuthService {
 
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    user.getUsername(),
-                    loginRequest.getPassword())
-            );
+            if (authenticationManager != null) {
+                authenticationManager.auth(user.getUsername(), loginRequest.getPassword());
+            }
 
             log.debug("Authenticating user {}", loginRequest.getLogin());
 

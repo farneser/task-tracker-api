@@ -1,20 +1,26 @@
 package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
+import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
+import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.DisabledException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class AuthServiceTest {
-
     @Autowired
     private AuthService authService;
 
@@ -31,7 +37,11 @@ class AuthServiceTest {
 
         doNothing().when(confirmEmailService).sendRegisterMessage(anyString());
 
-        assertThrows(DisabledException.class, () -> authService.register(registerDto));
+        JwtDto dto = authService.register(null, registerDto);
+
+        assertNotNull(dto);
+        assertNotNull(dto.getAccessToken());
+        assertNotNull(dto.getRefreshToken());
 
         verify(confirmEmailService, times(1)).sendRegisterMessage(registerDto.getEmail());
     }
@@ -44,7 +54,7 @@ class AuthServiceTest {
         registerDto.setPassword("validpassword");
         registerDto.setConfirmPassword("validpassword");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 
     @Test
@@ -55,7 +65,7 @@ class AuthServiceTest {
         registerDto.setPassword("validpassword");
         registerDto.setConfirmPassword("validpassword");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 
     @Test
@@ -66,7 +76,7 @@ class AuthServiceTest {
         registerDto.setPassword("password1");
         registerDto.setConfirmPassword("password2");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 
     @Test
@@ -77,7 +87,7 @@ class AuthServiceTest {
         registerDto.setPassword("pass");
         registerDto.setConfirmPassword("pass");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 
     @Test
@@ -88,7 +98,7 @@ class AuthServiceTest {
         registerDto.setPassword("verylongpasswordthatexceedsmaximumallowedlengthof64characters1234");
         registerDto.setConfirmPassword("verylongpasswordthatexceedsmaximumallowedlengthof64characters");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 
     @Test
@@ -98,7 +108,7 @@ class AuthServiceTest {
         registerDto.setPassword("validpassword");
         registerDto.setConfirmPassword("validpassword");
 
-        assertThrows(ValidationException.class, () -> authService.register(registerDto));
+        assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 }
 
