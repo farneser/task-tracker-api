@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 @PasswordMatches
 @Schema(name = "RegisterDto", description = "Register DTO")
 public class RegisterDto implements ITypeMapper {
+    @Length(min = 4, max = 64)
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers, and underscores")
     @Schema(name = "username", description = "User name", example = "example_user")
     private String username;

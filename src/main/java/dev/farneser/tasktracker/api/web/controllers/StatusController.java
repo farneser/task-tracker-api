@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.StatusService;
@@ -72,7 +73,7 @@ public class StatusController {
     public ResponseEntity<StatusView> create(
             @RequestBody @Valid CreateStatusDto createStatusDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Creating status for user {}, status name: {}", authentication.getName(), createStatusDto.getStatusName());
 
         return ResponseEntity.status(201).body(statusService.create(createStatusDto, authentication));
@@ -89,7 +90,7 @@ public class StatusController {
             @PathVariable Long id,
             @RequestBody @Valid PatchStatusDto patchStatusDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching status for user {}, status id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(statusService.patch(id, patchStatusDto, authentication));
@@ -105,7 +106,7 @@ public class StatusController {
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Deleting status for user {}, status id: {}", authentication.getName(), id);
 
         statusService.delete(id, authentication);

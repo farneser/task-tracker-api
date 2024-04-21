@@ -62,7 +62,7 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<JwtDto> refresh(@RequestBody @Valid JwtDto jwtDto)
-            throws TokenExpiredException, InvalidTokenException, NotFoundException, OperationNotAuthorizedException {
+            throws TokenExpiredException, InvalidTokenException, NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Refreshing JWT token {}", jwtDto);
 
         return ResponseEntity.ok(authService.refresh(jwtDto));
@@ -77,7 +77,7 @@ public class AuthController {
     public ResponseEntity<Message> confirm(
             @Parameter(description = "Confirm email token (uuid)")
             @RequestParam UUID token
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Confirming email with token {}", token);
 
         authService.activateAccount(token);

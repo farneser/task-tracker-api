@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.project.create.CreateProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
@@ -85,7 +86,7 @@ public class DatabaseLoader implements ApplicationRunner {
     }
 
     private UserView createUser(String username)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         RegisterUserCommand command = new RegisterUserCommand();
 
         command.setUsername(username);
@@ -98,7 +99,7 @@ public class DatabaseLoader implements ApplicationRunner {
     }
 
     private ProjectView createProject(Long userId)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         CreateProjectCommand command = new CreateProjectCommand();
 
         command.setCreatorId(userId);
@@ -108,19 +109,19 @@ public class DatabaseLoader implements ApplicationRunner {
     }
 
     private ProjectInviteTokenView createInviteToken(Long userId, Long projectId)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         Long id = mediator.send(new CreateProjectInviteTokenCommand(userId, projectId));
 
         return mediator.send(new GetProjectInviteTokenByIdQuery(userId, id));
     }
 
     private void addUserToProject(Long userId, String token)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         mediator.send(new AcceptProjectInviteTokenCommand(userId, token));
     }
 
     private StatusView createStatus(Long userId, Long projectId, String statusName, Boolean isCompleted)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         Long id = mediator.send(new CreateStatusCommand(userId, projectId, statusName, "#ffffff", isCompleted));
 
         return mediator.send(new GetStatusByIdQuery(userId, id));
@@ -132,7 +133,7 @@ public class DatabaseLoader implements ApplicationRunner {
      * @throws NotFoundException               if a requested resource is not found
      * @throws OperationNotAuthorizedException if an operation is not authorized
      */
-    private void initDatabase() throws NotFoundException, OperationNotAuthorizedException {
+    private void initDatabase() throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Initializing sample users...");
 
         UserView user1 = createUser("user1");

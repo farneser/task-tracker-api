@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;
 import dev.farneser.tasktracker.api.operations.commands.status.delete.DeleteStatusCommand;
@@ -45,7 +46,7 @@ public class StatusService {
      * @throws NotFoundException If the user is not found.
      */
     public StatusView create(CreateStatusDto dto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Creating status {}", dto.getStatusName());
 
         UserView user = userService.getUser(authentication);
@@ -107,7 +108,7 @@ public class StatusService {
      * @throws NotFoundException If the user or status is not found.
      */
     public void delete(Long statusId, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         mediator.send(new DeleteStatusCommand(user.getId(), statusId));
@@ -123,7 +124,7 @@ public class StatusService {
      * @throws NotFoundException If the user or status is not found.
      */
     public StatusView patch(Long statusId, PatchStatusDto patchStatusDto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         PatchStatusCommand command = modelMapper.map(patchStatusDto, PatchStatusCommand.class);

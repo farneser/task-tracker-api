@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.create.CreateProjectInviteTokenCommand;
@@ -70,7 +71,7 @@ public class ProjectInviteTokenService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public ProjectInviteTokenView create(Long projectId, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         CreateProjectInviteTokenCommand command = new CreateProjectInviteTokenCommand(user.getId(), projectId);
@@ -89,7 +90,7 @@ public class ProjectInviteTokenService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void delete(Long projectId, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         mediator.send(new DeleteProjectInviteTokenCommand(user.getId(), projectId));
@@ -104,7 +105,7 @@ public class ProjectInviteTokenService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void accept(String token, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
 
         UserView user = userService.getUser(authentication);
 

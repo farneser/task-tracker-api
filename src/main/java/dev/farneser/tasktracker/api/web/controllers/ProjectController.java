@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
@@ -46,7 +47,7 @@ public class ProjectController {
     public ResponseEntity<ProjectView> create(
             @RequestBody @Valid CreateProjectDto createProjectDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.status(201).body(projectService.create(createProjectDto, authentication));
     }
 
@@ -71,7 +72,7 @@ public class ProjectController {
             @PathVariable Long id,
             @RequestBody PatchProjectMemberDto patchProjectMemberDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.patchMember(id, patchProjectMemberDto, authentication));
     }
 
@@ -79,7 +80,7 @@ public class ProjectController {
     public ResponseEntity<Message> leaveProject(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.leaveProject(id, authentication));
     }
 
@@ -88,7 +89,7 @@ public class ProjectController {
             @PathVariable Long id,
             @PathVariable Long memberId,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectService.deleteMember(id, memberId, authentication);
 
         return ResponseEntity.ok(Message.body("User deleted successfully"));
@@ -132,7 +133,7 @@ public class ProjectController {
             @PathVariable Long id,
             @RequestBody @Valid PatchProjectDto patchProjectDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.ok(projectService.patch(id, patchProjectDto, authentication));
     }
 
@@ -140,7 +141,7 @@ public class ProjectController {
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted project"));

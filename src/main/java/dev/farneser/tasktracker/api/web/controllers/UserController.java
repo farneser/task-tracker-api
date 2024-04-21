@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
@@ -49,7 +50,7 @@ public class UserController {
     public ResponseEntity<UserView> patchBy(
             @RequestBody @Valid PatchUserDto patchUserDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching user {}", authentication.getName());
 
         return ResponseEntity.ok(userService.patch(patchUserDto, authentication));

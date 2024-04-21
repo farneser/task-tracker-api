@@ -108,8 +108,8 @@ public class AuthService {
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
             return new JwtDto(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()));
-        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException
-                 | OperationNotAuthorizedException e) {
+        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException |
+                 OperationNotAuthorizedException | ValidationException e) {
             throw new BadCredentialsException("Invalid credentials");
         }
     }
@@ -124,7 +124,7 @@ public class AuthService {
      * @throws NotFoundException     If the refresh token is not found.
      */
     public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException,
-            OperationNotAuthorizedException {
+            OperationNotAuthorizedException, ValidationException {
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
         RefreshToken refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
@@ -152,7 +152,7 @@ public class AuthService {
      * @return The newly generated refresh token.
      * @throws NotFoundException If the user is not found.
      */
-    private String updateRefreshToken(String email) throws NotFoundException, OperationNotAuthorizedException {
+    private String updateRefreshToken(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Updating refresh token for user {}", email);
 
         UserView user = mediator.send(new GetUserByLoginQuery(email));
@@ -176,7 +176,7 @@ public class AuthService {
      * @param id The activation ID.
      * @throws NotFoundException If the activation ID is not found.
      */
-    public void activateAccount(UUID id) throws NotFoundException, OperationNotAuthorizedException {
+    public void activateAccount(UUID id) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Activating account {}", id);
 
         confirmEmailService.confirm(id);

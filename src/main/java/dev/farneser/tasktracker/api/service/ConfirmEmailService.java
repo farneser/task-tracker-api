@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import dev.farneser.tasktracker.api.operations.commands.user.activate.ActivateUserCommand;
@@ -54,7 +55,7 @@ public class ConfirmEmailService {
      * @param email The email address for which to send the confirmation.
      * @throws NotFoundException If the user is not found.
      */
-    public void requireConfirm(String email) throws NotFoundException, OperationNotAuthorizedException {
+    public void requireConfirm(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         ConfirmEmailToken confirmationToken = createConfirmationToken(email);
 
         if (confirmationRequired) {
@@ -80,7 +81,7 @@ public class ConfirmEmailService {
      * @param email The email address for which to send the registration message.
      * @throws NotFoundException If the user is not found.
      */
-    public void sendRegisterMessage(String email) throws NotFoundException, OperationNotAuthorizedException {
+    public void sendRegisterMessage(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Sending register message for email {}", email);
 
         if (confirmationRequired) {
@@ -109,7 +110,7 @@ public class ConfirmEmailService {
      * @param id The ID of the confirmation token to use for email confirmation.
      * @throws NotFoundException If the confirmation token is not found.
      */
-    public void confirm(UUID id) throws NotFoundException, OperationNotAuthorizedException {
+    public void confirm(UUID id) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         ConfirmEmailToken confirmEmailToken = confirmEmailTokenRepository.get(id);
 
         log.debug("Confirm email token: {}", confirmEmailToken);

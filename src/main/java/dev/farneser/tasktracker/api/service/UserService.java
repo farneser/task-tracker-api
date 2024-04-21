@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.commands.user.patch.PatchUserCommand;
@@ -79,7 +80,8 @@ public class UserService implements UserDetailsService {
      * @return UserView representing the patched user.
      * @throws NotFoundException If the user is not found.
      */
-    public UserView patch(PatchUserDto patchUserDto, UserAuthentication authentication) throws NotFoundException, OperationNotAuthorizedException {
+    public UserView patch(PatchUserDto patchUserDto, UserAuthentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Patching user {} with {}", authentication.getName(), patchUserDto);
 
         UserView user = getUser(authentication);

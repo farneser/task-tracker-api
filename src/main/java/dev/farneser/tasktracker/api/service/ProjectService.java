@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.project.create.CreateProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.delete.DeleteProjectCommand;
@@ -51,7 +52,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public ProjectView create(CreateProjectDto dto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
 
         UserView user = userService.getUser(authentication);
 
@@ -104,7 +105,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void delete(Long id, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         mediator.send(new DeleteProjectCommand(user.getId(), id));
@@ -121,7 +122,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public ProjectView patch(Long id, PatchProjectDto patchProjectDto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         PatchProjectCommand command = modelMapper.map(patchProjectDto, PatchProjectCommand.class);
@@ -176,7 +177,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public Message leaveProject(Long id, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         LeaveProjectCommand command = new LeaveProjectCommand(user.getId(), id);
@@ -197,7 +198,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         PatchProjectMemberCommand command = modelMapper.map(patchProjectMemberDto, PatchProjectMemberCommand.class);
@@ -220,7 +221,7 @@ public class ProjectService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void deleteMember(Long id, Long memberId, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
         mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
     }

@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.delete.DeleteRefreshTokenCommand;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +56,7 @@ public class LogoutService implements LogoutHandler {
             log.debug("Deleting refresh token {}", jwt);
 
             mediator.send(new DeleteRefreshTokenCommand(jwt));
-        } catch (NotFoundException | OperationNotAuthorizedException e) {
+        } catch (NotFoundException | OperationNotAuthorizedException | ValidationException e) {
             log.debug(e.getMessage());
         }
 

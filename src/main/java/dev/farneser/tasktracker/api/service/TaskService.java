@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.task.archive.ArchiveTasksCommand;
 import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCommand;
@@ -45,7 +46,7 @@ public class TaskService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public TaskView create(CreateTaskDto dto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Creating task {}", dto.getTaskName());
 
         UserView user = userService.getUser(authentication);
@@ -105,7 +106,7 @@ public class TaskService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void delete(Long id, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Deleting task {} for user {}", id, user.getEmail());
@@ -124,7 +125,7 @@ public class TaskService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public TaskView patch(Long id, PatchTaskDto patchTaskDto, UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Patching task {} for user {}", id, user.getEmail());
@@ -166,7 +167,7 @@ public class TaskService {
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
     public void archiveTasks(UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         log.debug("Archiving tasks for user {}", user.getEmail());

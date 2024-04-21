@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskView;
 import dev.farneser.tasktracker.api.service.TaskService;
@@ -65,7 +66,7 @@ public class TaskController {
     public ResponseEntity<TaskView> create(
             @RequestBody @Valid CreateTaskDto createTaskDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Creating task for user {}, task name: {}", authentication.getName(), createTaskDto.getTaskName());
 
         return ResponseEntity.status(201).body(taskService.create(createTaskDto, authentication));
@@ -98,7 +99,7 @@ public class TaskController {
             @PathVariable Long id,
             @RequestBody @Valid PatchTaskDto patchTaskDto,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Patching task for user {}, task id: {}", authentication.getName(), id);
 
         return ResponseEntity.ok(taskService.patch(id, patchTaskDto, authentication));
@@ -114,7 +115,7 @@ public class TaskController {
     public ResponseEntity<Message> deleteById(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Deleting task for user {}, task id: {}", authentication.getName(), id);
 
         taskService.delete(id, authentication);
@@ -130,7 +131,7 @@ public class TaskController {
     })
     public ResponseEntity<Message> archieTasks(
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.info("Archiving tasks for user {}", authentication.getName());
 
         taskService.archiveTasks(authentication);

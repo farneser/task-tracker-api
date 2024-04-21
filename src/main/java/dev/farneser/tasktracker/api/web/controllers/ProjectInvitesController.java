@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
@@ -24,7 +25,7 @@ public class ProjectInvitesController {
     public ResponseEntity<Message> acceptInvite(
             @PathVariable String token,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectInviteTokenService.accept(token, authentication);
 
         return ResponseEntity.ok(Message.body("Invite successfully accepted"));
@@ -42,7 +43,7 @@ public class ProjectInvitesController {
     public ResponseEntity<ProjectInviteTokenView> createInvite(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.status(201).body(projectInviteTokenService.create(id, authentication));
     }
 
@@ -50,7 +51,7 @@ public class ProjectInvitesController {
     public ResponseEntity<Message> deleteInvite(
             @PathVariable Long id,
             @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
-    ) throws NotFoundException, OperationNotAuthorizedException {
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         projectInviteTokenService.delete(id, authentication);
 
         return ResponseEntity.ok(Message.body("Successfully deleted invite token"));
