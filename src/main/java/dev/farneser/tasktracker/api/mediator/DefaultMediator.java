@@ -2,16 +2,22 @@ package dev.farneser.tasktracker.api.mediator;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DefaultMediator implements Mediator {
     private final ApplicationContext applicationContext;
+    private final Validator validator;
 
     private static String convertFirstLetterToLowerCase(String input) {
         if (input == null || input.isEmpty()) {
@@ -26,7 +32,7 @@ public class DefaultMediator implements Mediator {
 
     @Override
     public <REQUEST extends Command<RESPONSE>, RESPONSE> RESPONSE send(REQUEST request)
-            throws NotFoundException, OperationNotAuthorizedException {
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Send request: {}", request);
 
         if (request != null) {
@@ -41,6 +47,12 @@ public class DefaultMediator implements Mediator {
                     handler.getClass().getSimpleName(),
                     request
             );
+
+            Set<ConstraintViolation<REQUEST>> violations = validator.validate(request);
+
+            if (!violations.isEmpty()) {
+                throw new ValidationException("Validation error: " + violations.iterator().next().getMessage());
+            }
 
             return (RESPONSE) handler.handle(request);
         } else {

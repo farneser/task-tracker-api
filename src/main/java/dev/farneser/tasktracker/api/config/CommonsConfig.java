@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.config;
 
 import dev.farneser.tasktracker.api.mediator.DefaultMediator;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -20,6 +21,8 @@ public class CommonsConfig {
         return new BCryptPasswordEncoder(8);
     }
 
+    private final Validator validator;
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
@@ -32,6 +35,6 @@ public class CommonsConfig {
     @Bean
     @Autowired
     public Mediator mediator(ApplicationContext applicationContext) {
-        return new DefaultMediator(applicationContext);
+        return new DefaultMediator(applicationContext, validator);
     }
 }
