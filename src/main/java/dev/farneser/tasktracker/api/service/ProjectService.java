@@ -172,19 +172,16 @@ public class ProjectService {
      *
      * @param id             Project identifier.
      * @param authentication Authentication data of the user.
-     * @return Success message.
      * @throws NotFoundException               If the project is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public Message leaveProject(Long id, UserAuthentication authentication)
+    public void leaveProject(Long id, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         LeaveProjectCommand command = new LeaveProjectCommand(user.getId(), id);
 
         mediator.send(command);
-
-        return null;
     }
 
     /**

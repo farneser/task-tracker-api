@@ -20,7 +20,7 @@ public class StatusView implements ITypeMapper {
     @Schema(name = "id", description = "Status id", example = "1")
     private Long id;
     @Schema(name = "statusName", description = "Status name", example = "To do")
-    private String statusView;
+    private String statusName;
     @Schema(name = "isCompleted", description = "Is status completed", example = "false")
     private Boolean isCompleted;
     @Schema(name = "orderNumber", description = "Status order number", example = "1")
@@ -39,7 +39,7 @@ public class StatusView implements ITypeMapper {
 
         modelMapper.createTypeMap(Status.class, StatusView.class)
                 .addMapping(Status::getId, StatusView::setId)
-                .addMapping(Status::getStatusName, StatusView::setStatusView)
+                .addMapping(Status::getStatusName, StatusView::setStatusName)
                 .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
                 .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
                 .addMapping(Status::getCreationDate, StatusView::setCreationDate)

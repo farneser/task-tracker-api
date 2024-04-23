@@ -82,7 +82,9 @@ public class ProjectController {
             @PathVariable Long id,
             @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
-        return ResponseEntity.ok(projectService.leaveProject(id, authentication));
+        projectService.leaveProject(id, authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully leave project"));
     }
 
     @DeleteMapping("{id}/members/{memberId}")
