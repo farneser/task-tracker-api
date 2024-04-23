@@ -32,7 +32,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
     }
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(ExtensionContext extensionContext) {
         userRepository = applicationContext.getBean(UserRepository.class);
         projectRepository = applicationContext.getBean(ProjectRepository.class);
         projectMemberRepository = applicationContext.getBean(ProjectMemberRepository.class);

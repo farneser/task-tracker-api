@@ -1,10 +1,8 @@
 package dev.farneser.tasktracker.api.repository;
 
-import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,8 +13,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ExtendWith(DatabaseInitializationExtension.class)
-public class TaskRepositoryTest {
+public class TasksRepositoryTest {
 
     @Autowired
     private TaskRepository taskRepository;
@@ -25,7 +22,7 @@ public class TaskRepositoryTest {
     private StatusRepository statusRepository;
 
     @Test
-    public void testFindByStatusIdOrderByOrderNumber() {
+    void testFindByStatusIdOrderByOrderNumber() {
         Status status1 = new Status();
         status1.setStatusName("To Do");
         status1.setStatusColor("#FF0000");
@@ -95,7 +92,7 @@ public class TaskRepositoryTest {
     }
 
     @Test
-    public void testFindByStatusIdOrderByOrderNumber_NoTasksFound() {
+    void testFindByStatusIdOrderByOrderNumber_NoTasksFound() {
         Optional<List<Task>> tasksByStatusId = taskRepository.findByStatusIdOrderByOrderNumber(1L);
 
         assertFalse(tasksByStatusId.isEmpty());
