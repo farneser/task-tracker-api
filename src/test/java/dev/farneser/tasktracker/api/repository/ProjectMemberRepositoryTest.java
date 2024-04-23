@@ -56,7 +56,7 @@ public class ProjectMemberRepositoryTest {
         projectMemberRepository.save(projectMember);
 
         Optional<ProjectMember> retrievedProjectMember = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(project.getId(), user.getId());
+                .findByProjectIdAndMemberId(project.getId(), user.getId());
 
         assertTrue(retrievedProjectMember.isPresent());
         assertEquals(projectMember.getId(), retrievedProjectMember.get().getId());
@@ -84,7 +84,7 @@ public class ProjectMemberRepositoryTest {
 
         projectMemberRepository.save(projectMember);
 
-        Optional<List<ProjectMember>> projectMembers = projectMemberRepository.findProjectMemberByMemberId(user.getId());
+        Optional<List<ProjectMember>> projectMembers = projectMemberRepository.findByMemberId(user.getId());
 
         assertTrue(projectMembers.isPresent());
         assertEquals(1, projectMembers.get().size());
