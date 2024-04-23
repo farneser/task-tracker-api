@@ -23,7 +23,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
     public Void handle(ArchiveTasksCommand command) {
 
         List<ProjectMember> projects = projectMemberRepository
-                .findProjectMemberByMemberId(command.getUserId())
+                .findByMemberId(command.getUserId())
                 .orElse(new ArrayList<>());
 
         List<Status> statuses = new ArrayList<>();

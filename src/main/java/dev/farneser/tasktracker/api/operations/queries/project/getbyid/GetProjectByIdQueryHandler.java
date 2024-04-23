@@ -20,7 +20,7 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
     @Override
     public ProjectView handle(GetProjectByIdQuery query) throws NotFoundException {
         // FIXME 27.03.2024 write exception
-        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(query.getProjectId(), query.getUserId()).orElseThrow(() -> new NotFoundException(""));
+        ProjectMember member = projectMemberRepository.findByProjectIdAndMemberId(query.getProjectId(), query.getUserId()).orElseThrow(() -> new NotFoundException(""));
 
         return mapper.map(member.getProject(), ProjectView.class);
     }

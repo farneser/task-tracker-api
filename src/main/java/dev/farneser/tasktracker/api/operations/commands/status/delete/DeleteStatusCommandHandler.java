@@ -30,7 +30,7 @@ public class DeleteStatusCommandHandler implements CommandHandler<DeleteStatusCo
                 .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
+                .findByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {

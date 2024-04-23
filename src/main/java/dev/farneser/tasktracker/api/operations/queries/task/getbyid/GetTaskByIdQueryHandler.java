@@ -29,7 +29,7 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
                 .orElseThrow(() -> new NotFoundException("Task with id " + query.getTaskId() + " not found"));
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(task.getStatus().getProject().getId(), query.getUserId())
+                .findByProjectIdAndMemberId(task.getStatus().getProject().getId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {

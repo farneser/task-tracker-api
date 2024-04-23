@@ -22,7 +22,7 @@ public class DeleteProjectInviteTokenCommandHandler implements CommandHandler<De
     public Void handle(DeleteProjectInviteTokenCommand command)
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {

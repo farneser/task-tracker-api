@@ -24,7 +24,7 @@ public class GetProjectMemberByIdQueryHandler implements QueryHandler<GetProject
             throws NotFoundException, OperationNotAuthorizedException {
 
         ProjectMember user = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
+                .findByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!user.getRole().hasPermission(ProjectPermission.USER_GET)) {

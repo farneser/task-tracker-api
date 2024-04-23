@@ -22,7 +22,7 @@ public class GetProjectByUserIdQueryHandler implements QueryHandler<GetProjectBy
 
     @Override
     public List<ProjectView> handle(GetProjectByUserIdQuery query) throws NotFoundException {
-        List<ProjectMember> projectMembers = projectMemberRepository.findProjectMemberByMemberId(query.getUserId()).orElse(new ArrayList<>());
+        List<ProjectMember> projectMembers = projectMemberRepository.findByMemberId(query.getUserId()).orElse(new ArrayList<>());
 
         return projectMembers.stream().map(p -> modelMapper.map(p.getProject(), ProjectView.class)).toList();
     }

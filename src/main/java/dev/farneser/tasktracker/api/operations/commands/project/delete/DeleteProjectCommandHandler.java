@@ -21,7 +21,7 @@ public class DeleteProjectCommandHandler implements CommandHandler<DeleteProject
     @Override
     public Void handle(DeleteProjectCommand command) throws NotFoundException, OperationNotAuthorizedException {
         // FIXME 27.03.2024 write exception
-        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getMemberId()).orElseThrow(() -> new NotFoundException(""));
+        ProjectMember member = projectMemberRepository.findByProjectIdAndMemberId(command.getProjectId(), command.getMemberId()).orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.CREATOR_DELETE)) {
             throw new OperationNotAuthorizedException();

@@ -3,8 +3,6 @@ package dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getby
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
-import dev.farneser.tasktracker.api.models.project.ProjectMember;
-import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.models.tokens.ProjectInviteToken;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
 import dev.farneser.tasktracker.api.repository.ProjectInviteTokenRepository;
@@ -13,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import static dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyid.GetProjectInviteTokenByIdQueryHandler.getProjectInviteTokenView;
 
 @Slf4j
 @Component
@@ -30,14 +30,6 @@ public class GetProjectInviteTokenByProjectIdQueryHandler
                 .findByProjectId(query.getProjectId())
                 .orElseThrow(() -> new NotFoundException(""));
 
-        ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(token.getProject().getId(), query.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
-
-        if (!member.getRole().hasPermission(ProjectPermission.ADMIN_GET)) {
-            throw new OperationNotAuthorizedException();
-        }
-
-        return modelMapper.map(token, ProjectInviteTokenView.class);
+        return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), modelMapper);
     }
 }

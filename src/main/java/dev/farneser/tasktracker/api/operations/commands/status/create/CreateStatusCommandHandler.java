@@ -27,7 +27,7 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
     public Long handle(CreateStatusCommand command) throws NotFoundException, OperationNotAuthorizedException {
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)) {

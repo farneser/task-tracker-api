@@ -57,7 +57,7 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
             Status status = statusRepository.findById(command.getStatusId()).orElseThrow(() -> new NotFoundException(""));
 
             ProjectMember member = projectMemberRepository
-                    .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
+                    .findByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
                     .orElseThrow(() -> new NotFoundException(""));
 
             if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {

@@ -36,7 +36,7 @@ public class DeleteProjectMemberCommandHandler implements CommandHandler<DeleteP
     }
 
     private ProjectMember findProjectMember(Long projectId, Long memberId) throws NotFoundException {
-        return projectMemberRepository.findProjectMemberByProjectIdAndMemberId(projectId, memberId)
+        return projectMemberRepository.findByProjectIdAndMemberId(projectId, memberId)
                 .orElseThrow(() -> new NotFoundException("Project member not found"));
     }
 }

@@ -19,7 +19,7 @@ public class PatchProjectCommandHandler implements CommandHandler<PatchProjectCo
     @Override
     public Void handle(PatchProjectCommand command) throws NotFoundException, OperationNotAuthorizedException {
         // FIXME 27.03.2024 write exception
-        ProjectMember member = projectMemberRepository.findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
+        ProjectMember member = projectMemberRepository.findByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {
             throw new OperationNotAuthorizedException();

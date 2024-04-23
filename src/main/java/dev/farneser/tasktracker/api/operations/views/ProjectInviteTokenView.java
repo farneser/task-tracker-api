@@ -18,7 +18,6 @@ public class ProjectInviteTokenView implements ITypeMapper {
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ProjectInviteToken.class, ProjectInviteTokenView.class)
-                .addMapping(ProjectInviteToken::getToken, ProjectInviteTokenView::setToken)
-                .addMapping(i -> i.getUser().getEmail(), ProjectInviteTokenView::setEmail);
+                .addMapping(ProjectInviteToken::getToken, ProjectInviteTokenView::setToken);
     }
 }

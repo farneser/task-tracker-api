@@ -21,7 +21,7 @@ public class LeaveProjectCommandHandler implements CommandHandler<LeaveProjectCo
             throws NotFoundException, OperationNotAuthorizedException {
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (member.getRole() == ProjectRole.CREATOR) {

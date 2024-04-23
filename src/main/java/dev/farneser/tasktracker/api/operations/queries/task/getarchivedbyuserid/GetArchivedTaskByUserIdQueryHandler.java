@@ -25,7 +25,7 @@ public class GetArchivedTaskByUserIdQueryHandler implements QueryHandler<GetArch
     public List<TaskLookupView> handle(GetArchivedTaskByUserIdQuery query) throws NotFoundException {
 
         List<ProjectMember> projectMembers = projectMemberRepository
-                .findProjectMemberByMemberId(query.getUserId())
+                .findByMemberId(query.getUserId())
                 .orElse(new ArrayList<>());
 
         List<Task> tasks = new ArrayList<>();

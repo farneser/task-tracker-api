@@ -26,7 +26,7 @@ public class CreateProjectInviteTokenCommandHandler implements CommandHandler<Cr
             throws NotFoundException, OperationNotAuthorizedException {
         synchronized (this) {
             ProjectMember member = projectMemberRepository
-                    .findProjectMemberByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                    .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
                     .orElseThrow(() -> new NotFoundException(""));
 
             if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)) {

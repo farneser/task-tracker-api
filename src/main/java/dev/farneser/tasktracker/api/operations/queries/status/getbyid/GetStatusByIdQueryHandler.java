@@ -32,7 +32,7 @@ public class GetStatusByIdQueryHandler implements QueryHandler<GetStatusByIdQuer
         log.debug("Status found: {}", status);
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), query.getUserId())
+                .findByProjectIdAndMemberId(status.getProject().getId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {

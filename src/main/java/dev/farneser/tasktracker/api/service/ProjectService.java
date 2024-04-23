@@ -93,7 +93,7 @@ public class ProjectService {
             throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
-        return mediator.send(new GetProjectByIdQuery(id, user.getId()));
+        return mediator.send(new GetProjectByIdQuery(user.getId(), id));
     }
 
     /**

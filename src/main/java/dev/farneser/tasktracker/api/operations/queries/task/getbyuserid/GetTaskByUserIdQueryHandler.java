@@ -24,7 +24,7 @@ public class GetTaskByUserIdQueryHandler implements QueryHandler<GetTaskByUserId
     @Override
     public List<TaskLookupView> handle(GetTaskByUserIdQuery query) throws NotFoundException {
         List<ProjectMember> projectMembers = projectMemberRepository
-                .findProjectMemberByMemberId(query.getUserId())
+                .findByMemberId(query.getUserId())
                 .orElse(new ArrayList<>());
 
         List<Task> result = new ArrayList<>();

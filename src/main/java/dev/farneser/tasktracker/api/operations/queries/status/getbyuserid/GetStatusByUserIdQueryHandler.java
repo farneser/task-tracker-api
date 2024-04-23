@@ -32,7 +32,7 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
 
         if (query.getProjectId() == -1L) {
             List<ProjectMember> projectMembers = projectMemberRepository
-                    .findProjectMemberByMemberId(query.getUserId())
+                    .findByMemberId(query.getUserId())
                     .orElse(new ArrayList<>());
 
             projectIds.addAll(projectMembers.stream().map(p -> p.getProject().getId()).toList());
@@ -45,7 +45,7 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
 
         for (Long id : projectIds) {
             ProjectMember member = projectMemberRepository
-                    .findProjectMemberByProjectIdAndMemberId(id, query.getUserId())
+                    .findByProjectIdAndMemberId(id, query.getUserId())
                     .orElseThrow(() -> new NotFoundException(""));
 
             if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {

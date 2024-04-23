@@ -29,14 +29,27 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
                 .findById(query.getTokenId())
                 .orElseThrow(() -> new NotFoundException(""));
 
+        return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), mapper);
+    }
+
+    public static ProjectInviteTokenView getProjectInviteTokenView(
+            ProjectInviteToken token,
+            ProjectMemberRepository projectMemberRepository,
+            Long userId,
+            ModelMapper mapper
+    ) throws NotFoundException, OperationNotAuthorizedException {
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(token.getProject().getId(), query.getUserId())
+                .findByProjectIdAndMemberId(token.getProject().getId(), userId)
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_GET)) {
             throw new OperationNotAuthorizedException();
         }
 
-        return mapper.map(token, ProjectInviteTokenView.class);
+        ProjectInviteTokenView view = mapper.map(token, ProjectInviteTokenView.class);
+
+        view.setEmail(token.getUser().getEmail());
+
+        return view;
     }
 }

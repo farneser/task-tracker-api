@@ -38,7 +38,7 @@ public class GetTaskByUserIdAndStatusIdQueryHandler implements QueryHandler<GetT
         Status status = statusRepository.findById(query.getStatusId()).orElseThrow(() -> new NotFoundException(""));
 
         ProjectMember member = projectMemberRepository
-                .findProjectMemberByProjectIdAndMemberId(status.getProject().getId(), query.getUserId())
+                .findByProjectIdAndMemberId(status.getProject().getId(), query.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
