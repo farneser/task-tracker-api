@@ -35,6 +35,10 @@ public class GetProjectMemberByIdQueryHandler implements QueryHandler<GetProject
                 .findById(query.getId())
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
-        return mapper.map(member, ProjectMemberView.class);
+        ProjectMemberView view = mapper.map(member, ProjectMemberView.class);
+
+        view.setProjectId(query.getProjectId());
+
+        return view;
     }
 }

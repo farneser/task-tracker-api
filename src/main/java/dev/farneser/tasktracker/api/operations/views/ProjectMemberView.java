@@ -14,7 +14,7 @@ import org.modelmapper.ModelMapper;
 public class ProjectMemberView implements ITypeMapper {
     @Schema(name = "id", description = "Project member id", example = "1")
     private Long id;
-    private String projectId;
+    private Long projectId;
     private UserView member;
     private ProjectRole role;
 

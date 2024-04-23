@@ -11,6 +11,7 @@ import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class GetStatusByIdQueryHandler implements QueryHandler<GetStatusByIdQuer
     public StatusView handle(GetStatusByIdQuery query) throws NotFoundException, OperationNotAuthorizedException {
 
         Status status = statusRepository
-                .findById(query.getStatusId())
+                .findByIdWithTasks(query.getStatusId())
                 .orElseThrow(() -> new NotFoundException("Status with id " + query.getStatusId() + " not found"));
 
         log.debug("Status found: {}", status);
@@ -40,6 +41,7 @@ public class GetStatusByIdQueryHandler implements QueryHandler<GetStatusByIdQuer
         }
 
         StatusView view = modelMapper.map(status, StatusView.class);
+        view.setProjectId(status.getProject().getId());
 
         log.debug("Status mapped: {}", view);
 

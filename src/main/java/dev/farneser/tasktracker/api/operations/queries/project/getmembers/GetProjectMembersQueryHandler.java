@@ -44,6 +44,7 @@ public class GetProjectMembersQueryHandler
         return project.getMembers().stream().map(p -> {
             ProjectMemberView view = mapper.map(p, ProjectMemberView.class);
             view.setMember(mapper.map(p.getMember(), UserView.class));
+            view.setProjectId(p.getProject().getId());
             return view;
         }).toList();
     }

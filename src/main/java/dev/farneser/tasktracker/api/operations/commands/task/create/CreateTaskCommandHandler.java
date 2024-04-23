@@ -27,7 +27,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
     @Override
     public Long handle(CreateTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
         Status status = statusRepository
-                .findById(command.getStatusId())
+                .findByIdWithTasks(command.getStatusId())
                 .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " of user id " + command.getUserId() + " not found"));
 
         log.debug("Status found: {}", status);

@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.operations.commands.project.create.CreatePro
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.create.CreateProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;
+import dev.farneser.tasktracker.api.operations.commands.task.create.CreateTaskCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjectByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyid.GetProjectInviteTokenByIdQuery;
@@ -18,6 +19,7 @@ import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.*;
+import dev.farneser.tasktracker.api.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -127,6 +129,10 @@ public class DatabaseLoader implements ApplicationRunner {
         return mediator.send(new GetStatusByIdQuery(userId, id));
     }
 
+    private void createTask(Long userId, Long statusId, String title, Long assignedFor) throws ValidationException, NotFoundException, OperationNotAuthorizedException {
+        mediator.send(new CreateTaskCommand(userId, statusId, assignedFor, title, "Description for task: " + title));
+    }
+
     /**
      * Initializes the database with sample users, projects, and invite tokens.
      *
@@ -165,6 +171,42 @@ public class DatabaseLoader implements ApplicationRunner {
         addUserToProject(user2.getId(), pitView3.getToken());
 
         log.info("Users added to projects.");
+
+        StatusView status1pr1 = createStatus(user1.getId(), project1.getId(), "To Do", false);
+        StatusView status2pr1 = createStatus(user1.getId(), project1.getId(), "Review", false);
+        StatusView status3pr1 = createStatus(user1.getId(), project1.getId(), "Done", true);
+
+        StatusView status1pr2 = createStatus(user2.getId(), project2.getId(), "Shop list", false);
+        StatusView status2pr2 = createStatus(user2.getId(), project2.getId(), "Done", true);
+
+        StatusView status1pr3 = createStatus(user3.getId(), project3.getId(), "To Do", false);
+        StatusView status2pr3 = createStatus(user3.getId(), project3.getId(), "Review", false);
+        StatusView status3pr3 = createStatus(user3.getId(), project3.getId(), "Tests", false);
+        StatusView status4pr3 = createStatus(user3.getId(), project3.getId(), "Deployed", false);
+        StatusView status5pr3 = createStatus(user3.getId(), project3.getId(), "Done", true);
+
+        createTask(user1.getId(), status1pr1.getId(), "Task 1", null);
+        createTask(user1.getId(), status3pr1.getId(), "Task 2", null);
+        createTask(user1.getId(), status2pr1.getId(), "Task 3", null);
+        createTask(user1.getId(), status3pr1.getId(), "Task 4", null);
+        createTask(user1.getId(), status1pr1.getId(), "Task 5", null);
+        createTask(user1.getId(), status1pr1.getId(), "Task 6", null);
+
+        createTask(user2.getId(), status1pr2.getId(), "Task 7", null);
+        createTask(user2.getId(), status1pr2.getId(), "Task 8", null);
+        createTask(user2.getId(), status1pr2.getId(), "Task 9", null);
+        createTask(user2.getId(), status2pr2.getId(), "Task 10", null);
+
+        createTask(user3.getId(), status1pr3.getId(), "Task 11", null);
+        createTask(user3.getId(), status1pr3.getId(), "Task 12", null);
+        createTask(user3.getId(), status3pr3.getId(), "Task 13", null);
+        createTask(user3.getId(), status4pr3.getId(), "Task 14", null);
+        createTask(user3.getId(), status4pr3.getId(), "Task 15", null);
+        createTask(user3.getId(), status3pr3.getId(), "Task 16", null);
+        createTask(user3.getId(), status2pr3.getId(), "Task 17", null);
+        createTask(user3.getId(), status3pr3.getId(), "Task 18", null);
+        createTask(user3.getId(), status2pr3.getId(), "Task 19", null);
+        createTask(user3.getId(), status5pr3.getId(), "Task 20", null);
 
         log.info("Database initialization complete.");
     }
