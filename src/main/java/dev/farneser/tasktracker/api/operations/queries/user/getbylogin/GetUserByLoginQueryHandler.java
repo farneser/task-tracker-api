@@ -9,6 +9,7 @@ import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -27,10 +28,16 @@ public class GetUserByLoginQueryHandler implements QueryHandler<GetUserByLoginQu
         Optional<User> userByName = userRepository.findByUsername(query.getLogin());
         Optional<User> userByEmail = userRepository.findByEmail(query.getLogin());
 
+        User user = null;
+
         if (userByName.isPresent()) {
-            return modelMapper.map(userByName.get(), UserView.class);
+            user = userByName.get();
         } else if (userByEmail.isPresent()) {
-            return modelMapper.map(userByEmail.get(), UserView.class);
+            user = userByEmail.get();
+        }
+
+        if (user != null) {
+            return modelMapper.map(user, UserView.class);
         }
 
         throw new UserNotFoundException(query.getLogin());

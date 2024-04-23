@@ -1,26 +1,24 @@
 package dev.farneser.tasktracker.api.service.auth;
 
+import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
-import dev.farneser.tasktracker.api.models.User;
-import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.DisabledException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class AuthServiceTest {
+public class AuthServiceRegisterTest {
     @Autowired
     private AuthService authService;
 
@@ -111,4 +109,5 @@ class AuthServiceTest {
         assertThrows(ValidationException.class, () -> authService.register(null, registerDto));
     }
 }
+
 

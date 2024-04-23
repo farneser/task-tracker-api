@@ -10,11 +10,12 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
-@Component
+@Configuration
 public class DatabaseInitializationExtension implements BeforeAllCallback, ApplicationContextAware {
     private static ApplicationContext applicationContext;
     private static UserRepository userRepository;
@@ -22,6 +23,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
     private static ProjectMemberRepository projectMemberRepository;
     private static StatusRepository statusRepository;
     private static TaskRepository taskRepository;
+    private static PasswordEncoder passwordEncoder;
     private static Boolean isStarts = false;
 
     @Override
@@ -36,6 +38,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
         projectMemberRepository = applicationContext.getBean(ProjectMemberRepository.class);
         statusRepository = applicationContext.getBean(StatusRepository.class);
         taskRepository = applicationContext.getBean(TaskRepository.class);
+        passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
         if (!isStarts) {
             initUsers();
@@ -50,7 +53,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
         User user1 = User.builder()
                 .username("user1")
                 .email("user1@builder.com")
-                .password("password1")
+                .password(passwordEncoder.encode("password1"))
                 .isSubscribed(true)
                 .registerDate(new Date())
                 .isEnabled(true)
@@ -63,7 +66,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
         User user2 = User.builder()
                 .username("user2")
                 .email("user2@builder.com")
-                .password("password2")
+                .password(passwordEncoder.encode("password2"))
                 .isSubscribed(true)
                 .registerDate(new Date())
                 .isEnabled(true)
@@ -76,7 +79,7 @@ public class DatabaseInitializationExtension implements BeforeAllCallback, Appli
         User user3 = User.builder()
                 .username("user3")
                 .email("user3@builder.com")
-                .password("password3")
+                .password(passwordEncoder.encode("password3"))
                 .isSubscribed(true)
                 .registerDate(new Date())
                 .isEnabled(true)
