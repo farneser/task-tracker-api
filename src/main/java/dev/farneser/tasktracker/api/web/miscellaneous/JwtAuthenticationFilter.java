@@ -1,10 +1,10 @@
 package dev.farneser.tasktracker.api.web.miscellaneous;
 
+import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.auth.JwtService;
-import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("Auth header: {}", authHeader);
 
         // skip if no auth or request for auth
-        if (authHeader == null || !authHeader.startsWith(AUTH_PREFIX) || request.getRequestURI().startsWith("/api/v1/auth")) {
+        if (authHeader == null
+                || !authHeader.startsWith(AUTH_PREFIX)
+                || request.getRequestURI().startsWith("/api/v1/auth")
+                || request.getRequestURI().startsWith("/api/v1/project/accept-invite/") && request.getMethod().equals("GET")
+        ) {
             log.debug("Skip jwt authentication filter");
 
             filterChain.doFilter(request, response);

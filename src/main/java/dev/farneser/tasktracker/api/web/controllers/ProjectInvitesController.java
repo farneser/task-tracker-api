@@ -25,7 +25,7 @@ public class ProjectInvitesController {
     @GetMapping("accept-invite/{token}")
     public ResponseEntity<ProjectInviteTokenView> getAcceptInvite(
             @PathVariable String token
-    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+    ) throws NotFoundException, OperationNotAuthorizedException{
         return ResponseEntity.ok(projectInviteTokenService.getAcceptToken(token));
     }
 
