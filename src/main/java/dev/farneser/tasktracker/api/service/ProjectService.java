@@ -14,6 +14,7 @@ import dev.farneser.tasktracker.api.operations.queries.project.getbyid.GetProjec
 import dev.farneser.tasktracker.api.operations.queries.project.getbyuserid.GetProjectByUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getmemberbyid.GetProjectMemberByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.project.getmembers.GetProjectMembersQuery;
+import dev.farneser.tasktracker.api.operations.queries.task.getarchivedbyprojectid.GetArchivedTaskByProjectIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandprojectid.GetTaskByUserIdAndProjectIdQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
@@ -221,5 +222,12 @@ public class ProjectService {
         UserView user = userService.getUser(authentication);
 
         mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
+    }
+
+    public List<TaskLookupView> getArchivedTasks(Long id, UserAuthentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException {
+        UserView user = userService.getUser(authentication);
+
+        return mediator.send(new GetArchivedTaskByProjectIdQuery(user.getId(), id));
     }
 }
