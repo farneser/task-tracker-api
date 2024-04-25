@@ -7,7 +7,7 @@ import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
-import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
+import dev.farneser.tasktracker.api.dto.user.PatchUserDto;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

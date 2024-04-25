@@ -8,7 +8,7 @@ import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
-import dev.farneser.tasktracker.api.web.models.Message;
+import dev.farneser.tasktracker.api.dto.models.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

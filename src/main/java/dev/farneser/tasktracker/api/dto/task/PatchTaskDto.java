@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto.task;
+package dev.farneser.tasktracker.api.dto.task;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.operations.commands.task.patch.PatchTaskCommand;

@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto.user;
+package dev.farneser.tasktracker.api.dto.user;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.operations.commands.user.patch.PatchUserCommand;

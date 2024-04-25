@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto.status;
+package dev.farneser.tasktracker.api.dto.status;
 
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.operations.commands.status.create.CreateStatusCommand;

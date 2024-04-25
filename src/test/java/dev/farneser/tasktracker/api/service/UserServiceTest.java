@@ -6,7 +6,7 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.auth.CustomUserAuthentication;
-import dev.farneser.tasktracker.api.web.dto.user.PatchUserDto;
+import dev.farneser.tasktracker.api.dto.user.PatchUserDto;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

@@ -2,10 +2,10 @@ package dev.farneser.tasktracker.api.web.controllers;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.service.auth.AuthService;
-import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
-import dev.farneser.tasktracker.api.web.models.Message;
+import dev.farneser.tasktracker.api.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.dto.auth.RegisterDto;
+import dev.farneser.tasktracker.api.dto.models.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

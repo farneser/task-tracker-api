@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.models;
+package dev.farneser.tasktracker.api.dto.models;
 
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.media.Schema;

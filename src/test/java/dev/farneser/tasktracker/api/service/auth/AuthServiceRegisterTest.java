@@ -2,8 +2,8 @@ package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
-import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
+import dev.farneser.tasktracker.api.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.dto.auth.RegisterDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

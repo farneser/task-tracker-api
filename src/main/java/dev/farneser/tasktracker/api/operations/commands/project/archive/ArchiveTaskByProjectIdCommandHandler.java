@@ -39,7 +39,6 @@ public class ArchiveTaskByProjectIdCommandHandler implements CommandHandler<Arch
                 .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
-
         projects.getProject().getStatuses().forEach(ArchiveTaskByProjectIdCommandHandler::archive);
 
         log.debug("Tasks archived");

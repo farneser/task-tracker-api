@@ -1,8 +1,8 @@
 package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
-import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

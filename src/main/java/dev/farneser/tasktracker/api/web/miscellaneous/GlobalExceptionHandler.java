@@ -1,10 +1,7 @@
 package dev.farneser.tasktracker.api.web.miscellaneous;
 
-import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
-import dev.farneser.tasktracker.api.exceptions.NotFoundException;
-import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
-import dev.farneser.tasktracker.api.exceptions.UniqueDataException;
-import dev.farneser.tasktracker.api.web.models.ErrorResponse;
+import dev.farneser.tasktracker.api.exceptions.*;
+import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -105,6 +102,22 @@ public class GlobalExceptionHandler {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(OperationNotAuthorizedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponse> handler(OperationNotAuthorizedException ex) {
+        log.debug(ex.getMessage());
+
+        return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handler(ValidationException ex) {
+        log.debug(ex.getMessage());
+
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

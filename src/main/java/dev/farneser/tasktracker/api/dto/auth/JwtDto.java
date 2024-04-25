@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.web.dto.auth;
+package dev.farneser.tasktracker.api.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

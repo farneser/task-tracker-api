@@ -10,9 +10,9 @@ import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetR
 import dev.farneser.tasktracker.api.operations.queries.user.getbylogin.GetUserByLoginQuery;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
-import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
+import dev.farneser.tasktracker.api.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.dto.auth.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.auth.JwtService;
-import dev.farneser.tasktracker.api.web.models.ErrorResponse;
+import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
