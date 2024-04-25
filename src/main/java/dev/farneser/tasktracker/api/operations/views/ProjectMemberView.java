@@ -12,16 +12,19 @@ import org.modelmapper.ModelMapper;
 @Slf4j
 @Schema(name = "ProjectMemberView", description = "Project member view")
 public class ProjectMemberView implements ITypeMapper {
-    @Schema(name = "id", description = "Project member id", example = "1")
-    private Long id;
+    @Schema(name = "projectId", description = "Project id", example = "1")
     private Long projectId;
-    private UserView member;
+    private Long userId;
+    private String username;
+    private String email;
     private ProjectRole role;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ProjectMember.class, ProjectMemberView.class)
-                .addMapping(ProjectMember::getId, ProjectMemberView::setId)
                 .addMapping(p -> p.getProject().getId(), ProjectMemberView::setProjectId)
+                .addMapping(p->p.getMember().getId(), ProjectMemberView::setUserId)
+                .addMapping(p->p.getMember().getUsername(), ProjectMemberView::setUsername)
+                .addMapping(p->p.getMember().getEmail(), ProjectMemberView::setEmail)
                 .addMapping(ProjectMember::getRole, ProjectMemberView::setRole);
     }
 }

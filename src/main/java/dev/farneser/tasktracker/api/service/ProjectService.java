@@ -220,6 +220,7 @@ public class ProjectService {
     public void deleteMember(Long id, Long memberId, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
+
         mediator.send(new DeleteProjectMemberCommand(user.getId(), memberId, id));
     }
 }
