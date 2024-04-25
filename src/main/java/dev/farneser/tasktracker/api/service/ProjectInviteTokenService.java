@@ -7,9 +7,12 @@ import dev.farneser.tasktracker.api.mediator.Mediator;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept.AcceptProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.create.CreateProjectInviteTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.delete.DeleteProjectInviteTokenCommand;
+import dev.farneser.tasktracker.api.operations.queries.project.getmemberbyidanduserid.GetProjectMemberByIdAndUserIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyid.GetProjectInviteTokenByIdQuery;
 import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbyprojectid.GetProjectInviteTokenByProjectIdQuery;
+import dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getbytoken.GetProjectInviteTokenByTokenQuery;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
+import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import lombok.RequiredArgsConstructor;
@@ -103,12 +106,14 @@ public class ProjectInviteTokenService {
      * @throws NotFoundException               If the project invite token is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public void accept(String token, UserAuthentication authentication)
+    public ProjectMemberView accept(String token, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
 
         UserView user = userService.getUser(authentication);
 
-        mediator.send(new AcceptProjectInviteTokenCommand(user.getId(), token));
+        Long memberId = mediator.send(new AcceptProjectInviteTokenCommand(user.getId(), token));
+
+        return mediator.send(new GetProjectMemberByIdAndUserIdQuery(memberId, user.getId()));
     }
 
     public ProjectInviteTokenView getAcceptToken(String token)

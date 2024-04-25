@@ -32,7 +32,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/api/v1/auth", "/error", "/api/v1/project/accept-invite/**"};
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/api/v1/auth", "/error"};
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     log.debug("Authorize http requests");
                     log.debug("White list url: {}", Arrays.toString(WHITE_LIST_URL));
+
                     req.requestMatchers(HttpMethod.OPTIONS, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.GET, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.POST, WHITE_LIST_URL).permitAll();
@@ -62,6 +63,9 @@ public class SecurityConfig {
                             "/v3/api-docs",
                             "/v3/api-docs/swagger-config"
                     ).permitAll();
+
+                    req.requestMatchers(HttpMethod.OPTIONS, "/api/v1/project/accept-invite/**").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/api/v1/project/accept-invite/**").permitAll();
 
                     log.debug("Authorize any request");
                     req.anyRequest().authenticated();

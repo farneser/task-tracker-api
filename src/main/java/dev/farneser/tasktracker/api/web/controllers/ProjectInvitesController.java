@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.ProjectInviteTokenView;
+import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
@@ -29,13 +30,11 @@ public class ProjectInvitesController {
     }
 
     @PostMapping("accept-invite/{token}")
-    public ResponseEntity<Message> acceptInvite(
+    public ResponseEntity<ProjectMemberView> acceptInvite(
             @PathVariable String token,
             @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
-        projectInviteTokenService.accept(token, authentication);
-
-        return ResponseEntity.ok(Message.body("Invite successfully accepted"));
+        return ResponseEntity.ok(projectInviteTokenService.accept(token, authentication));
     }
 
     @GetMapping("{id}/invite-token")

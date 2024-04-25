@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.operations.queries.project.getmemberbyid;
+package dev.farneser.tasktracker.api.operations.queries.project.getmemberbyidanduserid;
 
 import dev.farneser.tasktracker.api.mediator.Query;
 import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
@@ -7,8 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GetProjectMemberByIdQuery implements Query<ProjectMemberView> {
-    private Long memberId;
+public class GetProjectMemberByIdAndUserIdQuery implements Query<ProjectMemberView> {
+    private Long projectMemberId;
     private Long userId;
-    private Long projectId;
 }

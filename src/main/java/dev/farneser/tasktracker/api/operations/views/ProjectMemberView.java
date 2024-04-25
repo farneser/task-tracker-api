@@ -27,4 +27,16 @@ public class ProjectMemberView implements ITypeMapper {
                 .addMapping(p->p.getMember().getEmail(), ProjectMemberView::setEmail)
                 .addMapping(ProjectMember::getRole, ProjectMemberView::setRole);
     }
+
+    public static ProjectMemberView map(ProjectMember model){
+        ProjectMemberView view = new ProjectMemberView();
+
+        view.setProjectId(model.getProject().getId());
+        view.setRole(model.getRole());
+        view.setUserId(model.getMember().getId());
+        view.setEmail(model.getMember().getEmail());
+        view.setUsername(model.getMember().getUsername());
+
+        return view;
+    }
 }

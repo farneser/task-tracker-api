@@ -7,11 +7,9 @@ import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
-import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.List;
 public class GetProjectMembersQueryHandler
         implements QueryHandler<GetProjectMembersQuery, List<ProjectMemberView>> {
     private final ProjectRepository projectRepository;
-    private final ModelMapper mapper;
 
     @Override
     public List<ProjectMemberView> handle(GetProjectMembersQuery query)
@@ -41,10 +38,6 @@ public class GetProjectMembersQueryHandler
             }
         }
 
-        return project.getMembers().stream().map(p -> {
-            ProjectMemberView view = mapper.map(p, ProjectMemberView.class);
-            view.setProjectId(p.getProject().getId());
-            return view;
-        }).toList();
+        return project.getMembers().stream().map(ProjectMemberView::map).toList();
     }
 }
