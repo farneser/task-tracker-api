@@ -4,6 +4,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.operations.commands.project.archive.ArchiveTaskByProjectIdCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.create.CreateProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.delete.DeleteProjectCommand;
 import dev.farneser.tasktracker.api.operations.commands.project.deletemember.DeleteProjectMemberCommand;
@@ -229,5 +230,12 @@ public class ProjectService {
         UserView user = userService.getUser(authentication);
 
         return mediator.send(new GetArchivedTaskByProjectIdQuery(user.getId(), id));
+    }
+
+    public void putArchivedTasks(Long id, UserAuthentication authentication)
+            throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+        UserView user = userService.getUser(authentication);
+
+        mediator.send(new ArchiveTaskByProjectIdCommand(user.getId(), id));
     }
 }

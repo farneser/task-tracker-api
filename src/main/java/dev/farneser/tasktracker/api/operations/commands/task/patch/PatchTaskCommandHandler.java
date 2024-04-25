@@ -53,7 +53,7 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
         log.debug("Task found: {}", task);
 
         ProjectMember member = projectMemberRepository
-                .findByProjectIdAndMemberId(task.getStatus().getProject().getId(), command.getUserId())
+                .findByProjectIdAndMemberId(task.getProject().getId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_PATCH)) {

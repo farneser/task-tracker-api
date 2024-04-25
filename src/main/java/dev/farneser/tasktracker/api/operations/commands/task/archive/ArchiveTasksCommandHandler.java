@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.archive;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.operations.commands.project.archive.ArchiveTaskByProjectIdCommandHandler;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,19 +33,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
 
         log.debug("Statuses found: {}", statuses);
 
-        statuses.forEach(status -> {
-            log.debug("Status found: {}", status);
-
-            if (status.getIsCompleted() && status.getTasks() != null) {
-                status.getTasks().forEach(task -> {
-                    log.debug("Task found: {}", task);
-
-                    task.setStatus(null);
-                    // FIXME 15.04.2024: mb order number for archive
-                    task.setOrderNumber(-1L);
-                });
-            }
-        });
+        statuses.forEach(ArchiveTaskByProjectIdCommandHandler::archive);
 
         log.debug("Tasks archived");
 

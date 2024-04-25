@@ -30,7 +30,7 @@ public class DeleteTaskCommandHandler implements CommandHandler<DeleteTaskComman
                 .orElseThrow(() -> new NotFoundException("Task with id " + command.getTaskId() + " not found"));
 
         ProjectMember member = projectMemberRepository
-                .findByProjectIdAndMemberId(task.getStatus().getProject().getId(), command.getUserId())
+                .findByProjectIdAndMemberId(task.getProject().getId(), command.getUserId())
                 .orElseThrow(() -> new NotFoundException(""));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_DELETE)) {

@@ -127,9 +127,23 @@ public class ProjectController {
             @PathVariable Long id,
             @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
-        log.info("Getting statuses for user {}", authentication.getName());
-
         return ResponseEntity.ok(projectService.getArchivedTasks(id, authentication));
+    }
+
+    @PutMapping("{id}/archive")
+    @Operation(summary = "Get statuses", description = "Get statuses by JWT token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully got statuses"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "Statuses not found")
+    })
+    public ResponseEntity<Message> putArchivedTasks(
+            @PathVariable Long id,
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+        projectService.putArchivedTasks(id, authentication);
+
+        return ResponseEntity.ok(Message.body("Successfully archived tasks"));
     }
 
     @GetMapping("{id}/tasks")
