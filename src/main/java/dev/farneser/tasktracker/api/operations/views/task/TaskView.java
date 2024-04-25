@@ -42,9 +42,9 @@ public class TaskView implements ITypeMapper {
                 .addMapping(Task::getOrderNumber, TaskView::setOrderNumber)
                 .addMapping(Task::getCreationDate, TaskView::setCreationDate)
                 .addMapping(Task::getEditDate, TaskView::setEditDate)
-                .addMapping(task -> (task.getStatus() != null ?
-                        modelMapper.map(task.getStatus(), StatusView.class) :
-                        null), TaskView::setStatus)
-        ;
+                .addMapping(task -> (task.getStatus() != null
+                                ? modelMapper.map(task.getStatus(), StatusView.class)
+                                : null),
+                        TaskView::setStatus);
     }
 }

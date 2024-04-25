@@ -19,7 +19,6 @@ import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.*;
-import dev.farneser.tasktracker.api.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -97,7 +96,13 @@ public class DatabaseLoader implements ApplicationRunner {
         command.setConfirmPassword("password");
         command.setSubscribed(true);
 
-        return mediator.send(new GetUserByIdQuery(mediator.send(command)));
+        log.info("Creating user: {}", username);
+
+        UserView userView = mediator.send(new GetUserByIdQuery(mediator.send(command)));
+
+        log.info("User created: {}", userView.getUsername());
+
+        return userView;
     }
 
     private ProjectView createProject(Long userId)
@@ -107,30 +112,52 @@ public class DatabaseLoader implements ApplicationRunner {
         command.setCreatorId(userId);
         command.setProjectName("User " + userId + "'s project");
 
-        return mediator.send(new GetProjectByIdQuery(userId, mediator.send(command)));
+        log.info("Creating project for user ID: {}", userId);
+
+        ProjectView projectView = mediator.send(new GetProjectByIdQuery(userId, mediator.send(command)));
+
+        log.info("Project created with ID: {}", projectView.getId());
+
+        return projectView;
     }
 
     private ProjectInviteTokenView createInviteToken(Long userId, Long projectId)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         Long id = mediator.send(new CreateProjectInviteTokenCommand(userId, projectId));
 
-        return mediator.send(new GetProjectInviteTokenByIdQuery(userId, id));
+        log.info("Creating invite token for user ID: {} and project ID: {}", userId, projectId);
+
+        ProjectInviteTokenView tokenView = mediator.send(new GetProjectInviteTokenByIdQuery(userId, id));
+
+        log.info("Invite token created with token: {}", tokenView.getToken());
+
+        return tokenView;
     }
 
     private void addUserToProject(Long userId, String token)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         mediator.send(new AcceptProjectInviteTokenCommand(userId, token));
+
+        log.info("User with ID: {} added to project with token: {}", userId, token);
     }
 
     private StatusView createStatus(Long userId, Long projectId, String statusName, Boolean isCompleted)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         Long id = mediator.send(new CreateStatusCommand(userId, projectId, statusName, "#ffffff", isCompleted));
 
-        return mediator.send(new GetStatusByIdQuery(userId, id));
+        log.info("Creating status '{}' for project ID: {}", statusName, projectId);
+
+        StatusView statusView = mediator.send(new GetStatusByIdQuery(userId, id));
+
+        log.info("Status '{}' created with ID: {}", statusName, statusView.getId());
+
+        return statusView;
     }
 
     private void createTask(Long userId, Long statusId, String title, Long assignedFor) throws ValidationException, NotFoundException, OperationNotAuthorizedException {
         mediator.send(new CreateTaskCommand(userId, statusId, assignedFor, title, "Description for task: " + title));
+
+        log.info("Task '{}' created with status ID: {} and assigned user ID: {}", title, statusId, assignedFor);
     }
 
     /**
@@ -140,37 +167,21 @@ public class DatabaseLoader implements ApplicationRunner {
      * @throws OperationNotAuthorizedException if an operation is not authorized
      */
     private void initDatabase() throws NotFoundException, OperationNotAuthorizedException, ValidationException {
-        log.info("Initializing sample users...");
-
         UserView user1 = createUser("user1");
         UserView user2 = createUser("user2");
         UserView user3 = createUser("user3");
-
-        log.info("Sample users created.");
-
-        log.info("Initializing sample projects...");
 
         ProjectView project1 = createProject(user1.getId());
         ProjectView project2 = createProject(user2.getId());
         ProjectView project3 = createProject(user3.getId());
 
-        log.info("Sample projects created.");
-
-        log.info("Initializing sample invite tokens...");
-
         ProjectInviteTokenView pitView1 = createInviteToken(user1.getId(), project1.getId());
-        ProjectInviteTokenView pitView2 = createInviteToken(user2.getId(), project2.getId());
+        createInviteToken(user2.getId(), project2.getId());
         ProjectInviteTokenView pitView3 = createInviteToken(user3.getId(), project3.getId());
-
-        log.info("Sample invite tokens created.");
-
-        log.info("Adding users to projects...");
 
         addUserToProject(user2.getId(), pitView1.getToken());
         addUserToProject(user1.getId(), pitView3.getToken());
         addUserToProject(user2.getId(), pitView3.getToken());
-
-        log.info("Users added to projects.");
 
         StatusView status1pr1 = createStatus(user1.getId(), project1.getId(), "To Do", false);
         StatusView status2pr1 = createStatus(user1.getId(), project1.getId(), "Review", false);
@@ -207,8 +218,6 @@ public class DatabaseLoader implements ApplicationRunner {
         createTask(user3.getId(), status3pr3.getId(), "Task 18", null);
         createTask(user3.getId(), status2pr3.getId(), "Task 19", null);
         createTask(user3.getId(), status5pr3.getId(), "Task 20", null);
-
-        log.info("Database initialization complete.");
     }
 }
 

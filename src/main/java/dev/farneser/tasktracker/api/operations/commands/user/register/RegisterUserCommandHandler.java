@@ -5,15 +5,12 @@ import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.models.permissions.Role;
 import dev.farneser.tasktracker.api.repository.UserRepository;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Set;
 
 @Slf4j
 @Component

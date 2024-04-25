@@ -51,7 +51,7 @@ public class ProjectController {
     ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         return ResponseEntity.status(201).body(projectService.create(createProjectDto, authentication));
     }
-    
+
     @GetMapping("{id}")
     public ResponseEntity<ProjectView> getById(
             @PathVariable Long id,

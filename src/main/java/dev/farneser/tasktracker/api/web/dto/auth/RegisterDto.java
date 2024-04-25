@@ -3,7 +3,6 @@ package dev.farneser.tasktracker.api.web.dto.auth;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
-import dev.farneser.tasktracker.api.operations.commands.user.register.PasswordMatches;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

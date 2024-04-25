@@ -29,7 +29,7 @@ public class Task implements OrderIdentifier {
     @JoinColumn(name = "user_id")
     private User assignedFor;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
 

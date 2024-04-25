@@ -22,13 +22,13 @@ public class ProjectMemberView implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ProjectMember.class, ProjectMemberView.class)
                 .addMapping(p -> p.getProject().getId(), ProjectMemberView::setProjectId)
-                .addMapping(p->p.getMember().getId(), ProjectMemberView::setUserId)
-                .addMapping(p->p.getMember().getUsername(), ProjectMemberView::setUsername)
-                .addMapping(p->p.getMember().getEmail(), ProjectMemberView::setEmail)
+                .addMapping(p -> p.getMember().getId(), ProjectMemberView::setUserId)
+                .addMapping(p -> p.getMember().getUsername(), ProjectMemberView::setUsername)
+                .addMapping(p -> p.getMember().getEmail(), ProjectMemberView::setEmail)
                 .addMapping(ProjectMember::getRole, ProjectMemberView::setRole);
     }
 
-    public static ProjectMemberView map(ProjectMember model){
+    public static ProjectMemberView map(ProjectMember model) {
         ProjectMemberView view = new ProjectMemberView();
 
         view.setProjectId(model.getProject().getId());

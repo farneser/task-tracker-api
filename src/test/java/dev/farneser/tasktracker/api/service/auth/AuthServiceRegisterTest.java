@@ -1,13 +1,10 @@
 package dev.farneser.tasktracker.api.service.auth;
 
-import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
 import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

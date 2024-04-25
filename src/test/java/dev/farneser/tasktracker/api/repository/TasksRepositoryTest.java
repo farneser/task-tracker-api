@@ -31,6 +31,8 @@ public class TasksRepositoryTest {
         status1.setCreationDate(new Date());
         status1.setEditDate(new Date());
 
+        statusRepository.save(status1);
+
         Status status2 = new Status();
         status2.setStatusName("In Progress");
         status2.setStatusColor("#00FF00");
@@ -39,7 +41,6 @@ public class TasksRepositoryTest {
         status2.setCreationDate(new Date());
         status2.setEditDate(new Date());
 
-        statusRepository.save(status1);
         statusRepository.save(status2);
 
         Date date = new Date(System.currentTimeMillis());
