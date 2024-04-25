@@ -40,6 +40,7 @@ public class ArchiveTasksCommandHandler implements CommandHandler<ArchiveTasksCo
                     log.debug("Task found: {}", task);
 
                     task.setStatus(null);
+                    // FIXME 15.04.2024: mb order number for archive
                     task.setOrderNumber(-1L);
                 });
             }

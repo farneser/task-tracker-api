@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.models;
 
+import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.service.order.OrderIdentifier;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,10 @@ public class Task implements OrderIdentifier {
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
 
     @Column(name = "order_number")
     private Long orderNumber;

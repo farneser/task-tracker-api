@@ -73,6 +73,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
                 .status(status)
+                .project(status.getProject())
                 .assignedFor(assignedFor)
                 .creationDate(creationDate)
                 .editDate(creationDate)
