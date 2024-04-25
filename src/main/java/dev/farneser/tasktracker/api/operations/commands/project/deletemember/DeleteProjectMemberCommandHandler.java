@@ -22,7 +22,7 @@ public class DeleteProjectMemberCommandHandler implements CommandHandler<DeleteP
         ProjectMember admin = findProjectMember(command.getProjectId(), command.getUserId());
         ProjectMember member = findProjectMember(command.getProjectId(), command.getMemberId());
 
-        if (admin.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {
+        if (!admin.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {
             throw new OperationNotAuthorizedException("You can't delete users in this project");
         }
 
@@ -30,7 +30,7 @@ public class DeleteProjectMemberCommandHandler implements CommandHandler<DeleteP
             throw new OperationNotAuthorizedException("You can't delete user with role: " + member.getRole());
         }
 
-        projectMemberRepository.save(member);
+        projectMemberRepository.delete(member);
 
         return null;
     }

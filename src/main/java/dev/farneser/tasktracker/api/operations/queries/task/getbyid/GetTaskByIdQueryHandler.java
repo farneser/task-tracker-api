@@ -41,6 +41,7 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
         TaskView view = modelMapper.map(task, TaskView.class);
 
         if (view.getStatus() != null) {
+            view.getStatus().setProjectId(member.getProject().getId());
             view.getStatus().setTasks(null);
         }
 
