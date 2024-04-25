@@ -21,6 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectInvitesController {
     private final ProjectInviteTokenService projectInviteTokenService;
 
+    @GetMapping("accept-invite/{token}")
+    public ResponseEntity<ProjectInviteTokenView> getAcceptInvite(
+            @PathVariable String token
+    ) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+        return ResponseEntity.ok(projectInviteTokenService.getAcceptToken(token));
+    }
+
     @PostMapping("accept-invite/{token}")
     public ResponseEntity<Message> acceptInvite(
             @PathVariable String token,

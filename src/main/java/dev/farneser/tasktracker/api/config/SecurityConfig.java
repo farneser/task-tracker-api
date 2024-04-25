@@ -32,7 +32,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/api/v1/auth", "/error"};
+    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**", "/api/v1/auth", "/error", "/api/v1/project/accept-invite/**"};
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthenticationFilter jwtAuthFilter;

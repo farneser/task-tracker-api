@@ -23,7 +23,6 @@ import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.dto.project.CreateProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectDto;
 import dev.farneser.tasktracker.api.web.dto.project.PatchProjectMemberDto;
-import dev.farneser.tasktracker.api.web.models.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -187,25 +186,25 @@ public class ProjectService {
     /**
      * Modifies a project member's role.
      *
-     * @param id                    Project identifier.
+     * @param projectId             Project identifier.
      * @param patchProjectMemberDto Data for modifying the project member.
      * @param authentication        Authentication data of the user.
      * @return View of the modified project member.
      * @throws NotFoundException               If the project member is not found.
      * @throws OperationNotAuthorizedException If the operation is not authorized.
      */
-    public ProjectMemberView patchMember(Long id, PatchProjectMemberDto patchProjectMemberDto, UserAuthentication authentication)
+    public ProjectMemberView patchMember(Long projectId, PatchProjectMemberDto patchProjectMemberDto, UserAuthentication authentication)
             throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         UserView user = userService.getUser(authentication);
 
         PatchProjectMemberCommand command = modelMapper.map(patchProjectMemberDto, PatchProjectMemberCommand.class);
 
         command.setUserId(user.getId());
-        command.setProjectId(id);
+        command.setProjectId(projectId);
 
         Long projectMemberId = mediator.send(command);
 
-        return mediator.send(new GetProjectMemberByIdQuery(projectMemberId, user.getId(), id));
+        return mediator.send(new GetProjectMemberByIdQuery(projectMemberId, user.getId(), projectId));
     }
 
     /**

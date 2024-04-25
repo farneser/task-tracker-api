@@ -110,4 +110,9 @@ public class ProjectInviteTokenService {
 
         mediator.send(new AcceptProjectInviteTokenCommand(user.getId(), token));
     }
+
+    public ProjectInviteTokenView getAcceptToken(String token)
+            throws NotFoundException, OperationNotAuthorizedException {
+        return mediator.send(new GetProjectInviteTokenByTokenQuery(token));
+    }
 }

@@ -49,6 +49,7 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
         ProjectInviteTokenView view = mapper.map(token, ProjectInviteTokenView.class);
 
         view.setEmail(token.getUser().getEmail());
+        view.setProjectName(token.getProject().getProjectName());
 
         return view;
     }

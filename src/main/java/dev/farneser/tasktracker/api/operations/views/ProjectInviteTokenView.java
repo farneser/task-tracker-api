@@ -15,6 +15,8 @@ public class ProjectInviteTokenView implements ITypeMapper {
     private String token;
     @Schema(name = "email", description = "Project invite token creator email", example = "example@email.com")
     private String email;
+    @Schema(name = "projectName", description = "Name of project", example = "Best project")
+    private String projectName;
 
     public void mapping(ModelMapper modelMapper) {
         modelMapper.createTypeMap(ProjectInviteToken.class, ProjectInviteTokenView.class)
