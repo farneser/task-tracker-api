@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.operations.commands.project.archive;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -37,7 +38,7 @@ public class ArchiveTaskByProjectIdCommandHandler implements CommandHandler<Arch
 
         ProjectMember projects = projectMemberRepository
                 .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         projects.getProject().getStatuses().forEach(ArchiveTaskByProjectIdCommandHandler::archive);
 

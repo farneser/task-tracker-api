@@ -35,14 +35,10 @@ public class AcceptProjectInviteTokenCommandHandler implements CommandHandler<Ac
 
             ProjectInviteToken existingToken = projectInviteTokenRepository
                     .findByToken(command.getToken())
-                    .orElseThrow(() -> new NotFoundException(""));
-
-            Project project = projectRepository
-                    .findById(existingToken.getProject().getId())
-                    .orElseThrow(() -> new NotFoundException(""));
+                    .orElseThrow(() -> new NotFoundException("Project invite token not found"));
 
             Optional<ProjectMember> projectMember = projectMemberRepository
-                    .findByProjectIdAndMemberId(project.getId(), command.getUserId());
+                    .findByProjectIdAndMemberId(existingToken.getProject().getId(), command.getUserId());
 
             if (projectMember.isPresent()) {
                 return projectMember.get().getId();
@@ -54,7 +50,7 @@ public class AcceptProjectInviteTokenCommandHandler implements CommandHandler<Ac
 
             ProjectMember member = new ProjectMember();
 
-            member.setProject(project);
+            member.setProject(existingToken.getProject());
             member.setMember(user);
             member.setRole(ProjectRole.MEMBER);
 

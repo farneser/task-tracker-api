@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.projectinvitetoken.getby
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
@@ -27,7 +28,7 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectInviteToken token = projectInviteTokenRepository
                 .findById(query.getTokenId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
 
         return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), mapper);
     }
@@ -40,7 +41,7 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
     ) throws NotFoundException, OperationNotAuthorizedException {
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(token.getProject().getId(), userId)
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(userId));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_GET)) {
             throw new OperationNotAuthorizedException();

@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.status.getbyid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -33,7 +34,7 @@ public class GetStatusByIdQueryHandler implements QueryHandler<GetStatusByIdQuer
 
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(status.getProject().getId(), query.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
             throw new OperationNotAuthorizedException();

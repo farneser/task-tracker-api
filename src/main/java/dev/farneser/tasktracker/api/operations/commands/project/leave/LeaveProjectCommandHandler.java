@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.project.leave;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectRole;
@@ -22,7 +23,7 @@ public class LeaveProjectCommandHandler implements CommandHandler<LeaveProjectCo
 
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (member.getRole() == ProjectRole.CREATOR) {
             throw new OperationNotAuthorizedException("Failed to leave project: you are project creator");

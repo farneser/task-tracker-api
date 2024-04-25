@@ -30,8 +30,7 @@ public class DeleteRefreshTokenByUserIdCommandHandler implements CommandHandler<
         } catch (NotFoundException e) {
             log.debug("Refresh token not found for user with id: {}", command.getUserId());
         } catch (OperationNotAuthorizedException e) {
-            // TODO 04.04.2024: write exception
-            log.debug("");
+            log.debug("Failed to delete refresh token");
         }
 
         return null;

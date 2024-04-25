@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.status.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -54,11 +55,13 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
         userLock.lock();
 
         try {
-            Status status = statusRepository.findById(command.getStatusId()).orElseThrow(() -> new NotFoundException(""));
+            Status status = statusRepository
+                    .findById(command.getStatusId())
+                    .orElseThrow(() -> new NotFoundException("Status with id: " + command.getStatusId() + " not found"));
 
             ProjectMember member = projectMemberRepository
                     .findByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
-                    .orElseThrow(() -> new NotFoundException(""));
+                    .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
             if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {
                 throw new OperationNotAuthorizedException();

@@ -23,7 +23,7 @@ public class GetProjectInviteTokenByTokenQueryHandler implements QueryHandler<Ge
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectInviteToken token = projectInviteTokenRepository
                 .findByToken(query.getToken())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new NotFoundException("Project invite token not found"));
 
         ProjectInviteTokenView view = mapper.map(token, ProjectInviteTokenView.class);
 

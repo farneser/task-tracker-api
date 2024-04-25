@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.operations.queries.task.getbyuseridandprojectid;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -25,7 +26,7 @@ public class GetTaskByUserIdAndProjectIdQueryHandler implements QueryHandler<Get
     public List<TaskLookupView> handle(GetTaskByUserIdAndProjectIdQuery query) throws NotFoundException {
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
 
         List<Task> result = new ArrayList<>();
 

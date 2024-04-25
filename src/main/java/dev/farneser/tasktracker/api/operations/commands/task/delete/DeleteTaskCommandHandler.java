@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -31,7 +32,7 @@ public class DeleteTaskCommandHandler implements CommandHandler<DeleteTaskComman
 
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(task.getProject().getId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_DELETE)) {
             throw new OperationNotAuthorizedException();

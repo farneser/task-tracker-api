@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.project.patch;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
@@ -18,8 +19,9 @@ public class PatchProjectCommandHandler implements CommandHandler<PatchProjectCo
 
     @Override
     public Void handle(PatchProjectCommand command) throws NotFoundException, OperationNotAuthorizedException {
-        // FIXME 27.03.2024 write exception
-        ProjectMember member = projectMemberRepository.findByProjectIdAndMemberId(command.getProjectId(), command.getUserId()).orElseThrow(() -> new NotFoundException(""));
+        ProjectMember member = projectMemberRepository
+                .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_PATCH)) {
             throw new OperationNotAuthorizedException();

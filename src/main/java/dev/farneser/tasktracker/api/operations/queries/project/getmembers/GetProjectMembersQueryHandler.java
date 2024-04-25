@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.queries.project.getmembers;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
 import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -26,7 +27,7 @@ public class GetProjectMembersQueryHandler
             throws NotFoundException, OperationNotAuthorizedException {
         Project project = projectRepository
                 .findById(query.getProjectId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectNotFoundException(query.getProjectId()));
 
         for (ProjectMember member : project.getMembers()) {
             if (member.getMember().getId().equals(query.getUserId())) {

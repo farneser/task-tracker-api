@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.dele
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
@@ -23,7 +24,7 @@ public class DeleteProjectInviteTokenCommandHandler implements CommandHandler<De
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_DELETE)) {
             throw new OperationNotAuthorizedException();
@@ -32,7 +33,7 @@ public class DeleteProjectInviteTokenCommandHandler implements CommandHandler<De
         Long deletedCount = projectInviteTokenRepository.deleteByProjectId(command.getProjectId());
 
         if (deletedCount == 0) {
-            throw new NotFoundException("");
+            throw new NotFoundException("Project invite token in project:" + command.getProjectId() + " not found");
         }
 
         return null;

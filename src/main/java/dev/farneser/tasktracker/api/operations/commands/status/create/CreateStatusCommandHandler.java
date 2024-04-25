@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.status.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
@@ -28,7 +29,7 @@ public class CreateStatusCommandHandler implements CommandHandler<CreateStatusCo
 
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(command.getProjectId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_POST)) {
             throw new OperationNotAuthorizedException();

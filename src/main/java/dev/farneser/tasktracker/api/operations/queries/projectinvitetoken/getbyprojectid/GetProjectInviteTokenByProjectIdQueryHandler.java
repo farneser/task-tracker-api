@@ -28,7 +28,7 @@ public class GetProjectInviteTokenByProjectIdQueryHandler
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectInviteToken token = projectInviteTokenRepository
                 .findByProjectId(query.getProjectId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new NotFoundException("Project invite token not found"));
 
         return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), modelMapper);
     }

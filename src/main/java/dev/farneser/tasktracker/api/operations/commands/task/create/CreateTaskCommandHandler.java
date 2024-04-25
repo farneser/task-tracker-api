@@ -2,6 +2,7 @@ package dev.farneser.tasktracker.api.operations.commands.task.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
@@ -34,7 +35,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         ProjectMember member = projectMemberRepository
                 .findByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
         if (!member.getRole().hasPermission(ProjectPermission.USER_POST)) {
             throw new OperationNotAuthorizedException();
@@ -63,7 +64,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
             ProjectMember assignedMember = projectMemberRepository
                     .findByProjectIdAndMemberId(status.getProject().getId(), command.getAssignedFor())
-                    .orElseThrow(() -> new NotFoundException(""));
+                    .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
             assignedFor = assignedMember.getMember();
         }
