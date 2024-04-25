@@ -1,5 +1,6 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
+import dev.farneser.tasktracker.api.dto.models.Message;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
@@ -8,7 +9,6 @@ import dev.farneser.tasktracker.api.operations.views.ProjectMemberView;
 import dev.farneser.tasktracker.api.service.ProjectInviteTokenService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
-import dev.farneser.tasktracker.api.dto.models.Message;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class ProjectInvitesController {
     @GetMapping("accept-invite/{token}")
     public ResponseEntity<ProjectInviteTokenView> getAcceptInvite(
             @PathVariable String token
-    ) throws NotFoundException, OperationNotAuthorizedException{
+    ) throws NotFoundException, OperationNotAuthorizedException {
         return ResponseEntity.ok(projectInviteTokenService.getAcceptToken(token));
     }
 
