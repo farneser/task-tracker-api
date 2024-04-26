@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.repository;
 
-import dev.farneser.tasktracker.api.models.RefreshToken;
+import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

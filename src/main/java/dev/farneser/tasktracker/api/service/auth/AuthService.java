@@ -2,23 +2,24 @@ package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
 import dev.farneser.tasktracker.api.operations.commands.user.register.RegisterUserCommand;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
-import dev.farneser.tasktracker.api.operations.queries.user.getbyemail.GetUserByEmailQuery;
+import dev.farneser.tasktracker.api.operations.queries.user.getbylogin.GetUserByLoginQuery;
+import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
-import dev.farneser.tasktracker.api.web.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.web.dto.auth.LoginRequest;
-import dev.farneser.tasktracker.api.web.dto.auth.RegisterDto;
+import dev.farneser.tasktracker.api.dto.auth.JwtDto;
+import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.dto.auth.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final ConfirmEmailService confirmEmailService;
     private final Mediator mediator;
@@ -48,13 +48,15 @@ public class AuthService {
      * @throws InternalServerException If an unexpected internal server error occurs.
      * @throws UniqueDataException     If the provided email is already taken.
      */
-    public JwtDto register(@Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException {
+    public JwtDto register(AuthenticationManager authenticationManager, @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
         log.debug("Registering user {}", registerDto.getEmail());
 
         try {
-            var command = modelMapper.map(registerDto, RegisterUserCommand.class);
+            RegisterUserCommand command = modelMapper.map(registerDto, RegisterUserCommand.class);
 
             log.debug("Registering user {}", registerDto.getEmail());
+
+            command.setSubscribed(false);
 
             mediator.send(command);
 
@@ -64,13 +66,11 @@ public class AuthService {
 
             log.debug("Registering user {}", registerDto.getEmail());
 
-            return authenticate(new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
+            return authenticate(authenticationManager, new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
         } catch (DataIntegrityViolationException e) {
             throw new UniqueDataException(registerDto.getEmail() + " already taken");
-        } catch (DisabledException | BadCredentialsException e) {
+        } catch (DisabledException | BadCredentialsException | NotFoundException | OperationNotAuthorizedException e) {
             throw e;
-        } catch (Exception e) {
-            throw new InternalServerException(e.getMessage());
         }
     }
 
@@ -81,26 +81,29 @@ public class AuthService {
      * @return A JWT containing an access token and a refresh token upon successful authentication.
      * @throws BadCredentialsException If the provided credentials are invalid.
      */
-    public JwtDto authenticate(LoginRequest loginRequest) {
+    public JwtDto authenticate(AuthenticationManager authenticationManager, LoginRequest loginRequest) {
         try {
-            var user = mediator.send(new GetUserByEmailQuery(loginRequest.getEmail()));
+            UserView user = mediator.send(new GetUserByLoginQuery(loginRequest.getLogin()));
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
             if (!user.isEnabled()) {
-                log.debug("User {} is not enabled", loginRequest.getEmail());
+                log.debug("User {} is not enabled", loginRequest.getLogin());
 
                 confirmEmailService.requireConfirm(user.getEmail());
             }
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            if (authenticationManager != null) {
+                authenticationManager.auth(user.getUsername(), loginRequest.getPassword());
+            }
 
-            log.debug("Authenticating user {}", loginRequest.getEmail());
+            log.debug("Authenticating user {}", loginRequest.getLogin());
 
-            return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
-        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException e) {
+            return new JwtDto(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()));
+        } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException |
+                 OperationNotAuthorizedException | ValidationException e) {
             throw new BadCredentialsException("Invalid credentials");
         }
     }
@@ -114,14 +117,15 @@ public class AuthService {
      * @throws InvalidTokenException If the refresh token is invalid.
      * @throws NotFoundException     If the refresh token is not found.
      */
-    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException {
+    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException,
+            OperationNotAuthorizedException, ValidationException {
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
-        var refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
+        RefreshToken refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
 
         log.debug("Refreshing token {}", jwtDto.getRefreshToken());
 
-        var user = refreshToken.getUser();
+        User user = refreshToken.getUser();
 
         log.debug("User {} found", user.getEmail());
 
@@ -142,14 +146,14 @@ public class AuthService {
      * @return The newly generated refresh token.
      * @throws NotFoundException If the user is not found.
      */
-    private String updateRefreshToken(String email) throws NotFoundException {
+    private String updateRefreshToken(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Updating refresh token for user {}", email);
 
-        var user = mediator.send(new GetUserByEmailQuery(email));
+        UserView user = mediator.send(new GetUserByLoginQuery(email));
 
         log.debug("User {} found", user.getEmail());
 
-        var tokenString = jwtService.generateRefreshToken(user.getEmail());
+        String tokenString = jwtService.generateRefreshToken(user.getEmail());
 
         log.debug("Token generated for user {}", user.getEmail());
 
@@ -166,7 +170,7 @@ public class AuthService {
      * @param id The activation ID.
      * @throws NotFoundException If the activation ID is not found.
      */
-    public void activateAccount(UUID id) throws NotFoundException {
+    public void activateAccount(UUID id) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Activating account {}", id);
 
         confirmEmailService.confirm(id);

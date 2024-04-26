@@ -3,6 +3,7 @@ package dev.farneser.tasktracker.api.operations.queries.user.getbyid;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.QueryHandler;
+import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class GetUserByIdQueryHandler implements QueryHandler<GetUserByIdQuery, U
     public UserView handle(GetUserByIdQuery query) throws NotFoundException {
         log.debug("Query: {}", query);
 
-        var user = userRepository.findById(query.getId()).orElseThrow(() -> new UserNotFoundException(query.getId()));
+        User user = userRepository.findById(query.getId()).orElseThrow(() -> new UserNotFoundException(query.getId()));
 
         log.debug("User found: {}", user);
 

@@ -1,8 +1,8 @@
 package dev.farneser.tasktracker.api.config;
 
 import dev.farneser.tasktracker.api.service.UserService;
-import dev.farneser.tasktracker.api.web.filters.JwtAuthenticationFilter;
-import dev.farneser.tasktracker.api.web.models.Message;
+import dev.farneser.tasktracker.api.web.miscellaneous.JwtAuthenticationFilter;
+import dev.farneser.tasktracker.api.dto.models.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     log.debug("Authorize http requests");
                     log.debug("White list url: {}", Arrays.toString(WHITE_LIST_URL));
+
                     req.requestMatchers(HttpMethod.OPTIONS, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.GET, WHITE_LIST_URL).permitAll();
                     req.requestMatchers(HttpMethod.POST, WHITE_LIST_URL).permitAll();
@@ -62,6 +63,9 @@ public class SecurityConfig {
                             "/v3/api-docs",
                             "/v3/api-docs/swagger-config"
                     ).permitAll();
+
+                    req.requestMatchers(HttpMethod.OPTIONS, "/api/v1/project/accept-invite/**").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/api/v1/project/accept-invite/**").permitAll();
 
                     log.debug("Authorize any request");
                     req.anyRequest().authenticated();
@@ -85,7 +89,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        var authProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         log.debug("Creating authentication provider");
 

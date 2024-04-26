@@ -14,9 +14,10 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    void userSaveTest() {
-        var user = new User();
+    public void testUserSave() {
+        User user = new User();
 
+        user.setUsername("test");
         user.setEmail("test@email.com");
         user.setPassword("password");
         user.setRegisterDate(new Date(System.currentTimeMillis()));

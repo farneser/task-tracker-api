@@ -7,7 +7,7 @@
  *   <li>{@link dev.farneser.tasktracker.api.service.auth.AuthService} - Authentication-related service.</li>
  *   <li>{@link dev.farneser.tasktracker.api.service.auth.JwtService} - JWT-related service.</li>
  *   <li>{@link dev.farneser.tasktracker.api.service.auth.LogoutService} - Logout-related service.</li>
- *   <li>{@link dev.farneser.tasktracker.api.service.ColumnService} - Service for managing columns.</li>
+ *   <li>{@link dev.farneser.tasktracker.api.service.StatusService} - Service for managing statuses.</li>
  *   <li>{@link dev.farneser.tasktracker.api.service.ConfirmEmailService} - Service for confirming email addresses.</li>
  *   <li>{@link dev.farneser.tasktracker.api.service.messages.MessageService} - Service for handling messages.</li>
  *   <li>{@link dev.farneser.tasktracker.api.service.messages.QueueType} - Enumeration for message queue types.</li>

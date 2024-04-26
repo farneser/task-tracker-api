@@ -1,8 +1,10 @@
 package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.mediator.Mediator;
-import dev.farneser.tasktracker.api.models.ConfirmEmailToken;
+import dev.farneser.tasktracker.api.models.tokens.ConfirmEmailToken;
 import dev.farneser.tasktracker.api.operations.commands.user.activate.ActivateUserCommand;
 import dev.farneser.tasktracker.api.repository.ConfirmEmailTokenRepository;
 import dev.farneser.tasktracker.api.service.messages.MessageService;
@@ -40,7 +42,7 @@ public class ConfirmEmailService {
      * @return The created confirmation token.
      */
     private ConfirmEmailToken createConfirmationToken(String email) {
-        var confirmTokenExpiration = new Date(System.currentTimeMillis() + confirmationTokenLifetime);
+        Date confirmTokenExpiration = new Date(System.currentTimeMillis() + confirmationTokenLifetime);
 
         log.debug("Confirm token expiration: {}", confirmTokenExpiration);
 
@@ -53,8 +55,8 @@ public class ConfirmEmailService {
      * @param email The email address for which to send the confirmation.
      * @throws NotFoundException If the user is not found.
      */
-    public void requireConfirm(String email) throws NotFoundException {
-        var confirmationToken = createConfirmationToken(email);
+    public void requireConfirm(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+        ConfirmEmailToken confirmationToken = createConfirmationToken(email);
 
         if (confirmationRequired) {
             log.debug("Confirm token: {}", confirmationToken);
@@ -79,13 +81,13 @@ public class ConfirmEmailService {
      * @param email The email address for which to send the registration message.
      * @throws NotFoundException If the user is not found.
      */
-    public void sendRegisterMessage(String email) throws NotFoundException {
+    public void sendRegisterMessage(String email) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
         log.debug("Sending register message for email {}", email);
 
         if (confirmationRequired) {
             log.debug("Confirmation required for email {}", email);
 
-            var confirmationToken = createConfirmationToken(email);
+            ConfirmEmailToken confirmationToken = createConfirmationToken(email);
 
             log.debug("Confirm token: {}", confirmationToken);
 
@@ -108,8 +110,8 @@ public class ConfirmEmailService {
      * @param id The ID of the confirmation token to use for email confirmation.
      * @throws NotFoundException If the confirmation token is not found.
      */
-    public void confirm(UUID id) throws NotFoundException {
-        var confirmEmailToken = confirmEmailTokenRepository.get(id);
+    public void confirm(UUID id) throws NotFoundException, OperationNotAuthorizedException, ValidationException {
+        ConfirmEmailToken confirmEmailToken = confirmEmailTokenRepository.get(id);
 
         log.debug("Confirm email token: {}", confirmEmailToken);
 

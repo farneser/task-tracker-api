@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class PatchTaskCommand implements Command<Void> {
     private Long userId;
     private Long taskId;
-    private Long columnId;
+    private Long statusId;
     private String taskName;
     private String description;
     private Long orderNumber;

@@ -1,8 +1,10 @@
 package dev.farneser.tasktracker.api.operations.commands.refreshtoken.delete;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetRefreshTokenByTokenQuery;
 import dev.farneser.tasktracker.api.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +19,8 @@ public class DeleteRefreshTokenCommandHandler implements CommandHandler<DeleteRe
     private final Mediator mediator;
 
     @Override
-    public Void handle(DeleteRefreshTokenCommand command) throws NotFoundException {
-        var token = mediator.send(new GetRefreshTokenByTokenQuery(command.getToken()));
+    public Void handle(DeleteRefreshTokenCommand command) throws NotFoundException, OperationNotAuthorizedException {
+        RefreshToken token = mediator.send(new GetRefreshTokenByTokenQuery(command.getToken()));
 
         refreshTokenRepository.delete(token);
 

@@ -1,9 +1,16 @@
 package dev.farneser.tasktracker.api.operations.commands.task.create;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
+import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
+import dev.farneser.tasktracker.api.exceptions.ProjectMemberNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
-import dev.farneser.tasktracker.api.models.KanbanTask;
-import dev.farneser.tasktracker.api.repository.ColumnRepository;
+import dev.farneser.tasktracker.api.models.Status;
+import dev.farneser.tasktracker.api.models.Task;
+import dev.farneser.tasktracker.api.models.User;
+import dev.farneser.tasktracker.api.models.project.ProjectMember;
+import dev.farneser.tasktracker.api.models.project.ProjectPermission;
+import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,51 +22,67 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class CreateTaskCommandHandler implements CommandHandler<CreateTaskCommand, Long> {
-    private final ColumnRepository columnRepository;
+    private final StatusRepository statusRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Override
-    public Long handle(CreateTaskCommand command) throws NotFoundException {
-        var column = columnRepository
-                .findByIdAndUserId(command.getColumnId(), command.getUserId())
-                .orElseThrow(() -> new NotFoundException("Column with id " + command.getColumnId() + " of user id " + command.getUserId() + " not found"));
+    public Long handle(CreateTaskCommand command) throws NotFoundException, OperationNotAuthorizedException {
+        Status status = statusRepository
+                .findByIdWithTasks(command.getStatusId())
+                .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " of user id " + command.getUserId() + " not found"));
 
-        log.debug("Column found: {}", column);
+        log.debug("Status found: {}", status);
 
-        var orderNumber = 1L;
+        ProjectMember member = projectMemberRepository
+                .findByProjectIdAndMemberId(status.getProject().getId(), command.getUserId())
+                .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
 
-        if (column.getTasks() != null) {
+        if (!member.getRole().hasPermission(ProjectPermission.USER_POST)) {
+            throw new OperationNotAuthorizedException();
+        }
 
-            column.getTasks().sort(Comparator.comparing(KanbanTask::getOrderNumber));
+        long orderNumber = 1L;
 
-            if (!column.getTasks().isEmpty()) {
-                log.debug("Tasks found: {}", column.getTasks());
+        if (status.getTasks() != null) {
 
-                orderNumber = column.getTasks().get(column.getTasks().size() - 1).getOrderNumber() + 1;
+            status.getTasks().sort(Comparator.comparing(Task::getOrderNumber));
+
+            if (!status.getTasks().isEmpty()) {
+                log.debug("Tasks found: {}", status.getTasks());
+
+                orderNumber = status.getTasks().get(status.getTasks().size() - 1).getOrderNumber() + 1;
             }
         }
-        var creationDate = new Date(System.currentTimeMillis());
+
+        Date creationDate = new Date(System.currentTimeMillis());
 
         log.debug("Order number: {}", orderNumber);
 
-        var task = KanbanTask.builder()
+        User assignedFor = null;
+
+        if (command.getAssignedFor() != null) {
+
+            ProjectMember assignedMember = projectMemberRepository
+                    .findByProjectIdAndMemberId(status.getProject().getId(), command.getAssignedFor())
+                    .orElseThrow(() -> new ProjectMemberNotFoundException(command.getUserId()));
+
+            assignedFor = assignedMember.getMember();
+        }
+
+        Task task = Task.builder()
                 .taskName(command.getTaskName())
                 .description(command.getDescription())
                 .orderNumber(orderNumber)
-                .column(column)
-                .user(column.getUser())
+                .status(status)
+                .project(status.getProject())
+                .assignedFor(assignedFor)
                 .creationDate(creationDate)
                 .editDate(creationDate)
                 .build();
 
-        log.debug("Task created: {}", task);
+        status.getTasks().add(task);
 
-        column.getTasks().add(task);
-
-        log.debug("Task added to column: {}", column);
-
-        columnRepository.save(column);
-
-        log.debug("Column saved: {}", column);
+        statusRepository.save(status);
 
         return task.getId();
     }

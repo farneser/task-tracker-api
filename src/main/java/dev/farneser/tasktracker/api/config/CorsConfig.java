@@ -35,8 +35,8 @@ public class CorsConfig {
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         log.debug("Starting CORS configuration");
 
-        var source = new UrlBasedCorsConfigurationSource();
-        var config = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
 
         for (String allowedOrigin : allowedOrigins) {
             log.debug("Adding allowed origin {}", allowedOrigin);
@@ -60,7 +60,7 @@ public class CorsConfig {
 
         source.registerCorsConfiguration("/api/**", config);
 
-        var bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
 
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
