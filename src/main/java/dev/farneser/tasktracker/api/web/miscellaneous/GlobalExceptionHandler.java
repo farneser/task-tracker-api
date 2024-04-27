@@ -1,12 +1,13 @@
 package dev.farneser.tasktracker.api.web.miscellaneous;
 
+import dev.farneser.tasktracker.api.dto.Message;
 import dev.farneser.tasktracker.api.exceptions.*;
-import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> handler(BadCredentialsException ex) {
+    public ResponseEntity<Message> handler(BadCredentialsException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> handler(InvalidTokenException ex) {
+    public ResponseEntity<Message> handler(InvalidTokenException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> handler(TokenExpiredException ex) {
+    public ResponseEntity<Message> handler(TokenExpiredException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExpiredJwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> handler(ExpiredJwtException ex) {
+    public ResponseEntity<Message> handler(ExpiredJwtException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ResponseEntity<ErrorResponse> handler(HttpMessageNotReadableException ex) {
+    public ResponseEntity<Message> handler(HttpMessageNotReadableException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getMessage());
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handler(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Message> handler(MethodArgumentNotValidException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getFieldError() != null
@@ -74,7 +75,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UniqueDataException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ErrorResponse> handler(UniqueDataException ex) {
+    public ResponseEntity<Message> handler(UniqueDataException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
@@ -82,7 +83,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handler(NotFoundException ex) {
+    public ResponseEntity<Message> handler(NotFoundException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
@@ -90,7 +91,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handler(UsernameNotFoundException ex) {
+    public ResponseEntity<Message> handler(UsernameNotFoundException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
@@ -98,7 +99,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DisabledException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<ErrorResponse> handler(DisabledException ex) {
+    public ResponseEntity<Message> handler(DisabledException ex) {
+        log.debug(ex.getMessage());
+
+        return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Message> handler(AccessDeniedException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
@@ -106,7 +115,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OperationNotAuthorizedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<ErrorResponse> handler(OperationNotAuthorizedException ex) {
+    public ResponseEntity<Message> handler(OperationNotAuthorizedException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
@@ -114,7 +123,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handler(ValidationException ex) {
+    public ResponseEntity<Message> handler(ValidationException ex) {
         log.debug(ex.getMessage());
 
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
@@ -122,19 +131,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorResponse> handler(Exception ex) {
+    public ResponseEntity<Message> handler(Exception ex) {
         log.debug(ex.getClass().getSimpleName() + " " + ex.getMessage());
 
         return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    private ResponseEntity<ErrorResponse> getResponseEntity(HttpStatus status, String message) {
-        return ResponseEntity.status(
-                status).body(
-                ErrorResponse
-                        .builder()
-                        .message(message)
-                        .status(status.value())
-                        .build());
+    private ResponseEntity<Message> getResponseEntity(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Message
+                .builder()
+                .message(message)
+                .status(status.value())
+                .build()
+        );
     }
 }

@@ -1,9 +1,9 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
+import dev.farneser.tasktracker.api.dto.Message;
 import dev.farneser.tasktracker.api.dto.auth.AuthToken;
 import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
 import dev.farneser.tasktracker.api.dto.auth.RegisterRequest;
-import dev.farneser.tasktracker.api.dto.models.Message;
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.models.JwtStack;
 import dev.farneser.tasktracker.api.service.auth.AuthService;
