@@ -1,6 +1,7 @@
 package dev.farneser.tasktracker.api.operations.commands.projectinvitetoken.accept;
 
 import dev.farneser.tasktracker.api.mediator.Command;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,6 @@ public class AcceptProjectInviteTokenCommand implements Command<Long> {
     /**
      * The invitation token associated with the project invitation.
      */
+    @Size(min = 1, max = 255)
     private String token;
 }
