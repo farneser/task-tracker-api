@@ -1,7 +1,10 @@
 package dev.farneser.tasktracker.api.service.auth;
 
+import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.dto.auth.RegisterRequest;
 import dev.farneser.tasktracker.api.exceptions.*;
 import dev.farneser.tasktracker.api.mediator.Mediator;
+import dev.farneser.tasktracker.api.models.JwtStack;
 import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.models.tokens.RefreshToken;
 import dev.farneser.tasktracker.api.operations.commands.refreshtoken.create.CreateRefreshTokenCommand;
@@ -10,16 +13,12 @@ import dev.farneser.tasktracker.api.operations.queries.refreshtoken.getbyid.GetR
 import dev.farneser.tasktracker.api.operations.queries.user.getbylogin.GetUserByLoginQuery;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.ConfirmEmailService;
-import dev.farneser.tasktracker.api.dto.auth.JwtDto;
-import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
-import dev.farneser.tasktracker.api.dto.auth.RegisterDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -43,34 +42,32 @@ public class AuthService {
     /**
      * Registers a new user with the provided registration data.
      *
-     * @param registerDto The registration data for the new user.
+     * @param registerRequest The registration data for the new user.
      * @return A JWT containing an access token and a refresh token upon successful registration.
      * @throws InternalServerException If an unexpected internal server error occurs.
      * @throws UniqueDataException     If the provided email is already taken.
      */
-    public JwtDto register(AuthenticationManager authenticationManager, @Valid RegisterDto registerDto) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
-        log.debug("Registering user {}", registerDto.getEmail());
+    public JwtStack register(AuthenticationManager authenticationManager, @Valid RegisterRequest registerRequest) throws InternalServerException, UniqueDataException, ValidationException, NotFoundException, OperationNotAuthorizedException {
+        log.debug("Registering user {}", registerRequest.getEmail());
 
         try {
-            RegisterUserCommand command = modelMapper.map(registerDto, RegisterUserCommand.class);
+            RegisterUserCommand command = modelMapper.map(registerRequest, RegisterUserCommand.class);
 
-            log.debug("Registering user {}", registerDto.getEmail());
+            log.debug("Registering user {}", registerRequest.getEmail());
 
             command.setSubscribed(false);
 
             mediator.send(command);
 
-            log.debug("Registering user {}", registerDto.getEmail());
+            log.debug("Registering user {}", registerRequest.getEmail());
 
-            confirmEmailService.sendRegisterMessage(registerDto.getEmail());
+            confirmEmailService.sendRegisterMessage(registerRequest.getEmail());
 
-            log.debug("Registering user {}", registerDto.getEmail());
+            log.debug("Registering user {}", registerRequest.getEmail());
 
-            return authenticate(authenticationManager, new LoginRequest(registerDto.getEmail(), registerDto.getPassword()));
+            return authenticate(authenticationManager, new LoginRequest(registerRequest.getEmail(), registerRequest.getPassword()));
         } catch (DataIntegrityViolationException e) {
-            throw new UniqueDataException(registerDto.getEmail() + " already taken");
-        } catch (DisabledException | BadCredentialsException | NotFoundException | OperationNotAuthorizedException e) {
-            throw e;
+            throw new UniqueDataException(registerRequest.getEmail() + " already taken");
         }
     }
 
@@ -81,7 +78,7 @@ public class AuthService {
      * @return A JWT containing an access token and a refresh token upon successful authentication.
      * @throws BadCredentialsException If the provided credentials are invalid.
      */
-    public JwtDto authenticate(AuthenticationManager authenticationManager, LoginRequest loginRequest) {
+    public JwtStack authenticate(AuthenticationManager authenticationManager, LoginRequest loginRequest) {
         try {
             UserView user = mediator.send(new GetUserByLoginQuery(loginRequest.getLogin()));
 
@@ -101,7 +98,7 @@ public class AuthService {
 
             log.debug("Authenticating user {}", loginRequest.getLogin());
 
-            return new JwtDto(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()));
+            return new JwtStack(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()), jwtService.getAccessTokenExpiration(), jwtService.getRefreshTokenExpiration());
         } catch (BadCredentialsException | UsernameNotFoundException | NotFoundException |
                  OperationNotAuthorizedException | ValidationException e) {
             throw new BadCredentialsException("Invalid credentials");
@@ -111,32 +108,32 @@ public class AuthService {
     /**
      * Refreshes an access token using a valid refresh token.
      *
-     * @param jwtDto The JWT containing the refresh token.
+     * @param refreshToken The refresh token.
      * @return A new JWT with an updated access token and refresh token.
      * @throws TokenExpiredException If the refresh token is expired.
      * @throws InvalidTokenException If the refresh token is invalid.
      * @throws NotFoundException     If the refresh token is not found.
      */
-    public JwtDto refresh(JwtDto jwtDto) throws TokenExpiredException, InvalidTokenException, NotFoundException,
+    public JwtStack refresh(String refreshToken) throws TokenExpiredException, InvalidTokenException, NotFoundException,
             OperationNotAuthorizedException, ValidationException {
-        log.debug("Refreshing token {}", jwtDto.getRefreshToken());
+        log.debug("Refreshing token {}", refreshToken);
 
-        RefreshToken refreshToken = mediator.send(new GetRefreshTokenByTokenQuery(jwtDto.getRefreshToken()));
+        RefreshToken refreshTokenDto = mediator.send(new GetRefreshTokenByTokenQuery(refreshToken));
 
-        log.debug("Refreshing token {}", jwtDto.getRefreshToken());
+        log.debug("Refreshing token {}", refreshToken);
 
-        User user = refreshToken.getUser();
+        User user = refreshTokenDto.getUser();
 
         log.debug("User {} found", user.getEmail());
 
-        if (!jwtService.isRefreshTokenValid(jwtDto.getRefreshToken(), user.getEmail())) {
-            log.debug("Token {} is invalid", jwtDto.getRefreshToken());
+        if (!jwtService.isRefreshTokenValid(refreshToken, user.getEmail())) {
+            log.debug("Token {} is invalid", refreshToken);
 
             throw new TokenExpiredException("Invalid token");
         }
         log.debug("Refreshing token for user {}", user.getEmail());
 
-        return new JwtDto(jwtService.generateAccessToken(user.getEmail()), updateRefreshToken(user.getEmail()));
+        return new JwtStack(jwtService.generateAccessToken(user.getUsername()), updateRefreshToken(user.getUsername()), jwtService.getAccessTokenExpiration(), jwtService.getRefreshTokenExpiration());
     }
 
     /**
