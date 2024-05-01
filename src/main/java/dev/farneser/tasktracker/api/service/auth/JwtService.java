@@ -5,6 +5,7 @@ import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,11 @@ public class JwtService {
 
     private static final String REFRESH_TOKEN_HEADER = "is_refresh_token";
     // 120000 equals two minutes of token lifetime
+    @Getter
     @Value("${jwt.expiration.access:120000}")
     private Long accessTokenExpiration;
     // 1209600000 equals two weeks of token lifetime
+    @Getter
     @Value("${jwt.expiration.refresh:1209600000}")
     private Long refreshTokenExpiration;
     @Value("${jwt.secret}")

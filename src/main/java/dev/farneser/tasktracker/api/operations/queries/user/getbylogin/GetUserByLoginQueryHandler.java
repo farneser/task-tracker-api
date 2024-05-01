@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -24,19 +26,17 @@ public class GetUserByLoginQueryHandler implements QueryHandler<GetUserByLoginQu
     public UserView handle(GetUserByLoginQuery query) throws NotFoundException {
         log.debug("Query: {}", query);
 
-        Optional<User> userByName = userRepository.findByUsername(query.getLogin());
-        Optional<User> userByEmail = userRepository.findByEmail(query.getLogin());
+        ArrayList<Function<String, Optional<User>>> findUserFunctions = new ArrayList<>();
 
-        User user = null;
+        findUserFunctions.add(userRepository::findByUsername);
+        findUserFunctions.add(userRepository::findByEmail);
 
-        if (userByName.isPresent()) {
-            user = userByName.get();
-        } else if (userByEmail.isPresent()) {
-            user = userByEmail.get();
-        }
+        for (Function<String, Optional<User>> queryFunction : findUserFunctions) {
+            Optional<User> userOptional = queryFunction.apply(query.getLogin());
 
-        if (user != null) {
-            return modelMapper.map(user, UserView.class);
+            if (userOptional.isPresent()) {
+                return modelMapper.map(userOptional.get(), UserView.class);
+            }
         }
 
         throw new UserNotFoundException(query.getLogin());

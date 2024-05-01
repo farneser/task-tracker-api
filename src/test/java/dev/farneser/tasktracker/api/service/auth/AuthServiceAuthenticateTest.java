@@ -1,8 +1,8 @@
 package dev.farneser.tasktracker.api.service.auth;
 
 import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
-import dev.farneser.tasktracker.api.dto.auth.JwtDto;
 import dev.farneser.tasktracker.api.dto.auth.LoginRequest;
+import dev.farneser.tasktracker.api.models.JwtStack;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -36,7 +36,7 @@ public class AuthServiceAuthenticateTest {
     void authenticate_ValidUsernameAndPassword_ReturnJwtDto(String username, String password) {
         LoginRequest login = new LoginRequest(username, password);
 
-        JwtDto dto = authService.authenticate(this::authenticate, login);
+        JwtStack dto = authService.authenticate(this::authenticate, login);
 
         assertNotNull(dto);
         assertNotNull(dto.getAccessToken());

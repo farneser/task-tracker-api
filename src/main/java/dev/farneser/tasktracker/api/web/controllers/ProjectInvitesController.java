@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
-import dev.farneser.tasktracker.api.dto.models.Message;
+import dev.farneser.tasktracker.api.dto.Message;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;

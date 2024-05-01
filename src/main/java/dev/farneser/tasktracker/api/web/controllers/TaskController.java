@@ -11,7 +11,7 @@ import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.dto.task.CreateTaskDto;
 import dev.farneser.tasktracker.api.dto.task.PatchTaskDto;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
-import dev.farneser.tasktracker.api.dto.models.Message;
+import dev.farneser.tasktracker.api.dto.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
