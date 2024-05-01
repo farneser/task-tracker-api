@@ -11,7 +11,7 @@ import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
 import dev.farneser.tasktracker.api.repository.TaskRepository;
-import dev.farneser.tasktracker.api.service.order.OrderUtility;
+import dev.farneser.tasktracker.api.operations.views.order.OrderUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package dev.farneser.tasktracker.api.service.order;
+package dev.farneser.tasktracker.api.operations.views.order;
 
 public interface OrderIdentifier {
     Long getId();
