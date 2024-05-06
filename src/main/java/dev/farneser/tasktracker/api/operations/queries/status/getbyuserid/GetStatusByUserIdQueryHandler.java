@@ -8,6 +8,7 @@ import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
+import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +51,22 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
                     .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
 
             if (!member.getRole().hasPermission(ProjectPermission.USER_GET)) {
-                throw new OperationNotAuthorizedException();
+                continue;
             }
 
             List<Status> statuses = statusRepository.findByProjectIdOrderByOrderNumber(id).orElse(new ArrayList<>());
 
             log.debug("Status found: {}", statuses);
 
-            List<StatusView> views = statuses.stream().map(c -> modelMapper.map(c, StatusView.class)).toList();
+            List<StatusView> views = statuses.stream().map(c -> {
+                StatusView view = modelMapper.map(c, StatusView.class);
+
+                view.setProjectId(c.getProject().getId());
+                view.setTasks(c.getTasks().stream().map(t -> modelMapper.map(t, TaskLookupView.class)).toList());
+
+                return view;
+            }).toList();
+
             result.addAll(views);
         }
 
