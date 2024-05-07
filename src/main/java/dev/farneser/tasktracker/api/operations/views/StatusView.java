@@ -21,6 +21,8 @@ public class StatusView implements ITypeMapper {
     private Long id;
     @Schema(name = "statusName", description = "Status name", example = "To do")
     private String statusName;
+    @Schema(name = "statusColor", description = "Status color", example = "#ffffff")
+    private String statusColor;
     @Schema(name = "isCompleted", description = "Is status completed", example = "false")
     private Boolean isCompleted;
     @Schema(name = "orderNumber", description = "Status order number", example = "1")
@@ -42,6 +44,7 @@ public class StatusView implements ITypeMapper {
         modelMapper.createTypeMap(Status.class, StatusView.class)
                 .addMapping(Status::getId, StatusView::setId)
                 .addMapping(Status::getStatusName, StatusView::setStatusName)
+                .addMapping(Status::getStatusColor, StatusView::setStatusColor)
                 .addMapping(Status::getIsCompleted, StatusView::setIsCompleted)
                 .addMapping(Status::getCreationDate, StatusView::setCreationDate)
                 .addMapping(Status::getEditDate, StatusView::setEditDate)
