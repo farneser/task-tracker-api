@@ -11,6 +11,7 @@ import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -20,6 +21,7 @@ public class DeleteProjectInviteTokenCommandHandler implements CommandHandler<De
     private final ProjectInviteTokenRepository projectInviteTokenRepository;
 
     @Override
+    @Transactional
     public Void handle(DeleteProjectInviteTokenCommand command)
             throws NotFoundException, OperationNotAuthorizedException {
         ProjectMember member = projectMemberRepository
