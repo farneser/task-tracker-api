@@ -62,6 +62,20 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
             throw new OperationNotAuthorizedException();
         }
 
+        patchTask(command, task, member.getProject().getId());
+
+        task.setEditDate(new Date(System.currentTimeMillis()));
+
+        log.debug("Task updated: {}", task);
+
+        taskRepository.save(task);
+
+        log.debug("Task saved: {}", task);
+
+        return null;
+    }
+
+    private void patchTask(PatchTaskCommand command, Task task, Long projectId) throws NotFoundException {
         if (command.getStatusId() != null) {
             log.debug("Status id: {}", command.getStatusId());
 
@@ -72,7 +86,7 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
                 log.debug("Status set to {}", command.getStatusId());
 
                 Status status = statusRepository
-                        .findByIdAndProjectId(command.getStatusId(), member.getProject().getId())
+                        .findByIdAndProjectId(command.getStatusId(), projectId)
                         .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
 
                 task.setStatus(status);
@@ -101,20 +115,10 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
             log.debug("Description changed from {} to {}", task.getDescription(), command.getDescription());
 
             ProjectMember assignedFor = projectMemberRepository
-                    .findByProjectIdAndMemberId(member.getProject().getId(), command.getAssignedFor())
+                    .findByProjectIdAndMemberId(projectId, command.getAssignedFor())
                     .orElseThrow(() -> new UserNotFoundException(command.getAssignedFor()));
 
             task.setAssignedFor(assignedFor.getMember());
         }
-
-        task.setEditDate(new Date(System.currentTimeMillis()));
-
-        log.debug("Task updated: {}", task);
-
-        taskRepository.save(task);
-
-        log.debug("Task saved: {}", task);
-
-        return null;
     }
 }
