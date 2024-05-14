@@ -20,8 +20,8 @@ public class Project {
     private Long id;
     @Column(name = "project_name")
     private String projectName;
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private List<Status> statuses;
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
     private List<ProjectMember> members;
 }

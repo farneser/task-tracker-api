@@ -1,6 +1,6 @@
 package dev.farneser.tasktracker.api.web.miscellaneous;
 
-import dev.farneser.tasktracker.api.dto.models.ErrorResponse;
+import dev.farneser.tasktracker.api.dto.Message;
 import dev.farneser.tasktracker.api.exceptions.InvalidTokenException;
 import dev.farneser.tasktracker.api.exceptions.TokenExpiredException;
 import dev.farneser.tasktracker.api.service.UserService;
@@ -97,7 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(
-                ErrorResponse
+                Message
                         .builder()
                         .message(message)
                         .status(code)

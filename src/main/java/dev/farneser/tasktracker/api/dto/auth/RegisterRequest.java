@@ -16,7 +16,7 @@ import org.modelmapper.ModelMapper;
 @Slf4j
 @JsonNaming
 @Schema(name = "RegisterDto", description = "Register DTO")
-public class RegisterDto implements ITypeMapper {
+public class RegisterRequest implements ITypeMapper {
     @Length(min = 4, max = 64)
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers, and underscores")
     @Schema(name = "username", description = "User name", example = "example_user")
@@ -36,10 +36,10 @@ public class RegisterDto implements ITypeMapper {
     public void mapping(ModelMapper modelMapper) {
         log.debug("Mapping RegisterDto");
 
-        modelMapper.createTypeMap(RegisterDto.class, RegisterUserCommand.class)
-                .addMapping(RegisterDto::getEmail, RegisterUserCommand::setEmail)
-                .addMapping(RegisterDto::getPassword, RegisterUserCommand::setPassword)
-                .addMapping(RegisterDto::getConfirmPassword, RegisterUserCommand::setConfirmPassword);
+        modelMapper.createTypeMap(RegisterRequest.class, RegisterUserCommand.class)
+                .addMapping(RegisterRequest::getEmail, RegisterUserCommand::setEmail)
+                .addMapping(RegisterRequest::getPassword, RegisterUserCommand::setPassword)
+                .addMapping(RegisterRequest::getConfirmPassword, RegisterUserCommand::setConfirmPassword);
 
     }
 }

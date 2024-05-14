@@ -1,7 +1,7 @@
 package dev.farneser.tasktracker.api.models;
 
 import dev.farneser.tasktracker.api.models.project.Project;
-import dev.farneser.tasktracker.api.service.order.OrderIdentifier;
+import dev.farneser.tasktracker.api.operations.views.order.OrderIdentifier;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,14 +31,14 @@ public class Status implements OrderIdentifier {
     @Column(name = "is_completed")
     private Boolean isCompleted;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
     @Column(name = "order_number")
     private Long orderNumber;
 
-    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 
     @Temporal(TemporalType.TIMESTAMP)

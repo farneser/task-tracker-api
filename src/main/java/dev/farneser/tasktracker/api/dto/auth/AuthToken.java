@@ -10,11 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "JwtDto", description = "JWT token DTO")
-public class JwtDto {
+public class AuthToken {
     @JsonProperty("accessToken")
     @Schema(name = "accessToken", description = "JWT access token", example = "your_access_token")
     private String accessToken;
-    @Schema(name = "refreshToken", description = "JWT refresh token", example = "your_refresh_token")
-    @JsonProperty("refreshToken")
-    private String refreshToken;
 }

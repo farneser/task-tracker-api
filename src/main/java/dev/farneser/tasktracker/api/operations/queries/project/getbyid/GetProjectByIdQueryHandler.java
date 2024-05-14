@@ -24,6 +24,10 @@ public class GetProjectByIdQueryHandler implements QueryHandler<GetProjectByIdQu
                 .findByProjectIdAndMemberId(query.getProjectId(), query.getUserId())
                 .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
 
-        return mapper.map(member.getProject(), ProjectView.class);
+        ProjectView view = mapper.map(member.getProject(), ProjectView.class);
+
+        view.setRole(member.getRole());
+
+        return view;
     }
 }

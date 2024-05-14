@@ -32,7 +32,7 @@ public class GetProjectMemberByIdQueryHandler implements QueryHandler<GetProject
         }
 
         ProjectMember member = projectMemberRepository
-                .findById(query.getMemberId())
+                .findByProjectIdAndMemberId(query.getProjectId(), query.getMemberId())
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
         return ProjectMemberView.map(member);
