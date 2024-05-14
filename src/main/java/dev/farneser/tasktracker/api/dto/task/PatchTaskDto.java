@@ -19,6 +19,8 @@ public class PatchTaskDto implements ITypeMapper {
     private String description;
     @Schema(name = "statusId", description = "Status id", example = "1")
     private Long statusId;
+    @Schema(name = "assignedFor", description = "Task assigned for user by id", example = "1", nullable = true)
+    private Long assignedFor;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")
     private Long orderNumber;
 
@@ -30,6 +32,7 @@ public class PatchTaskDto implements ITypeMapper {
                 .addMapping(PatchTaskDto::getTaskName, PatchTaskCommand::setTaskName)
                 .addMapping(PatchTaskDto::getDescription, PatchTaskCommand::setDescription)
                 .addMapping(PatchTaskDto::getStatusId, PatchTaskCommand::setStatusId)
+                .addMapping(PatchTaskDto::getAssignedFor, PatchTaskCommand::setAssignedFor)
                 .addMapping(PatchTaskDto::getOrderNumber, PatchTaskCommand::setOrderNumber);
     }
 }

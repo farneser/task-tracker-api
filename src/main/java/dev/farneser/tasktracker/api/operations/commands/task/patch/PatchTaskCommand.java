@@ -13,6 +13,7 @@ public class PatchTaskCommand implements Command<Void> {
     private Long userId;
     private Long taskId;
     private Long statusId;
+    private Long assignedFor;
     @Size(min = 1, max = 255)
     private String taskName;
     @Size(min = 1, max = 255)

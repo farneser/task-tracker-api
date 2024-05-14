@@ -30,7 +30,7 @@ public class LeaveProjectCommandHandler implements CommandHandler<LeaveProjectCo
         }
 
         member.getProject().getStatuses().forEach(s -> s.getTasks().forEach(t -> {
-            if (t.getAssignedFor().getId().equals(member.getMember().getId())) {
+            if (t.getAssignedFor() != null && t.getAssignedFor().getId().equals(member.getMember().getId())) {
                 t.setAssignedFor(null);
             }
         }));

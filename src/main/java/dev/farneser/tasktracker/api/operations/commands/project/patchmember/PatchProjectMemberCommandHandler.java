@@ -27,6 +27,10 @@ public class PatchProjectMemberCommandHandler implements CommandHandler<PatchPro
         ProjectMember admin = findProjectMember(projectId, adminId);
         ProjectMember member = findProjectMember(projectId, memberId);
 
+        if (admin.getId().equals(member.getId())) {
+            throw new OperationNotAuthorizedException("You can't change permission for self");
+        }
+
         if (member.getRole().hasPermission(ProjectPermission.CREATOR_PATCH)) {
             throw new OperationNotAuthorizedException("You can't change permission for this user");
         }
@@ -41,6 +45,7 @@ public class PatchProjectMemberCommandHandler implements CommandHandler<PatchPro
 
         if (admin.getRole() == ProjectRole.CREATOR && newRole == ProjectRole.CREATOR) {
             admin.setRole(ProjectRole.ADMIN);
+            member.setRole(ProjectRole.CREATOR);
         }
 
         if (admin.getRole() != ProjectRole.CREATOR || newRole != ProjectRole.CREATOR) {

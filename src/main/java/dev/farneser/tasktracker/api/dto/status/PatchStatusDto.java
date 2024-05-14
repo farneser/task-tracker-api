@@ -15,7 +15,7 @@ public class PatchStatusDto implements ITypeMapper {
     @Length(min = 1, max = 255)
     @Schema(name = "statusName", description = "Status name", example = "To do")
     private String statusName;
-    @Length(min = 6, max = 6)
+    @Length(min = 7, max = 7)
     @Schema(name = "statusColor", description = "Status color in hex format", example = "ff00ff")
     private String statusColor;
     @Schema(name = "isCompleted", description = "Is status completed", example = "false")
