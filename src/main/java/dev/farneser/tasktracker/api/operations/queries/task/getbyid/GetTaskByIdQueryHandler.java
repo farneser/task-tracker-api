@@ -46,7 +46,7 @@ public class GetTaskByIdQueryHandler implements QueryHandler<GetTaskByIdQuery, T
             view.getStatus().setTasks(null);
         }
 
-        view.setAssignedUserId(task.getAssignedFor() == null ? -1 : task.getAssignedFor().getId());
+        view.setAssignedUserId(task.getAssignedFor() == null ? -1L : task.getAssignedFor().getId());
 
         log.debug("Task mapped: {}", view);
 

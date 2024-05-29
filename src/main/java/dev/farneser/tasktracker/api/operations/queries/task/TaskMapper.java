@@ -21,7 +21,7 @@ public class TaskMapper {
             TaskLookupView view = modelMapper.map(task, TaskLookupView.class);
 
             view.setStatusId(task.getStatus() != null ? task.getStatus().getId() : -1L);
-            view.setAssignedUserId(task.getAssignedFor() == null ? -1 : task.getAssignedFor().getId());
+            view.setAssignedUserId(task.getAssignedFor() == null ? -1L : task.getAssignedFor().getId());
 
             result.add(view);
         });
