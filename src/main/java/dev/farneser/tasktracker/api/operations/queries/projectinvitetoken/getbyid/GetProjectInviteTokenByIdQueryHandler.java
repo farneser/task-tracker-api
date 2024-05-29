@@ -44,7 +44,7 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
                 .orElseThrow(() -> new ProjectMemberNotFoundException(userId));
 
         if (!member.getRole().hasPermission(ProjectPermission.ADMIN_GET)) {
-            throw new OperationNotAuthorizedException();
+            throw new OperationNotAuthorizedException("You do not have permissions to access invite token.");
         }
 
         ProjectInviteTokenView view = mapper.map(token, ProjectInviteTokenView.class);

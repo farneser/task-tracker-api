@@ -3,7 +3,9 @@ package dev.farneser.tasktracker.api.operations.views.task;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.farneser.tasktracker.api.config.mapping.ITypeMapper;
 import dev.farneser.tasktracker.api.models.Task;
+import dev.farneser.tasktracker.api.models.User;
 import dev.farneser.tasktracker.api.operations.views.StatusView;
+import dev.farneser.tasktracker.api.operations.views.UserView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ public class TaskView implements ITypeMapper {
     private String taskName;
     @Schema(name = "description", description = "Task description", example = "Do something with something")
     private String description;
+    @Schema(name = "assignedFor", description = "Task assigned for user by id", example = "1")
+    private Long assignedUserId;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")
     private Long orderNumber;
     @Schema(name = "status", description = "Task status")
