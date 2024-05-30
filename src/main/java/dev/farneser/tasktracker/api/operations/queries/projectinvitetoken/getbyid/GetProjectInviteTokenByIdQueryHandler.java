@@ -23,16 +23,6 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
     private final ProjectInviteTokenRepository projectInviteTokenRepository;
     private final ModelMapper mapper;
 
-    @Override
-    public ProjectInviteTokenView handle(GetProjectInviteTokenByIdQuery query)
-            throws NotFoundException, OperationNotAuthorizedException {
-        ProjectInviteToken token = projectInviteTokenRepository
-                .findById(query.getTokenId())
-                .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
-
-        return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), mapper);
-    }
-
     public static ProjectInviteTokenView getProjectInviteTokenView(
             ProjectInviteToken token,
             ProjectMemberRepository projectMemberRepository,
@@ -53,5 +43,15 @@ public class GetProjectInviteTokenByIdQueryHandler implements QueryHandler<GetPr
         view.setProjectName(token.getProject().getProjectName());
 
         return view;
+    }
+
+    @Override
+    public ProjectInviteTokenView handle(GetProjectInviteTokenByIdQuery query)
+            throws NotFoundException, OperationNotAuthorizedException {
+        ProjectInviteToken token = projectInviteTokenRepository
+                .findById(query.getTokenId())
+                .orElseThrow(() -> new ProjectMemberNotFoundException(query.getUserId()));
+
+        return getProjectInviteTokenView(token, projectMemberRepository, query.getUserId(), mapper);
     }
 }

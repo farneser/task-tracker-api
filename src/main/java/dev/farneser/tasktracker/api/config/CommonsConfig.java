@@ -16,12 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class CommonsConfig {
+    private final Validator validator;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(8);
     }
-
-    private final Validator validator;
 
     @Bean
     public ModelMapper modelMapper() {

@@ -5,7 +5,6 @@ import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.UserNotFoundException;
 import dev.farneser.tasktracker.api.mediator.CommandHandler;
 import dev.farneser.tasktracker.api.models.User;
-import dev.farneser.tasktracker.api.models.project.Project;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectRole;
 import dev.farneser.tasktracker.api.models.tokens.ProjectInviteToken;

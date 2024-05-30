@@ -1,14 +1,14 @@
 package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.DatabaseInitializationExtension;
+import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
+import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.service.auth.CustomUserAuthentication;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
-import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
-import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

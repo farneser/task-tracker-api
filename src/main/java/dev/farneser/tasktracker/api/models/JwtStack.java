@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtStack {
-  private String accessToken;
-  private String refreshToken;
-  private Long accessTokenExpiration;
-  private Long refreshTokenExpiration;
+    private String accessToken;
+    private String refreshToken;
+    private Long accessTokenExpiration;
+    private Long refreshTokenExpiration;
 }
