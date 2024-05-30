@@ -7,6 +7,7 @@ import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.operations.queries.task.TaskMapper;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
+import dev.farneser.tasktracker.api.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetTaskByUserIdQueryHandler implements QueryHandler<GetTaskByUserIdQuery, List<TaskLookupView>> {
     private final ProjectMemberRepository projectMemberRepository;
+    private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
     @Override
@@ -29,7 +31,11 @@ public class GetTaskByUserIdQueryHandler implements QueryHandler<GetTaskByUserId
 
         List<Task> result = new ArrayList<>();
 
-        projectMembers.forEach(m -> m.getProject().getStatuses().forEach(s -> result.addAll(s.getTasks())));
+        projectMembers.forEach(m -> result.addAll(
+                taskRepository
+                        .findAllByProjectId(m.getProject().getId())
+                        .orElse(new ArrayList<>()))
+        );
 
         return taskMapper.mapTaskToTaskLookupView(result);
     }
