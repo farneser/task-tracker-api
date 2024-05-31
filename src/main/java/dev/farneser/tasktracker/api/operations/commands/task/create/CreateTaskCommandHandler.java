@@ -60,7 +60,7 @@ public class CreateTaskCommandHandler implements CommandHandler<CreateTaskComman
 
         User assignedFor = null;
 
-        if (command.getAssignedFor() != null) {
+        if (command.getAssignedFor() != null && command.getAssignedFor() != -1L) {
 
             ProjectMember assignedMember = projectMemberRepository
                     .findByProjectIdAndMemberId(status.getProject().getId(), command.getAssignedFor())
