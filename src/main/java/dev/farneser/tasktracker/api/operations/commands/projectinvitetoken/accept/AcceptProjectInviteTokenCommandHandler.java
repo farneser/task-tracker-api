@@ -22,7 +22,6 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class AcceptProjectInviteTokenCommandHandler implements CommandHandler<AcceptProjectInviteTokenCommand, Long> {
-    private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectInviteTokenRepository projectInviteTokenRepository;
