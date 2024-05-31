@@ -21,6 +21,8 @@ public class TaskView implements ITypeMapper {
     private String taskName;
     @Schema(name = "description", description = "Task description", example = "Do something with something")
     private String description;
+    @Schema(name = "assignedFor", description = "Task assigned for user by id", example = "1")
+    private Long assignedUserId;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")
     private Long orderNumber;
     @Schema(name = "status", description = "Task status")

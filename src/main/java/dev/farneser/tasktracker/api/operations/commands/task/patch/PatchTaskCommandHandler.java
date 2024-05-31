@@ -79,7 +79,7 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
         if (command.getStatusId() != null) {
             log.debug("Status id: {}", command.getStatusId());
 
-            if (command.getStatusId() == -1) {
+            if (command.getStatusId() == -1L) {
                 log.debug("Status set to null");
                 task.setStatus(null);
             } else {
@@ -112,13 +112,17 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
         }
 
         if (command.getAssignedFor() != null) {
-            log.debug("Description changed from {} to {}", task.getDescription(), command.getDescription());
+            log.debug("Assigned for changed from {} to {}", task.getAssignedFor(), command.getAssignedFor());
 
-            ProjectMember assignedFor = projectMemberRepository
-                    .findByProjectIdAndMemberId(projectId, command.getAssignedFor())
-                    .orElseThrow(() -> new UserNotFoundException(command.getAssignedFor()));
+            if (command.getAssignedFor() == -1L) {
+                task.setAssignedFor(null);
+            } else {
+                ProjectMember assignedFor = projectMemberRepository
+                        .findByProjectIdAndMemberId(projectId, command.getAssignedFor())
+                        .orElseThrow(() -> new UserNotFoundException(command.getAssignedFor()));
 
-            task.setAssignedFor(assignedFor.getMember());
+                task.setAssignedFor(assignedFor.getMember());
+            }
         }
     }
 }

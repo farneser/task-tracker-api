@@ -18,6 +18,8 @@ public class TaskLookupView implements ITypeMapper {
     private Long id;
     @Schema(name = "taskName", description = "Task name", example = "Do something")
     private String taskName;
+    @Schema(name = "assignedFor", description = "Task assigned for", example = "1")
+    private Long assignedUserId;
     @Schema(name = "description", description = "Task description", example = "Do something with something")
     private String description;
     @Schema(name = "orderNumber", description = "Task order number", example = "1")

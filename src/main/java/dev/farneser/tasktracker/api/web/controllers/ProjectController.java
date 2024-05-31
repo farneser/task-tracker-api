@@ -1,6 +1,10 @@
 package dev.farneser.tasktracker.api.web.controllers;
 
 
+import dev.farneser.tasktracker.api.dto.Message;
+import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
+import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
+import dev.farneser.tasktracker.api.dto.project.PatchProjectMemberDto;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
@@ -11,11 +15,7 @@ import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.ProjectService;
 import dev.farneser.tasktracker.api.service.StatusService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
-import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
-import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
-import dev.farneser.tasktracker.api.dto.project.PatchProjectMemberDto;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
-import dev.farneser.tasktracker.api.dto.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;

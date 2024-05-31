@@ -1,5 +1,8 @@
 package dev.farneser.tasktracker.api.service;
 
+import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
+import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
+import dev.farneser.tasktracker.api.dto.project.PatchProjectMemberDto;
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
@@ -22,9 +25,6 @@ import dev.farneser.tasktracker.api.operations.views.ProjectView;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.operations.views.task.TaskLookupView;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
-import dev.farneser.tasktracker.api.dto.project.CreateProjectDto;
-import dev.farneser.tasktracker.api.dto.project.PatchProjectDto;
-import dev.farneser.tasktracker.api.dto.project.PatchProjectMemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

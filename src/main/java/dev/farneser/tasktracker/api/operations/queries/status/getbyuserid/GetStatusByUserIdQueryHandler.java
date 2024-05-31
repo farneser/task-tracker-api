@@ -62,7 +62,13 @@ public class GetStatusByUserIdQueryHandler implements QueryHandler<GetStatusByUs
                 StatusView view = modelMapper.map(c, StatusView.class);
 
                 view.setProjectId(c.getProject().getId());
-                view.setTasks(c.getTasks().stream().map(t -> modelMapper.map(t, TaskLookupView.class)).toList());
+                view.setTasks(c.getTasks().stream().map(t -> {
+                    TaskLookupView taskLookupView = modelMapper.map(t, TaskLookupView.class);
+
+                    taskLookupView.setAssignedUserId(t.getAssignedFor() == null ? -1L : t.getAssignedFor().getId());
+
+                    return taskLookupView;
+                }).toList());
 
                 return view;
             }).toList();

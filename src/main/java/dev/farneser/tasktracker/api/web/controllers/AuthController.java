@@ -32,6 +32,28 @@ public class AuthController {
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
 
+    private static void setRefreshTokenCookie(HttpServletResponse response, JwtStack jwtStack) {
+        Cookie cookie = new Cookie("refreshToken", jwtStack.getRefreshToken());
+
+        cookie.setMaxAge((int) (jwtStack.getRefreshTokenExpiration() / 1000));
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
+    }
+
+    private static String getRefreshTokenCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("refreshToken")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
     @PostMapping
     @Operation(summary = "Authenticate user", description = "Authenticate user and return JWT token")
     @ApiResponses(value = {
@@ -110,27 +132,5 @@ public class AuthController {
         authService.activateAccount(token);
 
         return ResponseEntity.ok(Message.body("Successfully confirmed email"));
-    }
-
-    private static void setRefreshTokenCookie(HttpServletResponse response, JwtStack jwtStack) {
-        Cookie cookie = new Cookie("refreshToken", jwtStack.getRefreshToken());
-
-        cookie.setMaxAge((int) (jwtStack.getRefreshTokenExpiration() / 1000));
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-    }
-
-    private static String getRefreshTokenCookie(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("refreshToken")) {
-                    return cookie.getValue();
-                }
-            }
-        }
-
-        return null;
     }
 }

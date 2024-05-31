@@ -42,6 +42,23 @@ public class DatabaseLoader implements ApplicationRunner {
     private final Mediator mediator;
 
     /**
+     * Checks if the given repositories are empty.
+     *
+     * @param repos Array of CrudRepositories to check
+     * @return true if all repositories are empty, otherwise false
+     */
+    private static boolean isRepositoryEmpty(CrudRepository<?, ?>... repos) {
+
+        for (CrudRepository<?, ?> repo : repos) {
+            if (repo.count() != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Checks if the repositories are empty and initializes the database if needed.
      *
      * @param args The application arguments
@@ -67,23 +84,6 @@ public class DatabaseLoader implements ApplicationRunner {
         }
 
         initDatabase();
-    }
-
-    /**
-     * Checks if the given repositories are empty.
-     *
-     * @param repos Array of CrudRepositories to check
-     * @return true if all repositories are empty, otherwise false
-     */
-    private static boolean isRepositoryEmpty(CrudRepository<?, ?>... repos) {
-
-        for (CrudRepository<?, ?> repo : repos) {
-            if (repo.count() != 0) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private UserView createUser(String username)
