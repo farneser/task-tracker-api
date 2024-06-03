@@ -16,7 +16,6 @@ public class PatchTaskCommand implements Command<Void> {
     private Long assignedFor;
     @Size(min = 1, max = 255)
     private String taskName;
-    @Size(min = 1, max = 255)
     private String description;
     private Long orderNumber;
 }

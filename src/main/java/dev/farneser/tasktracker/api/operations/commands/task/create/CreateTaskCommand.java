@@ -15,6 +15,5 @@ public class CreateTaskCommand implements Command<Long> {
     private Long assignedFor;
     @Size(min = 1, max = 255)
     private String taskName;
-    @Size(min = 1, max = 255)
     private String description;
 }
