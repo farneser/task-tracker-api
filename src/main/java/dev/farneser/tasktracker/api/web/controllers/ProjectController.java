@@ -153,7 +153,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
             @ApiResponse(responseCode = "404", description = "Tasks not found")
     })
-    public ResponseEntity<List<TaskLookupView>> getArchivedTasksById(
+    public ResponseEntity<List<TaskLookupView>> getTasksById(
             @PathVariable Long id,
             @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
     ) throws NotFoundException, OperationNotAuthorizedException {
