@@ -2,7 +2,6 @@ package dev.farneser.tasktracker.api.service;
 
 import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
-import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.service.messages.MessageService;

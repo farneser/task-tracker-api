@@ -6,6 +6,7 @@ import dev.farneser.tasktracker.api.exceptions.NotFoundException;
 import dev.farneser.tasktracker.api.exceptions.OperationNotAuthorizedException;
 import dev.farneser.tasktracker.api.exceptions.ValidationException;
 import dev.farneser.tasktracker.api.operations.views.UserView;
+import dev.farneser.tasktracker.api.service.InstantNotificationService;
 import dev.farneser.tasktracker.api.service.UserService;
 import dev.farneser.tasktracker.api.service.auth.UserAuthentication;
 import dev.farneser.tasktracker.api.web.miscellaneous.AuthModel;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final InstantNotificationService instantNotificationService;
 
     @GetMapping
     @Operation(summary = "Get user", description = "Get user by JWT token")
@@ -55,5 +57,22 @@ public class UserController {
         log.info("Patching user {}", authentication.getName());
 
         return ResponseEntity.ok(userService.patch(patchUserDto, authentication));
+    }
+
+    @PostMapping("statistics")
+    @Operation(summary = "Get user statistics", description = "Get user statistics")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully got statistics"),
+            @ApiResponse(responseCode = "401", description = "JWT token expired or invalid"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<UserView> getStatistics(
+            @Schema(hidden = true) @ModelAttribute(AuthModel.NAME) UserAuthentication authentication
+    ) throws NotFoundException, OperationNotAuthorizedException {
+        log.info("Getting statistics for user {}", authentication.getName());
+
+        instantNotificationService.getStatistics(authentication);
+
+        return ResponseEntity.ok(userService.getUser(authentication));
     }
 }
