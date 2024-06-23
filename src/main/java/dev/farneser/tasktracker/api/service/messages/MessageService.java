@@ -24,8 +24,6 @@ public class MessageService {
      * @param email The email address for registration.
      */
     public void sendRegisterMessage(@Email String email) {
-        log.debug("Sending register message for email {}", email);
-
         this.sendRegisterMessage(new ConfirmEmailToken(email, null));
     }
 
@@ -38,6 +36,10 @@ public class MessageService {
         log.debug("Sending confirm email message for email {}", confirmationToken.getEmail());
 
         convertAndSendMessage(QueueType.CONFIRM_EMAIL, confirmationToken);
+    }
+
+    public void getStatistics(Long id) {
+        convertAndSendMessage(QueueType.GET_STATISTICS, id);
     }
 
     /**
