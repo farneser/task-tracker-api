@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class InstantNotificationService {
     private final UserService userService;
 
     public void getStatistics(UserAuthentication authentication)
-            throws NotFoundException, OperationNotAuthorizedException{
+            throws NotFoundException, OperationNotAuthorizedException {
         UserView user = userService.getUser(authentication);
 
         messageService.getStatistics(user.getId());

@@ -10,7 +10,6 @@ import dev.farneser.tasktracker.api.models.project.ProjectRole;
 import dev.farneser.tasktracker.api.models.tokens.ProjectInviteToken;
 import dev.farneser.tasktracker.api.repository.ProjectInviteTokenRepository;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
-import dev.farneser.tasktracker.api.repository.ProjectRepository;
 import dev.farneser.tasktracker.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
