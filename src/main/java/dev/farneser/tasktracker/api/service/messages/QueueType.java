@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum QueueType {
     NEW_REGISTER("new_register"),
-    CONFIRM_EMAIL("confirm_email");
+    CONFIRM_EMAIL("confirm_email"),
+    GET_STATISTICS("get_statistics");
 
     private final String queueName;
 

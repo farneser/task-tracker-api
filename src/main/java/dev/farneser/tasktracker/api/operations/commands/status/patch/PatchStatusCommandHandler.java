@@ -33,16 +33,11 @@ public class PatchStatusCommandHandler implements CommandHandler<PatchStatusComm
 
     private void patchOrder(Long orderNumber, Status status, List<Status> statuses) {
         if (orderNumber != null) {
-            long oldOrder = status.getOrderNumber();
             long newOrder = orderNumber;
 
             status.setOrderNumber(newOrder);
 
-            List<Status> statusesToChange = statuses.stream()
-                    .filter(c -> c.getOrderNumber() >= Math.min(oldOrder, newOrder) && c.getOrderNumber() <= Math.max(oldOrder, newOrder))
-                    .toList();
-
-            OrderUtility.patchOrder(status.getId(), newOrder, oldOrder, statusesToChange);
+            OrderUtility.patchOrder(status, newOrder, statuses);
         }
     }
 

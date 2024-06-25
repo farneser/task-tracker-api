@@ -9,6 +9,7 @@ import dev.farneser.tasktracker.api.models.Status;
 import dev.farneser.tasktracker.api.models.Task;
 import dev.farneser.tasktracker.api.models.project.ProjectMember;
 import dev.farneser.tasktracker.api.models.project.ProjectPermission;
+import dev.farneser.tasktracker.api.operations.views.order.OrderIdentifier;
 import dev.farneser.tasktracker.api.operations.views.order.OrderUtility;
 import dev.farneser.tasktracker.api.repository.ProjectMemberRepository;
 import dev.farneser.tasktracker.api.repository.StatusRepository;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -28,24 +31,39 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
     private final ProjectMemberRepository projectMemberRepository;
     private final TaskRepository taskRepository;
 
-    private static void patchOrder(long orderNumber, Task task) {
+    private void patchOrder(long orderNumber, Task task) {
+        long oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
+        log.debug("Old order: {}", oldOrder);
+
+        if (orderNumber <= 0) {
+            log.warn("Invalid order number: {}. Setting to 1.", orderNumber);
+            orderNumber = 1;
+        }
+
+        List<Task> relevantTasks;
         if (task.getStatus() != null) {
-            long oldOrder = task.getOrderNumber() == null ? -1L : task.getOrderNumber();
-
-            log.debug("Old order: {}", oldOrder);
-
-            task.setOrderNumber(orderNumber);
-
-            List<Task> tasksToChange = task.getStatus().getTasks().stream().filter(c -> c.getOrderNumber() >= Math.min(oldOrder, orderNumber) && c.getOrderNumber() <= Math.max(oldOrder, orderNumber)).toList();
-
-            log.debug("Tasks to change: {}", tasksToChange);
-
-            OrderUtility.patchOrder(task.getId(), orderNumber, oldOrder, tasksToChange);
+            relevantTasks = task.getStatus().getTasks();
         } else {
             log.debug("Status is null");
 
-            task.setOrderNumber(null);
+            relevantTasks = taskRepository.findByProjectIdAndStatusLessThanOneOrNull(task.getProject().getId()).orElse(new ArrayList<>());
+
+            if (relevantTasks.isEmpty()) {
+                log.warn("No archived tasks found for project ID: {}", task.getProject().getId());
+
+                return;
+            }
         }
+
+        if (orderNumber > relevantTasks.size()) {
+            log.warn("Order number exceeds the number of tasks: {}. Setting to maximum value.", orderNumber);
+
+            orderNumber = relevantTasks.size();
+        }
+
+        OrderUtility.patchOrder(task, orderNumber, relevantTasks);
+
+        taskRepository.saveAll(relevantTasks);
     }
 
     @Override
@@ -89,7 +107,16 @@ public class PatchTaskCommandHandler implements CommandHandler<PatchTaskCommand,
                         .findByIdAndProjectId(command.getStatusId(), projectId)
                         .orElseThrow(() -> new NotFoundException("Status with id " + command.getStatusId() + " not found"));
 
+                OrderUtility.removeSpace(task
+                        .getStatus().getTasks().stream()
+                        .filter(t -> !t.getId().equals(task.getId()))
+                        .sorted(Comparator.comparing(OrderIdentifier::getOrderNumber)).toList()
+                );
+
                 task.setStatus(status);
+
+                taskRepository.saveAll(status.getTasks());
+                statusRepository.save(status);
             }
         }
 
